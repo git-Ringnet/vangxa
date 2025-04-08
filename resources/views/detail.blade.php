@@ -8,7 +8,7 @@
             <p class="detail-page__location">Quận 1, Hồ Chí Minh</p>
             <div class="detail-page__rating">
                 <i class="fas fa-star"></i>
-                <span>4.96</span>
+                <span>4.92</span>
             </div>
             <div class="detail-page__actions">
                 <button class="detail-page__action-button detail-page__action-button--share">
@@ -21,6 +21,69 @@
                 </button>
             </div>
         </div>
+
+        <!-- Rating Details Section -->
+        <!-- <div class="detail-page__rating-details">
+            <div class="rating-overview">
+                <div class="rating-laurel">
+                    <span class="rating-score">4,92</span>
+                </div>
+                <h2 class="rating-title">Được khách yêu thích</h2>
+                <p class="rating-subtitle">Nhà này được khách yêu thích dựa trên điểm xếp hạng, lượt đánh giá và độ tin cậy</p>
+            </div>
+
+            <div class="rating-criteria">
+                <div class="rating-row">
+                    <span class="criteria-label">Xếp hạng tổng thể</span>
+                    <div class="rating-bar-container">
+                        <div class="rating-bar" style="width: 100%"></div>
+                    </div>
+                    <span class="criteria-score">5</span>
+                </div>
+                <div class="rating-row">
+                    <span class="criteria-label">Mức độ sạch sẽ</span>
+                    <div class="rating-bar-container">
+                        <div class="rating-bar" style="width: 100%"></div>
+                    </div>
+                    <span class="criteria-score">5.0</span>
+                </div>
+                <div class="rating-row">
+                    <span class="criteria-label">Độ chính xác</span>
+                    <div class="rating-bar-container">
+                        <div class="rating-bar" style="width: 100%"></div>
+                    </div>
+                    <span class="criteria-score">5.0</span>
+                </div>
+                <div class="rating-row">
+                    <span class="criteria-label">Nhận phòng</span>
+                    <div class="rating-bar-container">
+                        <div class="rating-bar" style="width: 98%"></div>
+                    </div>
+                    <span class="criteria-score">4.9</span>
+                </div>
+                <div class="rating-row">
+                    <span class="criteria-label">Giao tiếp</span>
+                    <div class="rating-bar-container">
+                        <div class="rating-bar" style="width: 100%"></div>
+                    </div>
+                    <span class="criteria-score">5.0</span>
+                </div>
+                <div class="rating-row">
+                    <span class="criteria-label">Vị trí</span>
+                    <div class="rating-bar-container">
+                        <div class="rating-bar" style="width: 96%"></div>
+                    </div>
+                    <span class="criteria-score">4.8</span>
+                </div>
+                <div class="rating-row">
+                    <span class="criteria-label">Giá trị</span>
+                    <div class="rating-bar-container">
+                        <div class="rating-bar" style="width: 98%"></div>
+                    </div>
+                    <span class="criteria-score">4.9</span>
+                </div>
+            </div>
+        </div> -->
 
         <div class="detail-page__gallery">
             <div class="detail-page__main-image" onclick="openPreview(0)">
@@ -147,6 +210,151 @@
     </div>
 </div>
 
+<!-- Rating & Reviews Section -->
+<div class="detail-page__reviews">
+    <div class="container-custom">
+        <div class="reviews-header">
+            <div class="reviews-summary">
+                <div class="reviews-score">
+                    <span class="score-number">4,92</span>
+                    <div class="score-stars">
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                    </div>
+                    <span class="reviews-count">· 128 đánh giá</span>
+                </div>
+
+                <div class="rating-criteria">
+                    <div class="rating-row">
+                        <span class="criteria-label">Mức độ sạch sẽ</span>
+                        <div class="rating-bar-container">
+                            <div class="rating-bar" style="width: 100%"></div>
+                        </div>
+                        <span class="criteria-score">5.0</span>
+                    </div>
+                    <div class="rating-row">
+                        <span class="criteria-label">Độ chính xác</span>
+                        <div class="rating-bar-container">
+                            <div class="rating-bar" style="width: 100%"></div>
+                        </div>
+                        <span class="criteria-score">5.0</span>
+                    </div>
+                    <div class="rating-row">
+                        <span class="criteria-label">Giao tiếp</span>
+                        <div class="rating-bar-container">
+                            <div class="rating-bar" style="width: 100%"></div>
+                        </div>
+                        <span class="criteria-score">5.0</span>
+                    </div>
+                    <div class="rating-row">
+                        <span class="criteria-label">Vị trí</span>
+                        <div class="rating-bar-container">
+                            <div class="rating-bar" style="width: 96%"></div>
+                        </div>
+                        <span class="criteria-score">4.8</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="reviews-list">
+            <div class="review-item">
+                <div class="review-header">
+                    <div class="reviewer-info">
+                        <img src="https://randomuser.me/api/portraits/men/1.jpg" alt="Reviewer" class="reviewer-avatar">
+                        <div class="reviewer-details">
+                            <h4>Bogdan-Lucian</h4>
+                            <p>1 tuần trước · Đã ở 3 đêm</p>
+                        </div>
+                    </div>
+                    <div class="review-rating">
+                        <i class="fas fa-star"></i>
+                        <span>5.0</span>
+                    </div>
+                </div>
+                <div class="review-content">
+                    <p>Tôi đã có một kỳ nghỉ tuyệt vời tại nhà của David ở Paris. Căn hộ rất sạch sẽ, âm cúng và rất yên tĩnh, làm cho nó trở thành một nơi nghỉ ngơi tuyệt vời sau khi khám phá thành phố. Vị trí thuận tiện để đi lại và gần các điểm tham quan.</p>
+                </div>
+                <div class="review-actions">
+                    <button class="review-like-btn" onclick="toggleLike(this)">
+                        <i class="far fa-heart"></i>
+                        <span class="like-count">12</span>
+                    </button>
+                    <button class="review-reply-btn" onclick="toggleReplyForm(this)">
+                        <i class="far fa-comment"></i>
+                        <span>Trả lời</span>
+                    </button>
+                </div>
+                <div class="review-replies">
+                    <div class="reply-form" style="display: none;">
+                        <textarea placeholder="Viết phản hồi của bạn..."></textarea>
+                        <button class="reply-submit">Gửi</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="review-item">
+                <div class="review-header">
+                    <div class="reviewer-info">
+                        <img src="https://randomuser.me/api/portraits/women/1.jpg" alt="Reviewer" class="reviewer-avatar">
+                        <div class="reviewer-details">
+                            <h4>Hasan</h4>
+                            <p>3 tuần trước · Đã ở 2 đêm</p>
+                        </div>
+                    </div>
+                    <div class="review-rating">
+                        <i class="fas fa-star"></i>
+                        <span>4.8</span>
+                    </div>
+                </div>
+                <div class="review-content">
+                    <p>Là một chỗ ở tuyệt vời với phần hồi nhanh và thân thiện, thích các cuộc trò chuyện của chúng tôi và cả những lời khuyên về khu vực xung quanh. Căm ơn David!</p>
+                </div>
+                <div class="review-actions">
+                    <button class="review-like-btn" onclick="toggleLike(this)">
+                        <i class="far fa-heart"></i>
+                        <span class="like-count">8</span>
+                    </button>
+                    <button class="review-reply-btn" onclick="toggleReplyForm(this)">
+                        <i class="far fa-comment"></i>
+                        <span>Trả lời</span>
+                    </button>
+                </div>
+                <div class="review-replies">
+                    <div class="reply-form" style="display: none;">
+                        <textarea placeholder="Viết phản hồi của bạn..."></textarea>
+                        <button class="reply-submit">Gửi</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="reviews-pagination">
+            <button class="load-more-reviews">Xem thêm đánh giá</button>
+        </div>
+
+        <!-- Write Review Form -->
+        <div class="write-review">
+            <h3>Viết đánh giá của bạn</h3>
+            <div class="rating-input">
+                <div class="rating-stars">
+                    <i class="far fa-star" data-rating="1"></i>
+                    <i class="far fa-star" data-rating="2"></i>
+                    <i class="far fa-star" data-rating="3"></i>
+                    <i class="far fa-star" data-rating="4"></i>
+                    <i class="far fa-star" data-rating="5"></i>
+                </div>
+                <span class="rating-text">Chọn đánh giá của bạn</span>
+            </div>
+            <textarea class="review-textarea" placeholder="Chia sẻ trải nghiệm của bạn..."></textarea>
+            <button class="submit-review">Gửi đánh giá</button>
+        </div>
+    </div>
+</div>
+
 <script>
 const images = [
     'https://cf.bstatic.com/xdata/images/hotel/max1024x768/134475469.jpg?k=986e0385365fa9e17ef6497e2fb7d5e16552358ad343c4ad8fc35b29802eacac&o=&hp=1',
@@ -202,6 +410,63 @@ document.addEventListener('keydown', function(e) {
         }
     }
 });
+
+// New review functions
+function toggleLike(button) {
+    const icon = button.querySelector('i');
+    const count = button.querySelector('.like-count');
+    if (icon.classList.contains('far')) {
+        icon.classList.replace('far', 'fas');
+        count.textContent = parseInt(count.textContent) + 1;
+    } else {
+        icon.classList.replace('fas', 'far');
+        count.textContent = parseInt(count.textContent) - 1;
+    }
+}
+
+function toggleReplyForm(button) {
+    const replyForm = button.closest('.review-item').querySelector('.reply-form');
+    replyForm.style.display = replyForm.style.display === 'none' ? 'block' : 'none';
+}
+
+// Rating stars interaction
+document.querySelectorAll('.rating-input .rating-stars i').forEach(star => {
+    star.addEventListener('mouseover', function() {
+        const rating = this.dataset.rating;
+        updateStars(rating);
+    });
+
+    star.addEventListener('click', function() {
+        const rating = this.dataset.rating;
+        document.querySelector('.rating-text').textContent = `Bạn đã chọn ${rating} sao`;
+        this.parentElement.dataset.selected = rating;
+    });
+});
+
+document.querySelector('.rating-input .rating-stars').addEventListener('mouseleave', function() {
+    const selected = this.dataset.selected;
+    if (selected) {
+        updateStars(selected);
+    } else {
+        clearStars();
+    }
+});
+
+function updateStars(rating) {
+    document.querySelectorAll('.rating-input .rating-stars i').forEach((star, index) => {
+        if (index < rating) {
+            star.classList.replace('far', 'fas');
+        } else {
+            star.classList.replace('fas', 'far');
+        }
+    });
+}
+
+function clearStars() {
+    document.querySelectorAll('.rating-input .rating-stars i').forEach(star => {
+        star.classList.replace('fas', 'far');
+    });
+}
 </script>
 @endsection
 
