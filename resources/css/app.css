@@ -329,7 +329,7 @@ a {
     justify-content: center;
     z-index: 2;
     transition: all 0.3s ease;
-    
+
 }
 
 .categories-nav-button:hover {
@@ -649,14 +649,14 @@ a {
     .d-md-block {
         display: block;
     }
-    
+
     .d-md-none {
         display: none;
     }
 }
 .load-more{
     margin-top: 20px;
-   
+
     justify-content: center;
     text-align: center;
 }
