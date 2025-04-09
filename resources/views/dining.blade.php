@@ -12,112 +12,77 @@
             <div class="categories-container" id="categoriesContainer">
                 <div class="category-item active">
                     <div class="category-icon">
-                        <i class="fas fa-home"></i>
+                        <i class="fas fa-bowl-rice"></i>
                     </div>
-                    <span class="category-name">Nhà</span>
+                    <span class="category-name">Việt Nam</span>
                 </div>
                 <div class="category-item">
                     <div class="category-icon">
-                        <i class="fas fa-mountain"></i>
+                        <i class="fas fa-fish"></i>
                     </div>
-                    <span class="category-name">Cabin</span>
+                    <span class="category-name">Nhật Bản</span>
                 </div>
                 <div class="category-item">
                     <div class="category-icon">
-                        <i class="fas fa-umbrella-beach"></i>
+                        <i class="fas fa-pizza-slice"></i>
                     </div>
-                    <span class="category-name">Bãi biển</span>
+                    <span class="category-name">Ý</span>
                 </div>
                 <div class="category-item">
                     <div class="category-icon">
-                        <i class="fas fa-swimming-pool"></i>
+                        <i class="fas fa-utensils"></i>
                     </div>
-                    <span class="category-name">Hồ bơi</span>
+                    <span class="category-name">Trung Hoa</span>
                 </div>
                 <div class="category-item">
                     <div class="category-icon">
-                        <i class="fas fa-campground"></i>
+                        <i class="fas fa-pepper-hot"></i>
                     </div>
-                    <span class="category-name">Cắm trại</span>
+                    <span class="category-name">Hàn Quốc</span>
                 </div>
                 <div class="category-item">
                     <div class="category-icon">
-                        <i class="fas fa-tree"></i>
+                        <i class="fas fa-lemon"></i>
                     </div>
-                    <span class="category-name">Công viên</span>
+                    <span class="category-name">Thái Lan</span>
                 </div>
                 <div class="category-item">
                     <div class="category-icon">
-                        <i class="fas fa-city"></i>
+                        <i class="fas fa-shrimp"></i>
                     </div>
-                    <span class="category-name">Thành phố</span>
+                    <span class="category-name">Hải Sản</span>
                 </div>
                 <div class="category-item">
                     <div class="category-icon">
-                        <i class="fas fa-water"></i>
+                        <i class="fas fa-fire"></i>
                     </div>
-                    <span class="category-name">Ven hồ</span>
+                    <span class="category-name">BQQ</span>
                 </div>
                 <div class="category-item">
                     <div class="category-icon">
-                        <i class="fas fa-skiing"></i>
+                        <i class="fas fa-leaf"></i>
                     </div>
-                    <span class="category-name">Trượt tuyết</span>
+                    <span class="category-name">Chay</span>
                 </div>
                 <div class="category-item">
                     <div class="category-icon">
-                        <i class="fas fa-island-tropical"></i>
+                        <i class="fas fa-cake-candles"></i>
                     </div>
-                    <span class="category-name">Đảo</span>
+                    <span class="category-name">Bánh Ngọt</span>
                 </div>
                 <div class="category-item">
                     <div class="category-icon">
-                        <i class="fas fa-water"></i>
+                        <i class="fas fa-mug-hot"></i>
                     </div>
-                    <span class="category-name">Ven hồ</span>
+                    <span class="category-name">Đồ Uống</span>
                 </div>
                 <div class="category-item">
                     <div class="category-icon">
-                        <i class="fas fa-skiing"></i>
+                        <i class="fas fa-mortar-pestle"></i>
                     </div>
-                    <span class="category-name">Trượt tuyết</span>
+                    <span class="category-name">Fusion</span>
                 </div>
-                <div class="category-item">
-                    <div class="category-icon">
-                        <i class="fas fa-water"></i>
-                    </div>
-                    <span class="category-name">Ven hồ</span>
-                </div>
-                <div class="category-item">
-                    <div class="category-icon">
-                        <i class="fas fa-skiing"></i>
-                    </div>
-                    <span class="category-name">Trượt tuyết</span>
-                </div>
-                <div class="category-item">
-                    <div class="category-icon">
-                        <i class="fas fa-water"></i>
-                    </div>
-                    <span class="category-name">Ven hồ</span>
-                </div>
-                <div class="category-item">
-                    <div class="category-icon">
-                        <i class="fas fa-skiing"></i>
-                    </div>
-                    <span class="category-name">Trượt tuyết</span>
-                </div>
-                <div class="category-item">
-                    <div class="category-icon">
-                        <i class="fas fa-water"></i>
-                    </div>
-                    <span class="category-name">Ven hồ</span>
-                </div>
-                <div class="category-item">
-                    <div class="category-icon">
-                        <i class="fas fa-skiing"></i>
-                    </div>
-                    <span class="category-name">Trượt tuyết</span>
-                </div>
+               
             </div>
             <button class="categories-nav-button next" id="nextButton">
                 <i class="fas fa-chevron-right"></i>
@@ -147,11 +112,11 @@
                 </div>
             </div>
             <div class="filter-section">
-                <h4>Loại chỗ ở</h4>
+                <h4>Loại nhà hàng</h4>
                 <div class="checkbox-group">
-                    <label><input type="checkbox"> Nhà nguyên căn</label><br>
-                    <label><input type="checkbox"> Phòng riêng</label><br>
-                    <label><input type="checkbox"> Phòng chung</label>
+                    <label><input type="checkbox"> Nhà hàng cao cấp</label><br>
+                    <label><input type="checkbox"> Quán ăn bình dân</label><br>
+                    <label><input type="checkbox"> Đồ ăn đường phố</label>
                 </div>
             </div>
             <div class="filter-buttons">
@@ -164,13 +129,13 @@
     <!-- Listings -->
     <section class="listings-section">
         <div class="listings-grid">
-            <a href="{{ route('detail') }}" class="listing-card">
+            <a href="{{ route('detail-dining') }}" class="listing-card">
                 <div class="listing-image-container">
                     <div class="image-carousel">
                         <div class="carousel-images">
-                            <img src="https://cf.bstatic.com/xdata/images/hotel/max1024x768/134475469.jpg?k=986e0385365fa9e17ef6497e2fb7d5e16552358ad343c4ad8fc35b29802eacac&o=&hp=1" alt="Căn hộ sang trọng tại trung tâm" class="listing-image">
-                            <img src="https://cf.bstatic.com/xdata/images/hotel/max1024x768/134475469.jpg?k=986e0385365fa9e17ef6497e2fb7d5e16552358ad343c4ad8fc35b29802eacac&o=&hp=1" alt="Căn hộ sang trọng tại trung tâm" class="listing-image">
-                            <img src="https://cf.bstatic.com/xdata/images/hotel/max1024x768/134475469.jpg?k=986e0385365fa9e17ef6497e2fb7d5e16552358ad343c4ad8fc35b29802eacac&o=&hp=1" alt="Căn hộ sang trọng tại trung tâm" class="listing-image">
+                            <img src="https://statics.vincom.com.vn/xu-huong/anh_thumbnail/Nha-hang-Ngoc-Suong.jpg" alt="Nhà hàng Sen" class="listing-image">
+                            <img src="https://simg.zalopay.com.vn/zlp-website/assets/nha_hang_17_ae655c3ea8.jpg" alt="Nhà hàng Sen" class="listing-image">
+                            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTc7Bz1IfBsZ14yyTJQz8ceCZwyKjgFXF-Fhg&s" alt="Nhà hàng Sen" class="listing-image">
                         </div>
                         <button class="carousel-nav prev" onclick="event.preventDefault(); prevImage(this);">
                             <i class="fas fa-chevron-left"></i>
@@ -190,28 +155,27 @@
                 </div>
                 <div class="listing-content">
                     <div class="listing-header">
-                        <h3 class="listing-title">Căn hộ sang trọng tại trung tâm</h3>
+                        <h3 class="listing-title">Nhà hàng Sen</h3>
                         <div class="listing-rating">
                             <i class="fas fa-star"></i>
                             <span>4.96</span>
                         </div>
                     </div>
                     <p class="listing-location">Quận 1, Hồ Chí Minh</p>
-                    <p class="listing-dates">22-27 tháng 5</p>
+                    <p class="listing-dates">Ẩm thực Việt Nam</p>
                     <p class="listing-price">
-                        <span class="price-amount">2,000,000₫</span>
-                        <span class="price-period">đêm</span>
+                        <span class="price-amount">200,000₫</span>
+                        <span class="price-period">/ người</span>
                     </p>
                 </div>
             </a>
-
-            <a href="{{ route('detail') }}" class="listing-card">
+            <a href="{{ route('detail-dining') }}" class="listing-card">
                 <div class="listing-image-container">
                     <div class="image-carousel">
                         <div class="carousel-images">
-                            <img src="https://cf.bstatic.com/xdata/images/hotel/max1024x768/134475469.jpg?k=986e0385365fa9e17ef6497e2fb7d5e16552358ad343c4ad8fc35b29802eacac&o=&hp=1" alt="Biệt thự ven biển" class="listing-image">
-                            <img src="https://plus.unsplash.com/premium_photo-1682377521753-58d1fd9fa5ce?fm=jpg&q=60&w=3000&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NXx8bHV4dXJ5JTIwdmlsbGF8ZW58MHx8MHx8fDA%3D" alt="Biệt thự ven biển" class="listing-image">
-                            <img src="https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1980&q=80" alt="Biệt thự ven biển" class="listing-image">
+                            <img src="https://statics.vincom.com.vn/xu-huong/anh_thumbnail/Nha-hang-Ngoc-Suong.jpg" alt="Nhà hàng Sen" class="listing-image">
+                            <img src="https://simg.zalopay.com.vn/zlp-website/assets/nha_hang_17_ae655c3ea8.jpg" alt="Nhà hàng Sen" class="listing-image">
+                            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTc7Bz1IfBsZ14yyTJQz8ceCZwyKjgFXF-Fhg&s" alt="Nhà hàng Sen" class="listing-image">
                         </div>
                         <button class="carousel-nav prev" onclick="event.preventDefault(); prevImage(this);">
                             <i class="fas fa-chevron-left"></i>
@@ -231,69 +195,26 @@
                 </div>
                 <div class="listing-content">
                     <div class="listing-header">
-                        <h3 class="listing-title">Biệt thự ven biển</h3>
-                        <div class="listing-rating">
-                            <i class="fas fa-star"></i>
-                            <span>4.89</span>
-                        </div>
-                    </div>
-                    <p class="listing-location">Nha Trang, Khánh Hòa</p>
-                    <p class="listing-dates">1-7 tháng 6</p>
-                    <p class="listing-price">
-                        <span class="price-amount">3,500,000₫</span>
-                        <span class="price-period">đêm</span>
-                    </p>
-                </div>
-            </a>
-
-            <a href="{{ route('detail') }}" class="listing-card">
-                <div class="listing-image-container">
-                    <div class="image-carousel">
-                        <div class="carousel-images">
-                            <img src="https://cf.bstatic.com/xdata/images/hotel/max1024x768/134475469.jpg?k=986e0385365fa9e17ef6497e2fb7d5e16552358ad343c4ad8fc35b29802eacac&o=&hp=1" alt="Căn hộ sang trọng tại trung tâm" class="listing-image">
-                            <img src="https://plus.unsplash.com/premium_photo-1682377521753-58d1fd9fa5ce?fm=jpg&q=60&w=3000&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NXx8bHV4dXJ5JTIwdmlsbGF8ZW58MHx8MHx8fDA%3D" alt="Căn hộ sang trọng tại trung tâm" class="listing-image">
-                            <img src="https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1980&q=80" alt="Căn hộ sang trọng tại trung tâm" class="listing-image">
-                        </div>
-                        <button class="carousel-nav prev" onclick="event.preventDefault(); prevImage(this);">
-                            <i class="fas fa-chevron-left"></i>
-                        </button>
-                        <button class="carousel-nav next" onclick="event.preventDefault(); nextImage(this);">
-                            <i class="fas fa-chevron-right"></i>
-                        </button>
-                        <div class="carousel-dots">
-                            <span class="dot active"></span>
-                            <span class="dot"></span>
-                            <span class="dot"></span>
-                        </div>
-                    </div>
-                    <button class="favorite-button" onclick="event.preventDefault(); toggleFavorite(this);">
-                        <i class="fas fa-heart"></i>
-                    </button>
-                </div>
-                <div class="listing-content">
-                    <div class="listing-header">
-                        <h3 class="listing-title">Căn hộ sang trọng tại trung tâm</h3>
+                        <h3 class="listing-title">Nhà hàng Sen</h3>
                         <div class="listing-rating">
                             <i class="fas fa-star"></i>
                             <span>4.96</span>
                         </div>
                     </div>
                     <p class="listing-location">Quận 1, Hồ Chí Minh</p>
-                    <p class="listing-dates">22-27 tháng 5</p>
+                    <p class="listing-dates">Ẩm thực Việt Nam</p>
                     <p class="listing-price">
-                        <span class="price-amount">2,000,000₫</span>
-                        <span class="price-period">đêm</span>
+                        <span class="price-amount">200,000₫</span>
+                        <span class="price-period">/ người</span>
                     </p>
                 </div>
-            </a>
-
-            <a href="{{ route('detail') }}" class="listing-card">
+            </a><a href="{{ route('detail-dining') }}" class="listing-card">
                 <div class="listing-image-container">
                     <div class="image-carousel">
                         <div class="carousel-images">
-                            <img src="https://cf.bstatic.com/xdata/images/hotel/max1024x768/134475469.jpg?k=986e0385365fa9e17ef6497e2fb7d5e16552358ad343c4ad8fc35b29802eacac&o=&hp=1" alt="Biệt thự ven biển" class="listing-image">
-                            <img src="https://plus.unsplash.com/premium_photo-1682377521753-58d1fd9fa5ce?fm=jpg&q=60&w=3000&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NXx8bHV4dXJ5JTIwdmlsbGF8ZW58MHx8MHx8fDA%3D" alt="Biệt thự ven biển" class="listing-image">
-                            <img src="https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1980&q=80" alt="Biệt thự ven biển" class="listing-image">
+                            <img src="https://statics.vincom.com.vn/xu-huong/anh_thumbnail/Nha-hang-Ngoc-Suong.jpg" alt="Nhà hàng Sen" class="listing-image">
+                            <img src="https://simg.zalopay.com.vn/zlp-website/assets/nha_hang_17_ae655c3ea8.jpg" alt="Nhà hàng Sen" class="listing-image">
+                            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTc7Bz1IfBsZ14yyTJQz8ceCZwyKjgFXF-Fhg&s" alt="Nhà hàng Sen" class="listing-image">
                         </div>
                         <button class="carousel-nav prev" onclick="event.preventDefault(); prevImage(this);">
                             <i class="fas fa-chevron-left"></i>
@@ -313,67 +234,26 @@
                 </div>
                 <div class="listing-content">
                     <div class="listing-header">
-                        <h3 class="listing-title">Biệt thự ven biển</h3>
-                        <div class="listing-rating">
-                            <i class="fas fa-star"></i>
-                            <span>4.89</span>
-                        </div>
-                    </div>
-                    <p class="listing-location">Nha Trang, Khánh Hòa</p>
-                    <p class="listing-dates">1-7 tháng 6</p>
-                    <p class="listing-price">
-                        <span class="price-amount">3,500,000₫</span>
-                        <span class="price-period">đêm</span>
-                    </p>
-                </div>
-            </a>
-            <a href="{{ route('detail') }}" class="listing-card">
-                <div class="listing-image-container">
-                    <div class="image-carousel">
-                        <div class="carousel-images">
-                            <img src="https://cf.bstatic.com/xdata/images/hotel/max1024x768/134475469.jpg?k=986e0385365fa9e17ef6497e2fb7d5e16552358ad343c4ad8fc35b29802eacac&o=&hp=1" alt="Căn hộ sang trọng tại trung tâm" class="listing-image">
-                            <img src="https://media-cdn.tripadvisor.com/media/photo-s/16/1a/ea/54/hotel-presidente-4s.jpg" alt="Căn hộ sang trọng tại trung tâm" class="listing-image">
-                            <img src="https://cf.bstatic.com/xdata/images/hotel/max1024x768/184305239.jpg?k=2d22fe63ae1f8960e057238c98fb436f7bd9f65854e3a5e918607c5cfa1d0a52&o=&hp=1" alt="Căn hộ sang trọng tại trung tâm" class="listing-image">
-                        </div>
-                        <button class="carousel-nav prev" onclick="event.preventDefault(); prevImage(this);">
-                            <i class="fas fa-chevron-left"></i>
-                        </button>
-                        <button class="carousel-nav next" onclick="event.preventDefault(); nextImage(this);">
-                            <i class="fas fa-chevron-right"></i>
-                        </button>
-                        <div class="carousel-dots">
-                            <span class="dot active"></span>
-                            <span class="dot"></span>
-                            <span class="dot"></span>
-                        </div>
-                    </div>
-                    <button class="favorite-button" onclick="event.preventDefault(); toggleFavorite(this);">
-                        <i class="fas fa-heart"></i>
-                    </button>
-                </div>
-                <div class="listing-content">
-                    <div class="listing-header">
-                        <h3 class="listing-title">Căn hộ sang trọng tại trung tâm</h3>
+                        <h3 class="listing-title">Nhà hàng Sen</h3>
                         <div class="listing-rating">
                             <i class="fas fa-star"></i>
                             <span>4.96</span>
                         </div>
                     </div>
                     <p class="listing-location">Quận 1, Hồ Chí Minh</p>
-                    <p class="listing-dates">22-27 tháng 5</p>
+                    <p class="listing-dates">Ẩm thực Việt Nam</p>
                     <p class="listing-price">
-                        <span class="price-amount">2,000,000₫</span>
-                        <span class="price-period">đêm</span>
+                        <span class="price-amount">200,000₫</span>
+                        <span class="price-period">/ người</span>
                     </p>
                 </div>
-            </a>
-            <a href="{{ route('detail') }}" class="listing-card">
+            </a><a href="{{ route('detail-dining') }}" class="listing-card">
                 <div class="listing-image-container">
                     <div class="image-carousel">
                         <div class="carousel-images">
-                            <img src="https://cf.bstatic.com/xdata/images/hotel/max1024x768/134475469.jpg?k=986e0385365fa9e17ef6497e2fb7d5e16552358ad343c4ad8fc35b29802eacac&o=&hp=1" alt="Biệt thự ven biển" class="listing-image">
-                            <img src="https://plus.unsplash.com/premium_photo-1682377521753-58d1fd9fa5ce?fm=jpg&q=60&w=3000&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NXx8bHV4dXJ5JTIwdmlsbGF8ZW58MHx8MHx8fDA%3D" alt="Biệt thự ven biển" class="listing-image">
-                            <img src="https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1980&q=80" alt="Biệt thự ven biển" class="listing-image">
+                            <img src="https://statics.vincom.com.vn/xu-huong/anh_thumbnail/Nha-hang-Ngoc-Suong.jpg" alt="Nhà hàng Sen" class="listing-image">
+                            <img src="https://simg.zalopay.com.vn/zlp-website/assets/nha_hang_17_ae655c3ea8.jpg" alt="Nhà hàng Sen" class="listing-image">
+                            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTc7Bz1IfBsZ14yyTJQz8ceCZwyKjgFXF-Fhg&s" alt="Nhà hàng Sen" class="listing-image">
                         </div>
                         <button class="carousel-nav prev" onclick="event.preventDefault(); prevImage(this);">
                             <i class="fas fa-chevron-left"></i>
@@ -393,68 +273,26 @@
                 </div>
                 <div class="listing-content">
                     <div class="listing-header">
-                        <h3 class="listing-title">Biệt thự ven biển</h3>
-                        <div class="listing-rating">
-                            <i class="fas fa-star"></i>
-                            <span>4.89</span>
-                        </div>
-                    </div>
-                    <p class="listing-location">Nha Trang, Khánh Hòa</p>
-                    <p class="listing-dates">1-7 tháng 6</p>
-                    <p class="listing-price">
-                        <span class="price-amount">3,500,000₫</span>
-                        <span class="price-period">đêm</span>
-                    </p>
-                </div>
-            </a>
-            <a href="{{ route('detail') }}" class="listing-card">
-                <div class="listing-image-container">
-                    <div class="image-carousel">
-                        <div class="carousel-images">
-                            <img src="https://cf.bstatic.com/xdata/images/hotel/max1024x768/134475469.jpg?k=986e0385365fa9e17ef6497e2fb7d5e16552358ad343c4ad8fc35b29802eacac&o=&hp=1" alt="Căn hộ sang trọng tại trung tâm" class="listing-image">
-                            <img src="https://plus.unsplash.com/premium_photo-1682377521753-58d1fd9fa5ce?fm=jpg&q=60&w=3000&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NXx8bHV4dXJ5JTIwdmlsbGF8ZW58MHx8MHx8fDA%3D" alt="Căn hộ sang trọng tại trung tâm" class="listing-image">
-                            <img src="https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1980&q=80" alt="Căn hộ sang trọng tại trung tâm" class="listing-image">
-                        </div>
-                        <button class="carousel-nav prev" onclick="event.preventDefault(); prevImage(this);">
-                            <i class="fas fa-chevron-left"></i>
-                        </button>
-                        <button class="carousel-nav next" onclick="event.preventDefault(); nextImage(this);">
-                            <i class="fas fa-chevron-right"></i>
-                        </button>
-                        <div class="carousel-dots">
-                            <span class="dot active"></span>
-                            <span class="dot"></span>
-                            <span class="dot"></span>
-                        </div>
-                    </div>
-                    <button class="favorite-button" onclick="event.preventDefault(); toggleFavorite(this);">
-                        <i class="fas fa-heart"></i>
-                    </button>
-                </div>
-                <div class="listing-content">
-                    <div class="listing-header">
-                        <h3 class="listing-title">Căn hộ sang trọng tại trung tâm</h3>
+                        <h3 class="listing-title">Nhà hàng Sen</h3>
                         <div class="listing-rating">
                             <i class="fas fa-star"></i>
                             <span>4.96</span>
                         </div>
                     </div>
                     <p class="listing-location">Quận 1, Hồ Chí Minh</p>
-                    <p class="listing-dates">22-27 tháng 5</p>
+                    <p class="listing-dates">Ẩm thực Việt Nam</p>
                     <p class="listing-price">
-                        <span class="price-amount">2,000,000₫</span>
-                        <span class="price-period">đêm</span>
+                        <span class="price-amount">200,000₫</span>
+                        <span class="price-period">/ người</span>
                     </p>
                 </div>
-            </a>
-
-            <a href="{{ route('detail') }}" class="listing-card">
+            </a><a href="{{ route('detail-dining') }}" class="listing-card">
                 <div class="listing-image-container">
                     <div class="image-carousel">
                         <div class="carousel-images">
-                            <img src="https://cf.bstatic.com/xdata/images/hotel/max1024x768/134475469.jpg?k=986e0385365fa9e17ef6497e2fb7d5e16552358ad343c4ad8fc35b29802eacac&o=&hp=1" alt="Biệt thự ven biển" class="listing-image">
-                            <img src="https://plus.unsplash.com/premium_photo-1682377521753-58d1fd9fa5ce?fm=jpg&q=60&w=3000&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NXx8bHV4dXJ5JTIwdmlsbGF8ZW58MHx8MHx8fDA%3D" alt="Biệt thự ven biển" class="listing-image">
-                            <img src="https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1980&q=80" alt="Biệt thự ven biển" class="listing-image">
+                            <img src="https://statics.vincom.com.vn/xu-huong/anh_thumbnail/Nha-hang-Ngoc-Suong.jpg" alt="Nhà hàng Sen" class="listing-image">
+                            <img src="https://simg.zalopay.com.vn/zlp-website/assets/nha_hang_17_ae655c3ea8.jpg" alt="Nhà hàng Sen" class="listing-image">
+                            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTc7Bz1IfBsZ14yyTJQz8ceCZwyKjgFXF-Fhg&s" alt="Nhà hàng Sen" class="listing-image">
                         </div>
                         <button class="carousel-nav prev" onclick="event.preventDefault(); prevImage(this);">
                             <i class="fas fa-chevron-left"></i>
@@ -474,24 +312,142 @@
                 </div>
                 <div class="listing-content">
                     <div class="listing-header">
-                        <h3 class="listing-title">Biệt thự ven biển</h3>
+                        <h3 class="listing-title">Nhà hàng Sen</h3>
                         <div class="listing-rating">
                             <i class="fas fa-star"></i>
-                            <span>4.89</span>
+                            <span>4.96</span>
                         </div>
                     </div>
-                    <p class="listing-location">Nha Trang, Khánh Hòa</p>
-                    <p class="listing-dates">1-7 tháng 6</p>
+                    <p class="listing-location">Quận 1, Hồ Chí Minh</p>
+                    <p class="listing-dates">Ẩm thực Việt Nam</p>
                     <p class="listing-price">
-                        <span class="price-amount">3,500,000₫</span>
-                        <span class="price-period">đêm</span>
+                        <span class="price-amount">200,000₫</span>
+                        <span class="price-period">/ người</span>
+                    </p>
+                </div>
+            </a><a href="{{ route('detail-dining') }}" class="listing-card">
+                <div class="listing-image-container">
+                    <div class="image-carousel">
+                        <div class="carousel-images">
+                            <img src="https://statics.vincom.com.vn/xu-huong/anh_thumbnail/Nha-hang-Ngoc-Suong.jpg" alt="Nhà hàng Sen" class="listing-image">
+                            <img src="https://simg.zalopay.com.vn/zlp-website/assets/nha_hang_17_ae655c3ea8.jpg" alt="Nhà hàng Sen" class="listing-image">
+                            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTc7Bz1IfBsZ14yyTJQz8ceCZwyKjgFXF-Fhg&s" alt="Nhà hàng Sen" class="listing-image">
+                        </div>
+                        <button class="carousel-nav prev" onclick="event.preventDefault(); prevImage(this);">
+                            <i class="fas fa-chevron-left"></i>
+                        </button>
+                        <button class="carousel-nav next" onclick="event.preventDefault(); nextImage(this);">
+                            <i class="fas fa-chevron-right"></i>
+                        </button>
+                        <div class="carousel-dots">
+                            <span class="dot active"></span>
+                            <span class="dot"></span>
+                            <span class="dot"></span>
+                        </div>
+                    </div>
+                    <button class="favorite-button" onclick="event.preventDefault(); toggleFavorite(this);">
+                        <i class="fas fa-heart"></i>
+                    </button>
+                </div>
+                <div class="listing-content">
+                    <div class="listing-header">
+                        <h3 class="listing-title">Nhà hàng Sen</h3>
+                        <div class="listing-rating">
+                            <i class="fas fa-star"></i>
+                            <span>4.96</span>
+                        </div>
+                    </div>
+                    <p class="listing-location">Quận 1, Hồ Chí Minh</p>
+                    <p class="listing-dates">Ẩm thực Việt Nam</p>
+                    <p class="listing-price">
+                        <span class="price-amount">200,000₫</span>
+                        <span class="price-period">/ người</span>
+                    </p>
+                </div>
+            </a><a href="{{ route('detail-dining') }}" class="listing-card">
+                <div class="listing-image-container">
+                    <div class="image-carousel">
+                        <div class="carousel-images">
+                            <img src="https://statics.vincom.com.vn/xu-huong/anh_thumbnail/Nha-hang-Ngoc-Suong.jpg" alt="Nhà hàng Sen" class="listing-image">
+                            <img src="https://simg.zalopay.com.vn/zlp-website/assets/nha_hang_17_ae655c3ea8.jpg" alt="Nhà hàng Sen" class="listing-image">
+                            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTc7Bz1IfBsZ14yyTJQz8ceCZwyKjgFXF-Fhg&s" alt="Nhà hàng Sen" class="listing-image">
+                        </div>
+                        <button class="carousel-nav prev" onclick="event.preventDefault(); prevImage(this);">
+                            <i class="fas fa-chevron-left"></i>
+                        </button>
+                        <button class="carousel-nav next" onclick="event.preventDefault(); nextImage(this);">
+                            <i class="fas fa-chevron-right"></i>
+                        </button>
+                        <div class="carousel-dots">
+                            <span class="dot active"></span>
+                            <span class="dot"></span>
+                            <span class="dot"></span>
+                        </div>
+                    </div>
+                    <button class="favorite-button" onclick="event.preventDefault(); toggleFavorite(this);">
+                        <i class="fas fa-heart"></i>
+                    </button>
+                </div>
+                <div class="listing-content">
+                    <div class="listing-header">
+                        <h3 class="listing-title">Nhà hàng Sen</h3>
+                        <div class="listing-rating">
+                            <i class="fas fa-star"></i>
+                            <span>4.96</span>
+                        </div>
+                    </div>
+                    <p class="listing-location">Quận 1, Hồ Chí Minh</p>
+                    <p class="listing-dates">Ẩm thực Việt Nam</p>
+                    <p class="listing-price">
+                        <span class="price-amount">200,000₫</span>
+                        <span class="price-period">/ người</span>
+                    </p>
+                </div>
+            </a><a href="{{ route('detail-dining') }}" class="listing-card">
+                <div class="listing-image-container">
+                    <div class="image-carousel">
+                        <div class="carousel-images">
+                            <img src="https://statics.vincom.com.vn/xu-huong/anh_thumbnail/Nha-hang-Ngoc-Suong.jpg" alt="Nhà hàng Sen" class="listing-image">
+                            <img src="https://simg.zalopay.com.vn/zlp-website/assets/nha_hang_17_ae655c3ea8.jpg" alt="Nhà hàng Sen" class="listing-image">
+                            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTc7Bz1IfBsZ14yyTJQz8ceCZwyKjgFXF-Fhg&s" alt="Nhà hàng Sen" class="listing-image">
+                        </div>
+                        <button class="carousel-nav prev" onclick="event.preventDefault(); prevImage(this);">
+                            <i class="fas fa-chevron-left"></i>
+                        </button>
+                        <button class="carousel-nav next" onclick="event.preventDefault(); nextImage(this);">
+                            <i class="fas fa-chevron-right"></i>
+                        </button>
+                        <div class="carousel-dots">
+                            <span class="dot active"></span>
+                            <span class="dot"></span>
+                            <span class="dot"></span>
+                        </div>
+                    </div>
+                    <button class="favorite-button" onclick="event.preventDefault(); toggleFavorite(this);">
+                        <i class="fas fa-heart"></i>
+                    </button>
+                </div>
+                <div class="listing-content">
+                    <div class="listing-header">
+                        <h3 class="listing-title">Nhà hàng Sen</h3>
+                        <div class="listing-rating">
+                            <i class="fas fa-star"></i>
+                            <span>4.96</span>
+                        </div>
+                    </div>
+                    <p class="listing-location">Quận 1, Hồ Chí Minh</p>
+                    <p class="listing-dates">Ẩm thực Việt Nam</p>
+                    <p class="listing-price">
+                        <span class="price-amount">200,000₫</span>
+                        <span class="price-period">/ người</span>
                     </p>
                 </div>
             </a>
+          
         </div>
 
         <div class="load-more">
-            <h4>Tiếp tục khám phá danh mục phòng</h4>
+            <h4>Tiếp tục khám phá ẩm thực</h4>
             <button class="load-more-button">
                 Hiển thị thêm
             </button>

@@ -24,12 +24,10 @@
                     </span>
                 </a>
 
-
-
                 <!-- Navigation Links -->
                 <div class="nav-links">
-                    <a href="#" class="nav-link active">Nhà</a>
-                    <a href="#" class="nav-link">Trải nghiệm</a>
+                    <a href="/" class="nav-link {{ request()->is('/') ? 'active' : '' }}">Lưu Trú</a>
+                    <a href="{{ route('dining') }}" class="nav-link {{ request()->is('dining') ? 'active' : '' }}">Ăn Uống</a>
                     <a href="#" class="nav-link" id="rankingLink">Bảng xếp hạng</a>
                 </div>
 
@@ -216,8 +214,10 @@
                 <div class="search-container">
                     <div class="search-item">
                         <div class="search-label">Địa điểm</div>
-                        <input type="text" placeholder="Tìm kiếm điểm đến" class="search-input">
+                        <input type="text" placeholder="{{ request()->is('dining') ? 'Tìm nhà hàng, món ăn...' : 'Tìm kiếm điểm đến' }}" class="search-input">
                     </div>
+                    
+                    @if(!request()->is('dining'))
                     <div class="search-divider"></div>
                     <div class="search-item">
                         <div class="search-label">Nhận phòng</div>
@@ -232,10 +232,18 @@
                     <div class="search-item">
                         <div class="search-label">Khách</div>
                         <div class="search-input">Thêm khách</div>
-                        <button class="search-button">
-                            <i class="fas fa-search"></i>
-                        </button>
                     </div>
+                    @else
+                    <div class="search-divider"></div>
+                    <div class="search-item">
+                        <div class="search-label">Món ăn</div>
+                        <div class="search-input">Loại món</div>
+                    </div>
+                    @endif
+                    
+                    <button class="search-button">
+                        <i class="fas fa-search"></i>
+                    </button>
                 </div>
             </div>
         </div>
