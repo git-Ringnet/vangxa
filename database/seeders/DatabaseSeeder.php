@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\Post;
 use App\Models\User;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
@@ -21,5 +22,8 @@ class DatabaseSeeder extends Seeder
             'email' => 'admin@ringnet.vn',
             'password' => Hash::make('Admin@123'),
         ]);
+
+        // Tạo 20 bài viết với ảnh
+        Post::factory(20)->create();
     }
 }
