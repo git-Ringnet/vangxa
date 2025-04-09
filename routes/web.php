@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\HomeController;
 use Livewire\Volt\Volt;
 
-Route::get('/', [HomeController::class, 'index'])->name('home');
+Route::get('/', [HomeController::class, 'index'])->name('pages/listings/home');
 
 Route::view('dashboard', 'dashboard')
     ->middleware(['auth', 'verified'])
@@ -20,14 +20,14 @@ Route::middleware(['auth'])->group(function () {
 
 
 Route::get('/detail', function () {
-    return view('detail');
+    return view('pages/listings/home');
 })->name('detail');
 Route::get('/detail-dining', function () {
-    return view('detail-dining');
+    return view('pages/dining/detail-dining');
 })->name('detail-dining');
 
 Route::get('/dining', function () {
-    return view('dining');
+    return view('pages/dining/dining');
 })->name('dining');
 
 require __DIR__.'/auth.php';
