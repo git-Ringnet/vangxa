@@ -82,8 +82,8 @@
                         <div class="row g-3">
                             @foreach($post->images as $image)
                                 <div class="col-6">
-                                    <a href="{{ asset('storage/' . $image->image_path) }}" data-lightbox="post-images" class="d-block">
-                                        <img src="{{ asset('storage/' . $image->image_path) }}" 
+                                    <a href="{{ asset($image->image_path) }}" data-lightbox="post-images" class="d-block">
+                                        <img src="{{ asset($image->image_path) }}" 
                                              class="img-fluid rounded" 
                                              alt="Post image"
                                              style="width: 100%; height: 150px; object-fit: cover;">

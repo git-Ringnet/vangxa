@@ -1,16 +1,14 @@
 @extends('admin.layouts.app')
 
-@section('title', 'Chỉnh sửa bài viết')
+@section('title', 'Sửa bài viết')
 
 @section('content')
     <div class="container-fluid">
         <div class="d-flex justify-content-between align-items-center mb-4">
-            <h1 class="h3 mb-0 text-gray-800">Chỉnh sửa bài viết</h1>
-            <div>
-                <a href="{{ route('posts.show', $post) }}" class="btn btn-secondary">
-                    <i class="fas fa-arrow-left"></i> Quay lại
-                </a>
-            </div>
+            <h1 class="h3 mb-0 text-gray-800">Sửa bài viết</h1>
+            <a href="{{ route('posts.index') }}" class="btn btn-secondary">
+                <i class="fas fa-arrow-left"></i> Quay lại
+            </a>
         </div>
 
         @if ($errors->any())
@@ -25,7 +23,7 @@
 
         <div class="card shadow mb-4">
             <div class="card-body">
-                <form action="{{ route('posts.update', $post) }}" method="POST" enctype="multipart/form-data">
+                <form action="{{ route('posts.update', $post->id) }}" method="POST" enctype="multipart/form-data">
                     @csrf
                     @method('PUT')
 
@@ -57,24 +55,24 @@
                     </div>
 
                     <div class="mb-4">
-                        <label class="form-label">Hình ảnh hiện tại</label>
-                        <div class="row g-3 mb-3">
-                            @forelse($post->images as $image)
-                                <div class="col-md-3 image-preview-item">
-                                    <img src="{{ asset('storage/' . $image->image_path) }}" class="img-fluid rounded"
-                                        alt="Post image">
-                                    <div class="remove-image" data-id="{{ $image->id }}">
-                                        <i class="fas fa-times"></i>
+                        <label class="form-label">Ảnh hiện tại</label>
+                        <div class="row">
+                            @foreach ($post->images as $image)
+                                <div class="col-md-3 mb-3">
+                                    <div class="position-relative">
+                                        <img src="{{ asset($image->image_path) }}" class="img-fluid rounded" alt="Post image">
+                                        <button type="button" class="btn btn-danger btn-sm position-absolute top-0 end-0 m-2 delete-image" 
+                                                data-image-id="{{ $image->id }}">
+                                            <i class="fas fa-times"></i>
+                                        </button>
                                     </div>
                                 </div>
-                            @empty
-                                <div class="col-12">
-                                    <p class="text-muted">Chưa có hình ảnh nào</p>
-                                </div>
-                            @endforelse
+                            @endforeach
                         </div>
+                    </div>
 
-                        <label for="images" class="form-label">Thêm hình ảnh mới</label>
+                    <div class="mb-4">
+                        <label for="images" class="form-label">Thêm ảnh mới</label>
                         <input type="file" class="form-control @error('images') is-invalid @enderror" id="images"
                             name="images[]" multiple accept="image/*">
                         <div class="form-text">Bạn có thể chọn nhiều ảnh cùng lúc</div>
@@ -84,7 +82,7 @@
                     </div>
 
                     <div class="mb-4">
-                        <div class="row" id="new-image-preview"></div>
+                        <div class="row" id="image-preview"></div>
                     </div>
 
                     <div class="d-grid gap-2">
@@ -101,10 +99,33 @@
 @push('scripts')
 <script>
     $(document).ready(function() {
-        // Xử lý preview ảnh mới
+        // Hàm upload ảnh
+        function uploadImage(file, editor) {
+            let formData = new FormData();
+            formData.append('file', file);
+            formData.append('_token', '{{ csrf_token() }}');
+            
+            $.ajax({
+                url: '{{ route("posts.upload-image") }}',
+                method: 'POST',
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function(response) {
+                    // Chèn ảnh vào editor
+                    $(editor).summernote('insertImage', response.location);
+                },
+                error: function(xhr) {
+                    console.error('Upload failed:', xhr);
+                    alert('Có lỗi xảy ra khi tải ảnh lên');
+                }
+            });
+        }
+
+        // Xử lý preview ảnh
         $('#images').on('change', function() {
             const files = this.files;
-            const preview = $('#new-image-preview');
+            const preview = $('#image-preview');
             preview.empty();
 
             for (let i = 0; i < files.length; i++) {
@@ -126,8 +147,8 @@
             }
         });
 
-        // Xử lý xóa ảnh preview mới
-        $(document).on('click', '#new-image-preview .remove-image', function() {
+        // Xử lý xóa ảnh preview
+        $(document).on('click', '.remove-image', function() {
             const index = $(this).data('index');
             const dt = new DataTransfer();
             const input = document.getElementById('images');
@@ -144,19 +165,19 @@
         });
 
         // Xử lý xóa ảnh hiện có
-        $('.image-preview-item .remove-image').on('click', function() {
-            const imageId = $(this).data('id');
+        $('.delete-image').on('click', function() {
             if (confirm('Bạn có chắc chắn muốn xóa ảnh này?')) {
+                const imageId = $(this).data('image-id');
                 $.ajax({
                     url: `/admin/posts/images/${imageId}`,
-                    type: 'DELETE',
+                    method: 'DELETE',
                     data: {
                         _token: '{{ csrf_token() }}'
                     },
-                    success: function(response) {
-                        $(this).closest('.image-preview-item').fadeOut();
-                    }.bind(this),
-                    error: function(xhr) {
+                    success: function() {
+                        location.reload();
+                    },
+                    error: function() {
                         alert('Có lỗi xảy ra khi xóa ảnh');
                     }
                 });

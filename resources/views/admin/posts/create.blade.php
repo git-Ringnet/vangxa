@@ -81,6 +81,29 @@
 @push('scripts')
 <script>
     $(document).ready(function() {
+        // Hàm upload ảnh
+        function uploadImage(file, editor) {
+            let formData = new FormData();
+            formData.append('file', file);
+            formData.append('_token', '{{ csrf_token() }}');
+            
+            $.ajax({
+                url: '{{ route("posts.upload-image") }}',
+                method: 'POST',
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function(response) {
+                    // Chèn ảnh vào editor
+                    $(editor).summernote('insertImage', response.location);
+                },
+                error: function(xhr) {
+                    console.error('Upload failed:', xhr);
+                    alert('Có lỗi xảy ra khi tải ảnh lên');
+                }
+            });
+        }
+
         // Xử lý preview ảnh
         $('#images').on('change', function() {
             const files = this.files;

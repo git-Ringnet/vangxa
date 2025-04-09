@@ -35,16 +35,20 @@ class PostController extends Controller
             'title' => $request->title,
             'address' => $request->address,
             'description' => $request->description,
-            'user_id' => 1
+            'user_id' => Auth::id() ?? 1
         ]);
 
         if ($request->hasFile('images')) {
             foreach ($request->file('images') as $image) {
-                // Lưu ảnh vào thư mục posts
+                // Tạo tên file duy nhất
                 $filename = time() . '_' . $image->getClientOriginalName();
-                $path = $image->storeAs('posts', $filename, 'public');
+                
+                // Lưu ảnh vào thư mục public/image/posts
+                $image->move(public_path('image/posts'), $filename);
+                
+                // Lưu đường dẫn vào database
                 $post->images()->create([
-                    'image_path' => $path
+                    'image_path' => 'image/posts/' . $filename
                 ]);
             }
         }
@@ -57,8 +61,10 @@ class PostController extends Controller
     {
         // Xóa tất cả ảnh liên quan
         foreach ($post->images as $image) {
-            // Xóa file ảnh từ storage
-            Storage::disk('public')->delete($image->image_path);
+            // Xóa file ảnh từ thư mục public
+            if (file_exists(public_path($image->image_path))) {
+                unlink(public_path($image->image_path));
+            }
         }
 
         // Xóa các ảnh trong nội dung mô tả
@@ -73,12 +79,14 @@ class PostController extends Controller
                     
                     if ($path) {
                         // Loại bỏ tất cả các tiền tố có thể có
-                        $path = preg_replace('/^.*storage\//', '', $path);
-                        $path = preg_replace('/^.*uploads\//', 'uploads/', $path);
+                        $path = preg_replace('/^.*image\//', 'image/', $path);
                         
-                        // Chỉ xóa nếu file nằm trong thư mục uploads
-                        if (strpos($path, 'uploads/') === 0) {
-                            Storage::disk('public')->delete($path);
+                        // Xóa cả ảnh trong thư mục posts và uploads
+                        if (strpos($path, 'image/posts/') === 0 || strpos($path, 'image/uploads/') === 0) {
+                            $fullPath = public_path($path);
+                            if (file_exists($fullPath)) {
+                                unlink($fullPath);
+                            }
                         }
                     }
                 }
@@ -98,12 +106,12 @@ class PostController extends Controller
             $file = $request->file('file');
             $filename = time() . '_' . $file->getClientOriginalName();
 
-            // Lưu file vào storage/app/public/uploads
-            $path = $file->storeAs('uploads', $filename, 'public');
+            // Lưu file vào thư mục public/image/uploads
+            $file->move(public_path('image/uploads'), $filename);
 
             // Trả về URL đầy đủ của ảnh
             return response()->json([
-                'location' => asset('storage/' . $path)
+                'location' => asset('image/uploads/' . $filename)
             ]);
         }
 
@@ -130,11 +138,10 @@ class PostController extends Controller
                 
                 if ($path) {
                     // Loại bỏ tất cả các tiền tố có thể có
-                    $path = preg_replace('/^.*storage\//', '', $path);
-                    $path = preg_replace('/^.*uploads\//', 'uploads/', $path);
+                    $path = preg_replace('/^.*image\//', 'image/', $path);
                     
                     // Tạo đường dẫn mới với định dạng chuẩn
-                    $newPath = asset('storage/' . $path);
+                    $newPath = asset($path);
                     
                     // Thay thế đường dẫn cũ bằng đường dẫn mới
                     $description = str_replace($imageUrl, $newPath, $description);
@@ -171,9 +178,13 @@ class PostController extends Controller
         if ($request->hasFile('images')) {
             foreach ($request->file('images') as $image) {
                 $filename = time() . '_' . $image->getClientOriginalName();
-                $path = $image->storeAs('posts', $filename, 'public');
+                
+                // Lưu ảnh vào thư mục public/image/posts
+                $image->move(public_path('image/posts'), $filename);
+                
+                // Lưu đường dẫn vào database
                 $post->images()->create([
-                    'image_path' => $path
+                    'image_path' => 'image/posts/' . $filename
                 ]);
             }
         }
@@ -194,8 +205,7 @@ class PostController extends Controller
                 $path = parse_url($oldImage, PHP_URL_PATH);
                 if ($path) {
                     // Loại bỏ tất cả các tiền tố có thể có
-                    $path = preg_replace('/^.*storage\//', '', $path);
-                    $path = preg_replace('/^.*uploads\//', 'uploads/', $path);
+                    $path = preg_replace('/^.*image\//', 'image/', $path);
                     $normalizedOldImages[] = $path;
                 }
             }
@@ -205,8 +215,7 @@ class PostController extends Controller
                 $path = parse_url($newImage, PHP_URL_PATH);
                 if ($path) {
                     // Loại bỏ tất cả các tiền tố có thể có
-                    $path = preg_replace('/^.*storage\//', '', $path);
-                    $path = preg_replace('/^.*uploads\//', 'uploads/', $path);
+                    $path = preg_replace('/^.*image\//', 'image/', $path);
                     $normalizedNewImages[] = $path;
                 }
             }
@@ -215,10 +224,13 @@ class PostController extends Controller
             foreach ($normalizedOldImages as $index => $normalizedOldImage) {
                 if (!in_array($normalizedOldImage, $normalizedNewImages)) {
                     // Chỉ xóa nếu file nằm trong thư mục uploads
-                    if (strpos($normalizedOldImage, 'uploads/') === 0) {
+                    if (strpos($normalizedOldImage, 'image/uploads/') === 0) {
                         // Log để debug
                         Log::info('Deleting unused image: ' . $normalizedOldImage);
-                        Storage::disk('public')->delete($normalizedOldImage);
+                        $fullPath = public_path($normalizedOldImage);
+                        if (file_exists($fullPath)) {
+                            unlink($fullPath);
+                        }
                     }
                 }
             }
@@ -232,8 +244,10 @@ class PostController extends Controller
     {
         $image = PostImage::findOrFail($id);
 
-        // Xóa file ảnh từ storage
-        Storage::disk('public')->delete($image->image_path);
+        // Xóa file ảnh từ thư mục public
+        if (file_exists(public_path($image->image_path))) {
+            unlink(public_path($image->image_path));
+        }
 
         // Xóa bản ghi ảnh
         $image->delete();

@@ -36,7 +36,7 @@ class PostFactory extends Factory
             $numberOfImages = rand(1, 5);
             for ($i = 0; $i < $numberOfImages; $i++) {
                 $post->images()->create([
-                    'image_path' => 'posts/' . 'anh1.jpg',
+                    'image_path' => '/image/posts/' . 'anh1.jpg',
                 ]);
             }
         });
