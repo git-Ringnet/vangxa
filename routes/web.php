@@ -20,7 +20,7 @@ Route::middleware(['auth'])->group(function () {
 
 
 Route::get('/detail', function () {
-    return view('pages/listings/home');
+    return view('pages/listings/detail');
 })->name('detail');
 Route::get('/detail-dining', function () {
     return view('pages/dining/detail-dining');
