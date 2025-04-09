@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layouts.main')
 @stack('scripts')
 
 @section('content')
@@ -119,7 +119,7 @@
             <button class="categories-nav-button next" id="nextButton">
                 <i class="fas fa-chevron-right"></i>
             </button>
-            
+
         </div>
         <button class="filter-button" id="filterButton">
                 <i class="fas fa-sliders"></i>
@@ -593,7 +593,7 @@
         </div>
     </section>
 </div>
-@endsection 
+@endsection
 
 @push('scripts')
 <script>
@@ -664,8 +664,8 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 function toggleFavorite(button) {
-    button.querySelector('i').style.color = 
+    button.querySelector('i').style.color =
         button.querySelector('i').style.color === 'red' ? 'white' : 'red';
 }
 </script>
-@endpush 
+@endpush
