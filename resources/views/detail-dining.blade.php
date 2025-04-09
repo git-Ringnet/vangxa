@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layouts.main')
 
 @section('content')
 <div class="container-custom detail-dining-page">
@@ -165,7 +165,7 @@
                             <button class="review-reply-btn"><i class="far fa-comment"></i> Phản hồi</button>
                         </div>
                     </div>
-                    
+
                     <div class="review-item">
                         <div class="review-header">
                             <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="User" class="reviewer-avatar">
@@ -192,12 +192,12 @@
                         </div>
                     </div>
                 </div>
-                
+
                 <div class="load-more-reviews">
                     <button class="load-more-button">Xem thêm đánh giá</button>
                 </div>
             </div>
-            
+
             <!-- Location Map -->
             <div class="location-section">
                 <h2>Vị trí</h2>
@@ -220,14 +220,14 @@
                     <span class="price">200,000₫ - 500,000₫</span>
                     <span class="price-per-person">/ người</span>
                 </div>
-                
+
                 <div class="reservation-form">
                     <!-- Date Picker -->
                     <div class="form-group">
                         <label><i class="far fa-calendar-alt"></i> Ngày</label>
                         <input type="date" class="form-control">
                     </div>
-                    
+
                     <!-- Time Picker -->
                     <div class="form-group">
                         <label><i class="far fa-clock"></i> Thời gian</label>
@@ -247,7 +247,7 @@
                             <option>21:00</option>
                         </select>
                     </div>
-                    
+
                     <!-- Guests Picker -->
                     <div class="form-group">
                         <label><i class="fas fa-user-friends"></i> Số người</label>
@@ -263,16 +263,16 @@
                             <option>Nhiều hơn 8 người</option>
                         </select>
                     </div>
-                    
+
                     <button class="reservation-button">Đặt bàn ngay</button>
                 </div>
-                
+
                 <div class="reservation-info">
                     <p><i class="fas fa-info-circle"></i> Miễn phí hủy trước 24 giờ</p>
                     <p><i class="fas fa-check-circle"></i> Xác nhận đặt chỗ tức thì</p>
                 </div>
             </div>
-            
+
             <!-- Similar Restaurants -->
             <div class="similar-restaurants">
                 <h3>Nhà hàng tương tự</h3>
@@ -335,7 +335,7 @@
                 }
             });
         });
-        
+
         // Reply button functionality
         const replyButtons = document.querySelectorAll('.review-reply-btn');
         replyButtons.forEach(button => {
@@ -344,7 +344,7 @@
                 alert('Tính năng đang được phát triển');
             });
         });
-        
+
         // Load more reviews
         const loadMoreButton = document.querySelector('.load-more-button');
         if (loadMoreButton) {
@@ -353,7 +353,7 @@
                 alert('Đang tải thêm đánh giá...');
             });
         }
-        
+
         // View all photos
         const viewAllPhotosBtn = document.querySelector('.view-all-photos');
         if (viewAllPhotosBtn) {
@@ -364,4 +364,4 @@
         }
     });
 </script>
-@endpush 
+@endpush

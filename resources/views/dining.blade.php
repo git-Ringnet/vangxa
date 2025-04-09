@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layouts.main')
 @stack('scripts')
 
 @section('content')
@@ -82,7 +82,7 @@
                     </div>
                     <span class="category-name">Fusion</span>
                 </div>
-               
+
             </div>
             <button class="categories-nav-button next" id="nextButton">
                 <i class="fas fa-chevron-right"></i>
@@ -443,7 +443,7 @@
                     </p>
                 </div>
             </a>
-          
+
         </div>
 
         <div class="load-more">
@@ -585,7 +585,7 @@
             // Set correct width for the carousel images container based on number of images
             images.style.width = `${imageCount * 100}%`;
 
-            // Thiết lập chiều rộng cho từng hình ảnh bên trong container        
+            // Thiết lập chiều rộng cho từng hình ảnh bên trong container
             Array.from(images.children).forEach(img => {
                 img.style.width = `${100 / imageCount}%`;
             });

@@ -18,8 +18,16 @@ Route::middleware(['auth'])->group(function () {
     Volt::route('settings/appearance', 'settings.appearance')->name('settings.appearance');
 });
 
+
 Route::get('/detail', function () {
     return view('detail');
 })->name('detail');
+Route::get('/detail-dining', function () {
+    return view('detail-dining');
+})->name('detail-dining');
+
+Route::get('/dining', function () {
+    return view('dining');
+})->name('dining');
 
 require __DIR__.'/auth.php';
