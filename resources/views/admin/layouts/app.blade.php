@@ -20,10 +20,12 @@
         <!-- Sidebar -->
         <nav id="sidebar" class="sidebar">
             <div class="sidebar-header">
-                <div class="d-flex align-items-center">
-                    <div class="w-50px"><img src="{{ asset('image/ship.png') }}" alt="" class="w-100"></div>
-                    <h3>Vangxa</h3>
-                </div>
+                <a href="{{ route('vangxa.index') }}" class="text-decoration-none">
+                    <div class="d-flex align-items-center">
+                        <div class="w-50px"><img src="{{ asset('image/ship.png') }}" alt="" class="w-100"></div>
+                        <h3 style="color: #3889fa;">Vangxa</h3>
+                    </div>
+                </a>
             </div>
 
             <ul class="list-unstyled components">
@@ -127,6 +129,7 @@
     <script src="https://cdn.tiny.cloud/1/{{ config('services.tinymce.api_key') }}/tinymce/6/tinymce.min.js"
         referrerpolicy="origin"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="{{ asset('admin/scripts.js') }}"></script>
     <script>
         $(document).ready(function() {
             // Khởi tạo TinyMCE
@@ -236,9 +239,6 @@
                         xhr.send(formData);
                     });
                 }
-            });
-            $('#sidebarCollapse').on('click', function() {
-                $('#sidebar').toggleClass('active');
             });
         });
     </script>

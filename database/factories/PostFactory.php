@@ -21,6 +21,7 @@ class PostFactory extends Factory
             'updated_at' => function (array $attributes) {
                 return $this->faker->dateTimeBetween($attributes['created_at'], 'now');
             },
+            'type' => $this->faker->randomElement([1, 2]),
         ];
     }
 
@@ -33,7 +34,7 @@ class PostFactory extends Factory
     {
         return $this->afterCreating(function (Post $post) {
             // Tạo 1-5 ảnh cho mỗi bài viết
-            $numberOfImages = rand(1, 5);
+            $numberOfImages = rand(5, 10);
             for ($i = 0; $i < $numberOfImages; $i++) {
                 $post->images()->create([
                     'image_path' => '/image/posts/' . 'anh1.jpg',

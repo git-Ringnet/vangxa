@@ -13,7 +13,7 @@
     </div>
 
     <!-- Content Row -->
-    <div class="row">
+        <div class="row">
         <!-- Total Posts Card -->
         <div class="col-xl-3 col-md-6 mb-4">
             <div class="card stats-card primary h-100 py-2">
@@ -23,19 +23,19 @@
                             <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
                                 Tổng số bài viết</div>
                             <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $totalPosts }}</div>
-                        </div>
+              </div>
                         <div class="col-auto">
                             <i class="fas fa-newspaper fa-2x text-gray-300"></i>
-                        </div>
-                    </div>
+            </div>
+                  </div>
                 </div>
             </div>
-        </div>
+                </div>
 
         <!-- Total Images Card -->
         <div class="col-xl-3 col-md-6 mb-4">
             <div class="card stats-card success h-100 py-2">
-                <div class="card-body">
+              <div class="card-body">
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-2">
                             <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
@@ -45,34 +45,34 @@
                         <div class="col-auto">
                             <i class="fas fa-images fa-2x text-gray-300"></i>
                         </div>
-                    </div>
+                        </div>
                 </div>
             </div>
-        </div>
+                </div>
 
         <!-- Recent Posts Card -->
         <div class="col-xl-3 col-md-6 mb-4">
             <div class="card stats-card info h-100 py-2">
-                <div class="card-body">
+              <div class="card-body">
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-2">
                             <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
                                 Bài viết gần đây</div>
                             <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $recentPosts }}</div>
-                        </div>
+                    </div>
                         <div class="col-auto">
                             <i class="fas fa-clock fa-2x text-gray-300"></i>
-                        </div>
                     </div>
-                </div>
+                    </div>
+              </div>
             </div>
-        </div>
-    </div>
+                </div>
+              </div>
 
     <!-- Content Row -->
-    <div class="row">
+                <div class="row">
         <!-- Recent Posts Table -->
-        <div class="col-xl-8 col-lg-7">
+        <div class="col-xl-12 col-lg-12">
             <div class="card shadow mb-4">
                 <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
                     <h6 class="m-0 font-weight-bold text-primary">Bài viết gần đây</h6>
@@ -104,7 +104,7 @@
                                             @method('DELETE')
                                             <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Bạn có chắc chắn muốn xóa bài viết này?')">
                                                 <i class="fas fa-trash"></i>
-                                            </button>
+                    </button>
                                         </form>
                                     </td>
                                 </tr>

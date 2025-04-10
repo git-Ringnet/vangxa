@@ -15,8 +15,10 @@ return new class extends Migration
             $table->id();
             $table->string('address');
             $table->string('title');
-            $table->text('description');
+            $table->longText('description');
             $table->integer('user_id');
+            $table->integer('status')->comment('1: đã đăng, 2: đã ẩn')->default(1);
+            $table->integer('type')->comment('1: du lịch, 2: ẩm thực')->default(1);
             $table->timestamps();
         });
     }
