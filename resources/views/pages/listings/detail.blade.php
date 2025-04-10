@@ -4,11 +4,11 @@
 <div class="detail-page">
     <div class="container-custom">
         <div class="detail-page__header">
-            <h1 class="detail-page__title">Căn hộ sang trọng tại trung tâm</h1>
-            <p class="detail-page__location">Quận 1, Hồ Chí Minh</p>
+            <h1 class="detail-page__title">{{ $post->title }}</h1>
+            <p class="detail-page__location">{{ $post->address }}</p>
             <div class="detail-page__rating">
                 <i class="fas fa-star"></i>
-                <span>4.92</span>
+                <span>4.92</span> <!-- Thêm cột rating nếu cần -->
             </div>
             <div class="detail-page__actions">
                 <button class="detail-page__action-button detail-page__action-button--share">
@@ -22,94 +22,20 @@
             </div>
         </div>
 
-        <!-- Rating Details Section -->
-        <!-- <div class="detail-page__rating-details">
-            <div class="rating-overview">
-                <div class="rating-laurel">
-                    <span class="rating-score">4,92</span>
-                </div>
-                <h2 class="rating-title">Được khách yêu thích</h2>
-                <p class="rating-subtitle">Nhà này được khách yêu thích dựa trên điểm xếp hạng, lượt đánh giá và độ tin cậy</p>
-            </div>
 
-            <div class="rating-criteria">
-                <div class="rating-row">
-                    <span class="criteria-label">Xếp hạng tổng thể</span>
-                    <div class="rating-bar-container">
-                        <div class="rating-bar" style="width: 100%"></div>
-                    </div>
-                    <span class="criteria-score">5</span>
-                </div>
-                <div class="rating-row">
-                    <span class="criteria-label">Mức độ sạch sẽ</span>
-                    <div class="rating-bar-container">
-                        <div class="rating-bar" style="width: 100%"></div>
-                    </div>
-                    <span class="criteria-score">5.0</span>
-                </div>
-                <div class="rating-row">
-                    <span class="criteria-label">Độ chính xác</span>
-                    <div class="rating-bar-container">
-                        <div class="rating-bar" style="width: 100%"></div>
-                    </div>
-                    <span class="criteria-score">5.0</span>
-                </div>
-                <div class="rating-row">
-                    <span class="criteria-label">Nhận phòng</span>
-                    <div class="rating-bar-container">
-                        <div class="rating-bar" style="width: 98%"></div>
-                    </div>
-                    <span class="criteria-score">4.9</span>
-                </div>
-                <div class="rating-row">
-                    <span class="criteria-label">Giao tiếp</span>
-                    <div class="rating-bar-container">
-                        <div class="rating-bar" style="width: 100%"></div>
-                    </div>
-                    <span class="criteria-score">5.0</span>
-                </div>
-                <div class="rating-row">
-                    <span class="criteria-label">Vị trí</span>
-                    <div class="rating-bar-container">
-                        <div class="rating-bar" style="width: 96%"></div>
-                    </div>
-                    <span class="criteria-score">4.8</span>
-                </div>
-                <div class="rating-row">
-                    <span class="criteria-label">Giá trị</span>
-                    <div class="rating-bar-container">
-                        <div class="rating-bar" style="width: 98%"></div>
-                    </div>
-                    <span class="criteria-score">4.9</span>
-                </div>
-            </div>
-        </div> -->
 
         <div class="detail-page__gallery">
             <div class="detail-page__main-image" onclick="openPreview(0)">
-                <img src="https://cf.bstatic.com/xdata/images/hotel/max1024x768/134475469.jpg?k=986e0385365fa9e17ef6497e2fb7d5e16552358ad343c4ad8fc35b29802eacac&o=&hp=1" alt="Căn hộ sang trọng">
+                <img src="{{ $post->images->isNotEmpty() ? asset($post->images->first()->image_path) : asset('default-image.jpg') }}" alt="{{ $post->title }}">
                 <div class="image-overlay">Xem tất cả ảnh</div>
             </div>
-            <div class="detail-page__gallery-item" onclick="openPreview(1)">
-                <img src="https://plus.unsplash.com/premium_photo-1682377521753-58d1fd9fa5ce?fm=jpg&q=60&w=3000&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NXx8bHV4dXJ5JTIwdmlsbGF8ZW58MHx8MHx8fDA%3D" alt="Phòng khách">
-                <div class="image-number">1/5</div>
+            @foreach ($post->images->skip(1)->take(4) as $index => $image)
+            <div class="detail-page__gallery-item" onclick="openPreview({{ $index + 1 }})">
+                <img src="{{ asset($image->image_path) }}" class="img-fluid rounded" alt="Post image">
+                <div class="image-number">{{ $index + 1 }}/{{ $post->images->count() }}</div>
                 <i class="fas fa-search-plus zoom-icon"></i>
             </div>
-            <div class="detail-page__gallery-item" onclick="openPreview(2)">
-                <img src="https://plus.unsplash.com/premium_photo-1682377521753-58d1fd9fa5ce?fm=jpg&q=60&w=3000&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NXx8bHV4dXJ5JTIwdmlsbGF8ZW58MHx8MHx8fDA%3D" alt="Phòng ngủ">
-                <div class="image-number">2/5</div>
-                <i class="fas fa-search-plus zoom-icon"></i>
-            </div>
-            <div class="detail-page__gallery-item" onclick="openPreview(3)">
-                <img src="https://plus.unsplash.com/premium_photo-1682377521753-58d1fd9fa5ce?fm=jpg&q=60&w=3000&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NXx8bHV4dXJ5JTIwdmlsbGF8ZW58MHx8MHx8fDA%3D" alt="Nhà bếp">
-                <div class="image-number">3/5</div>
-                <i class="fas fa-search-plus zoom-icon"></i>
-            </div>
-            <div class="detail-page__gallery-item" onclick="openPreview(4)">
-                <img src="https://plus.unsplash.com/premium_photo-1682377521753-58d1fd9fa5ce?fm=jpg&q=60&w=3000&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NXx8bHV4dXJ5JTIwdmlsbGF8ZW58MHx8MHx8fDA%3D" alt="Phòng tắm">
-                <div class="image-number">4/5</div>
-                <i class="fas fa-search-plus zoom-icon"></i>
-            </div>
+            @endforeach
         </div>
 
         <!-- Image Preview Modal -->
@@ -121,16 +47,15 @@
                 <i class="fas fa-chevron-right nav-preview next" onclick="nextImage()"></i>
             </div>
         </div>
-
         <div class="detail-page__content">
             <div class="detail-page__info">
                 <div class="detail-page__host">
                     <div class="detail-page__host-avatar">
-                        <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="Chủ nhà">
+                        <img src="{{ $post->user->avatar ?? 'https://randomuser.me/api/portraits/men/32.jpg' }}" alt="Chủ nhà">
                     </div>
                     <div class="detail-page__host-info">
-                        <h3>Chủ nhà: Nguyễn Văn A</h3>
-                        <p>Đã tham gia từ tháng 1, 2020</p>
+                        <h3>Chủ nhà: {{ $post->user->name }}</h3>
+                        <p>Đã tham gia từ {{ $post->user->created_at->format('F, Y') }}</p>
                     </div>
                 </div>
 
@@ -356,12 +281,10 @@
 </div>
 
 <script>
-    const images = [
-        'https://cf.bstatic.com/xdata/images/hotel/max1024x768/134475469.jpg?k=986e0385365fa9e17ef6497e2fb7d5e16552358ad343c4ad8fc35b29802eacac&o=&hp=1',
-        'https://plus.unsplash.com/premium_photo-1682377521753-58d1fd9fa5ce?fm=jpg&q=60&w=3000&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NXx8bHV4dXJ5JTIwdmlsbGF8ZW58MHx8MHx8fDA%3D',
-        'https://plus.unsplash.com/premium_photo-1682377521753-58d1fd9fa5ce?fm=jpg&q=60&w=3000&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NXx8bHV4dXJ5JTIwdmlsbGF8ZW58MHx8MHx8fDA%3D',
-        'https://plus.unsplash.com/premium_photo-1682377521753-58d1fd9fa5ce?fm=jpg&q=60&w=3000&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NXx8bHV4dXJ5JTIwdmlsbGF8ZW58MHx8MHx8fDA%3D',
-        'https://plus.unsplash.com/premium_photo-1682377521753-58d1fd9fa5ce?fm=jpg&q=60&w=3000&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NXx8bHV4dXJ5JTIwdmlsbGF8ZW58MHx8MHx8fDA%3D'
+   const images = [
+        @foreach ($post->images as $image)
+            "{{ asset($image->image_path) }}",
+        @endforeach
     ];
 
     let currentImageIndex = 0;
@@ -471,307 +394,5 @@
 @endsection
 
 @push('styles')
-<!-- <style>
-    /* Listing Header */
-    .listing-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 24px;
-    }
 
-    .listing-title {
-        font-size: 26px;
-        font-weight: 600;
-        margin: 0;
-    }
-
-    .listing-actions {
-        display: flex;
-        gap: 16px;
-    }
-
-.share-button, .save-button {
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        padding: 8px 16px;
-        border: 1px solid #ddd;
-        border-radius: 8px;
-        background: white;
-        cursor: pointer;
-        transition: all 0.3s ease;
-    }
-
-.share-button:hover, .save-button:hover {
-        background: #f7f7f7;
-    }
-
-    /* Image Gallery */
-    .image-gallery {
-        display: grid;
-        grid-template-columns: 2fr 1fr;
-        gap: 8px;
-        margin-bottom: 32px;
-    }
-
-    .main-image {
-        aspect-ratio: 16/9;
-        overflow: hidden;
-        border-radius: 12px;
-    }
-
-    .main-image img {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-    }
-
-    .thumbnail-grid {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 8px;
-    }
-
-    .thumbnail {
-        aspect-ratio: 1;
-        overflow: hidden;
-        border-radius: 12px;
-    }
-
-    .thumbnail img {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-    }
-
-    /* Listing Content */
-    .listing-content {
-        display: grid;
-        grid-template-columns: 2fr 1fr;
-        gap: 32px;
-    }
-
-    .listing-details {
-        display: flex;
-        flex-direction: column;
-        gap: 32px;
-    }
-
-    /* Host Info */
-    .listing-host {
-        display: flex;
-        align-items: center;
-        gap: 16px;
-        padding-bottom: 24px;
-        border-bottom: 1px solid #ddd;
-    }
-
-    .host-avatar {
-        width: 64px;
-        height: 64px;
-        border-radius: 50%;
-        object-fit: cover;
-    }
-
-    .host-info h3 {
-        margin: 0;
-        font-size: 18px;
-    }
-
-    .host-info p {
-        margin: 4px 0 0;
-        color: #666;
-    }
-
-    /* Features */
-    .listing-features {
-        display: flex;
-        gap: 24px;
-        padding-bottom: 24px;
-        border-bottom: 1px solid #ddd;
-    }
-
-    .feature {
-        display: flex;
-        align-items: center;
-        gap: 8px;
-    }
-
-    .feature i {
-        font-size: 20px;
-    }
-
-    /* Description */
-    .listing-description {
-        padding-bottom: 24px;
-        border-bottom: 1px solid #ddd;
-    }
-
-    /* Booking Form */
-    .booking-form {
-        position: sticky;
-        top: 20px;
-        border: 1px solid #ddd;
-        border-radius: 12px;
-        padding: 24px;
-    }
-
-    .price-info {
-        margin-bottom: 24px;
-    }
-
-    .price {
-        font-size: 22px;
-        font-weight: 600;
-    }
-
-    .period {
-        color: #666;
-    }
-
-    .date-picker {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 16px;
-        margin-bottom: 16px;
-    }
-
-    .check-in,
-    .check-out {
-        display: flex;
-        flex-direction: column;
-        gap: 8px;
-    }
-
-    input[type="date"],
-    select {
-        padding: 12px;
-        border: 1px solid #ddd;
-        border-radius: 8px;
-        width: 100%;
-    }
-
-    .guests-selector {
-        display: flex;
-        flex-direction: column;
-        gap: 8px;
-        margin-bottom: 24px;
-    }
-
-    .book-button {
-        width: 100%;
-        padding: 16px;
-        background: var(--primary-color);
-        color: white;
-        border: none;
-        border-radius: 8px;
-        font-size: 16px;
-        font-weight: 600;
-        cursor: pointer;
-        transition: background-color 0.3s ease;
-    }
-
-    .book-button:hover {
-        background-color: #e31c5f;
-    }
-
-    .price-breakdown {
-        text-align: center;
-        margin-top: 16px;
-        color: #666;
-    }
-
-    /* Amenities */
-    .amenities-section {
-        margin-top: 48px;
-    }
-
-    .amenities-section h2 {
-        margin-bottom: 24px;
-    }
-
-    .amenities-grid {
-        display: grid;
-        grid-template-columns: repeat(3, 1fr);
-        gap: 24px;
-    }
-
-    .amenity {
-        display: flex;
-        align-items: center;
-        gap: 12px;
-    }
-
-    .amenity i {
-        font-size: 20px;
-    }
-
-    /* Reviews */
-    .reviews-section {
-        margin-top: 48px;
-    }
-
-    .reviews-section h2 {
-        margin-bottom: 24px;
-    }
-
-    .review-summary {
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        margin-bottom: 32px;
-    }
-
-    .rating {
-        display: flex;
-        align-items: center;
-        gap: 4px;
-    }
-
-    .rating i {
-        color: #ff385c;
-    }
-
-    .reviews-grid {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 32px;
-    }
-
-    .review {
-        padding: 24px;
-        border: 1px solid #ddd;
-        border-radius: 12px;
-    }
-
-    .reviewer {
-        display: flex;
-        align-items: center;
-        gap: 12px;
-        margin-bottom: 16px;
-    }
-
-    .reviewer img {
-        width: 48px;
-        height: 48px;
-        border-radius: 50%;
-        object-fit: cover;
-    }
-
-    .reviewer-info h4 {
-        margin: 0;
-        font-size: 16px;
-    }
-
-    .reviewer-info p {
-        margin: 4px 0 0;
-        color: #666;
-    }
-
-    .review-text {
-        margin: 0;
-        line-height: 1.5;
-    }
-</style> -->
 @endpush
