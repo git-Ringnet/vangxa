@@ -164,335 +164,12 @@
     <!-- Listings -->
     <section class="listings-section">
         <div class="listings-grid">
-            <a href="{{ route('detail') }}" class="listing-card">
-                <div class="listing-image-container">
-                    <div class="image-carousel">
-                        <div class="carousel-images">
-                            <img src="https://cf.bstatic.com/xdata/images/hotel/max1024x768/134475469.jpg?k=986e0385365fa9e17ef6497e2fb7d5e16552358ad343c4ad8fc35b29802eacac&o=&hp=1" alt="Căn hộ sang trọng tại trung tâm" class="listing-image">
-                            <img src="https://cf.bstatic.com/xdata/images/hotel/max1024x768/134475469.jpg?k=986e0385365fa9e17ef6497e2fb7d5e16552358ad343c4ad8fc35b29802eacac&o=&hp=1" alt="Căn hộ sang trọng tại trung tâm" class="listing-image">
-                            <img src="https://cf.bstatic.com/xdata/images/hotel/max1024x768/134475469.jpg?k=986e0385365fa9e17ef6497e2fb7d5e16552358ad343c4ad8fc35b29802eacac&o=&hp=1" alt="Căn hộ sang trọng tại trung tâm" class="listing-image">
-                        </div>
-                        <button class="carousel-nav prev" onclick="event.preventDefault(); prevImage(this);">
-                            <i class="fas fa-chevron-left"></i>
-                        </button>
-                        <button class="carousel-nav next" onclick="event.preventDefault(); nextImage(this);">
-                            <i class="fas fa-chevron-right"></i>
-                        </button>
-                        <div class="carousel-dots">
-                            <span class="dot active"></span>
-                            <span class="dot"></span>
-                            <span class="dot"></span>
-                        </div>
-                    </div>
-                    <button class="favorite-button" onclick="event.preventDefault(); toggleFavorite(this);">
-                        <i class="fas fa-heart"></i>
-                    </button>
-                </div>
-                <div class="listing-content">
-                    <div class="listing-header">
-                        <h3 class="listing-title">Căn hộ sang trọng tại trung tâm</h3>
-                        <div class="listing-rating">
-                            <i class="fas fa-star"></i>
-                            <span>4.96</span>
-                        </div>
-                    </div>
-                    <p class="listing-location">Quận 1, Hồ Chí Minh</p>
-                    <p class="listing-dates">22-27 tháng 5</p>
-                    <p class="listing-price">
-                        <span class="price-amount">2,000,000₫</span>
-                        <span class="price-period">đêm</span>
-                    </p>
-                </div>
-            </a>
-
-            <a href="{{ route('detail') }}" class="listing-card">
-                <div class="listing-image-container">
-                    <div class="image-carousel">
-                        <div class="carousel-images">
-                            <img src="https://cf.bstatic.com/xdata/images/hotel/max1024x768/134475469.jpg?k=986e0385365fa9e17ef6497e2fb7d5e16552358ad343c4ad8fc35b29802eacac&o=&hp=1" alt="Biệt thự ven biển" class="listing-image">
-                            <img src="https://plus.unsplash.com/premium_photo-1682377521753-58d1fd9fa5ce?fm=jpg&q=60&w=3000&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NXx8bHV4dXJ5JTIwdmlsbGF8ZW58MHx8MHx8fDA%3D" alt="Biệt thự ven biển" class="listing-image">
-                            <img src="https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1980&q=80" alt="Biệt thự ven biển" class="listing-image">
-                        </div>
-                        <button class="carousel-nav prev" onclick="event.preventDefault(); prevImage(this);">
-                            <i class="fas fa-chevron-left"></i>
-                        </button>
-                        <button class="carousel-nav next" onclick="event.preventDefault(); nextImage(this);">
-                            <i class="fas fa-chevron-right"></i>
-                        </button>
-                        <div class="carousel-dots">
-                            <span class="dot active"></span>
-                            <span class="dot"></span>
-                            <span class="dot"></span>
-                        </div>
-                    </div>
-                    <button class="favorite-button" onclick="event.preventDefault(); toggleFavorite(this);">
-                        <i class="fas fa-heart"></i>
-                    </button>
-                </div>
-                <div class="listing-content">
-                    <div class="listing-header">
-                        <h3 class="listing-title">Biệt thự ven biển</h3>
-                        <div class="listing-rating">
-                            <i class="fas fa-star"></i>
-                            <span>4.89</span>
-                        </div>
-                    </div>
-                    <p class="listing-location">Nha Trang, Khánh Hòa</p>
-                    <p class="listing-dates">1-7 tháng 6</p>
-                    <p class="listing-price">
-                        <span class="price-amount">3,500,000₫</span>
-                        <span class="price-period">đêm</span>
-                    </p>
-                </div>
-            </a>
-
-            <a href="{{ route('detail') }}" class="listing-card">
-                <div class="listing-image-container">
-                    <div class="image-carousel">
-                        <div class="carousel-images">
-                            <img src="https://cf.bstatic.com/xdata/images/hotel/max1024x768/134475469.jpg?k=986e0385365fa9e17ef6497e2fb7d5e16552358ad343c4ad8fc35b29802eacac&o=&hp=1" alt="Căn hộ sang trọng tại trung tâm" class="listing-image">
-                            <img src="https://plus.unsplash.com/premium_photo-1682377521753-58d1fd9fa5ce?fm=jpg&q=60&w=3000&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NXx8bHV4dXJ5JTIwdmlsbGF8ZW58MHx8MHx8fDA%3D" alt="Căn hộ sang trọng tại trung tâm" class="listing-image">
-                            <img src="https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1980&q=80" alt="Căn hộ sang trọng tại trung tâm" class="listing-image">
-                        </div>
-                        <button class="carousel-nav prev" onclick="event.preventDefault(); prevImage(this);">
-                            <i class="fas fa-chevron-left"></i>
-                        </button>
-                        <button class="carousel-nav next" onclick="event.preventDefault(); nextImage(this);">
-                            <i class="fas fa-chevron-right"></i>
-                        </button>
-                        <div class="carousel-dots">
-                            <span class="dot active"></span>
-                            <span class="dot"></span>
-                            <span class="dot"></span>
-                        </div>
-                    </div>
-                    <button class="favorite-button" onclick="event.preventDefault(); toggleFavorite(this);">
-                        <i class="fas fa-heart"></i>
-                    </button>
-                </div>
-                <div class="listing-content">
-                    <div class="listing-header">
-                        <h3 class="listing-title">Căn hộ sang trọng tại trung tâm</h3>
-                        <div class="listing-rating">
-                            <i class="fas fa-star"></i>
-                            <span>4.96</span>
-                        </div>
-                    </div>
-                    <p class="listing-location">Quận 1, Hồ Chí Minh</p>
-                    <p class="listing-dates">22-27 tháng 5</p>
-                    <p class="listing-price">
-                        <span class="price-amount">2,000,000₫</span>
-                        <span class="price-period">đêm</span>
-                    </p>
-                </div>
-            </a>
-
-            <a href="{{ route('detail') }}" class="listing-card">
-                <div class="listing-image-container">
-                    <div class="image-carousel">
-                        <div class="carousel-images">
-                            <img src="https://cf.bstatic.com/xdata/images/hotel/max1024x768/134475469.jpg?k=986e0385365fa9e17ef6497e2fb7d5e16552358ad343c4ad8fc35b29802eacac&o=&hp=1" alt="Biệt thự ven biển" class="listing-image">
-                            <img src="https://plus.unsplash.com/premium_photo-1682377521753-58d1fd9fa5ce?fm=jpg&q=60&w=3000&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NXx8bHV4dXJ5JTIwdmlsbGF8ZW58MHx8MHx8fDA%3D" alt="Biệt thự ven biển" class="listing-image">
-                            <img src="https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1980&q=80" alt="Biệt thự ven biển" class="listing-image">
-                        </div>
-                        <button class="carousel-nav prev" onclick="event.preventDefault(); prevImage(this);">
-                            <i class="fas fa-chevron-left"></i>
-                        </button>
-                        <button class="carousel-nav next" onclick="event.preventDefault(); nextImage(this);">
-                            <i class="fas fa-chevron-right"></i>
-                        </button>
-                        <div class="carousel-dots">
-                            <span class="dot active"></span>
-                            <span class="dot"></span>
-                            <span class="dot"></span>
-                        </div>
-                    </div>
-                    <button class="favorite-button" onclick="event.preventDefault(); toggleFavorite(this);">
-                        <i class="fas fa-heart"></i>
-                    </button>
-                </div>
-                <div class="listing-content">
-                    <div class="listing-header">
-                        <h3 class="listing-title">Biệt thự ven biển</h3>
-                        <div class="listing-rating">
-                            <i class="fas fa-star"></i>
-                            <span>4.89</span>
-                        </div>
-                    </div>
-                    <p class="listing-location">Nha Trang, Khánh Hòa</p>
-                    <p class="listing-dates">1-7 tháng 6</p>
-                    <p class="listing-price">
-                        <span class="price-amount">3,500,000₫</span>
-                        <span class="price-period">đêm</span>
-                    </p>
-                </div>
-            </a>
-            <a href="{{ route('detail') }}" class="listing-card">
-                <div class="listing-image-container">
-                    <div class="image-carousel">
-                        <div class="carousel-images">
-                            <img src="https://cf.bstatic.com/xdata/images/hotel/max1024x768/134475469.jpg?k=986e0385365fa9e17ef6497e2fb7d5e16552358ad343c4ad8fc35b29802eacac&o=&hp=1" alt="Căn hộ sang trọng tại trung tâm" class="listing-image">
-                            <img src="https://media-cdn.tripadvisor.com/media/photo-s/16/1a/ea/54/hotel-presidente-4s.jpg" alt="Căn hộ sang trọng tại trung tâm" class="listing-image">
-                            <img src="https://cf.bstatic.com/xdata/images/hotel/max1024x768/184305239.jpg?k=2d22fe63ae1f8960e057238c98fb436f7bd9f65854e3a5e918607c5cfa1d0a52&o=&hp=1" alt="Căn hộ sang trọng tại trung tâm" class="listing-image">
-                        </div>
-                        <button class="carousel-nav prev" onclick="event.preventDefault(); prevImage(this);">
-                            <i class="fas fa-chevron-left"></i>
-                        </button>
-                        <button class="carousel-nav next" onclick="event.preventDefault(); nextImage(this);">
-                            <i class="fas fa-chevron-right"></i>
-                        </button>
-                        <div class="carousel-dots">
-                            <span class="dot active"></span>
-                            <span class="dot"></span>
-                            <span class="dot"></span>
-                        </div>
-                    </div>
-                    <button class="favorite-button" onclick="event.preventDefault(); toggleFavorite(this);">
-                        <i class="fas fa-heart"></i>
-                    </button>
-                </div>
-                <div class="listing-content">
-                    <div class="listing-header">
-                        <h3 class="listing-title">Căn hộ sang trọng tại trung tâm</h3>
-                        <div class="listing-rating">
-                            <i class="fas fa-star"></i>
-                            <span>4.96</span>
-                        </div>
-                    </div>
-                    <p class="listing-location">Quận 1, Hồ Chí Minh</p>
-                    <p class="listing-dates">22-27 tháng 5</p>
-                    <p class="listing-price">
-                        <span class="price-amount">2,000,000₫</span>
-                        <span class="price-period">đêm</span>
-                    </p>
-                </div>
-            </a>
-            <a href="{{ route('detail') }}" class="listing-card">
-                <div class="listing-image-container">
-                    <div class="image-carousel">
-                        <div class="carousel-images">
-                            <img src="https://cf.bstatic.com/xdata/images/hotel/max1024x768/134475469.jpg?k=986e0385365fa9e17ef6497e2fb7d5e16552358ad343c4ad8fc35b29802eacac&o=&hp=1" alt="Biệt thự ven biển" class="listing-image">
-                            <img src="https://plus.unsplash.com/premium_photo-1682377521753-58d1fd9fa5ce?fm=jpg&q=60&w=3000&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NXx8bHV4dXJ5JTIwdmlsbGF8ZW58MHx8MHx8fDA%3D" alt="Biệt thự ven biển" class="listing-image">
-                            <img src="https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1980&q=80" alt="Biệt thự ven biển" class="listing-image">
-                        </div>
-                        <button class="carousel-nav prev" onclick="event.preventDefault(); prevImage(this);">
-                            <i class="fas fa-chevron-left"></i>
-                        </button>
-                        <button class="carousel-nav next" onclick="event.preventDefault(); nextImage(this);">
-                            <i class="fas fa-chevron-right"></i>
-                        </button>
-                        <div class="carousel-dots">
-                            <span class="dot active"></span>
-                            <span class="dot"></span>
-                            <span class="dot"></span>
-                        </div>
-                    </div>
-                    <button class="favorite-button" onclick="event.preventDefault(); toggleFavorite(this);">
-                        <i class="fas fa-heart"></i>
-                    </button>
-                </div>
-                <div class="listing-content">
-                    <div class="listing-header">
-                        <h3 class="listing-title">Biệt thự ven biển</h3>
-                        <div class="listing-rating">
-                            <i class="fas fa-star"></i>
-                            <span>4.89</span>
-                        </div>
-                    </div>
-                    <p class="listing-location">Nha Trang, Khánh Hòa</p>
-                    <p class="listing-dates">1-7 tháng 6</p>
-                    <p class="listing-price">
-                        <span class="price-amount">3,500,000₫</span>
-                        <span class="price-period">đêm</span>
-                    </p>
-                </div>
-            </a>
-            <a href="{{ route('detail') }}" class="listing-card">
-                <div class="listing-image-container">
-                    <div class="image-carousel">
-                        <div class="carousel-images">
-                            <img src="https://cf.bstatic.com/xdata/images/hotel/max1024x768/134475469.jpg?k=986e0385365fa9e17ef6497e2fb7d5e16552358ad343c4ad8fc35b29802eacac&o=&hp=1" alt="Căn hộ sang trọng tại trung tâm" class="listing-image">
-                            <img src="https://plus.unsplash.com/premium_photo-1682377521753-58d1fd9fa5ce?fm=jpg&q=60&w=3000&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NXx8bHV4dXJ5JTIwdmlsbGF8ZW58MHx8MHx8fDA%3D" alt="Căn hộ sang trọng tại trung tâm" class="listing-image">
-                            <img src="https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1980&q=80" alt="Căn hộ sang trọng tại trung tâm" class="listing-image">
-                        </div>
-                        <button class="carousel-nav prev" onclick="event.preventDefault(); prevImage(this);">
-                            <i class="fas fa-chevron-left"></i>
-                        </button>
-                        <button class="carousel-nav next" onclick="event.preventDefault(); nextImage(this);">
-                            <i class="fas fa-chevron-right"></i>
-                        </button>
-                        <div class="carousel-dots">
-                            <span class="dot active"></span>
-                            <span class="dot"></span>
-                            <span class="dot"></span>
-                        </div>
-                    </div>
-                    <button class="favorite-button" onclick="event.preventDefault(); toggleFavorite(this);">
-                        <i class="fas fa-heart"></i>
-                    </button>
-                </div>
-                <div class="listing-content">
-                    <div class="listing-header">
-                        <h3 class="listing-title">Căn hộ sang trọng tại trung tâm</h3>
-                        <div class="listing-rating">
-                            <i class="fas fa-star"></i>
-                            <span>4.96</span>
-                        </div>
-                    </div>
-                    <p class="listing-location">Quận 1, Hồ Chí Minh</p>
-                    <p class="listing-dates">22-27 tháng 5</p>
-                    <p class="listing-price">
-                        <span class="price-amount">2,000,000₫</span>
-                        <span class="price-period">đêm</span>
-                    </p>
-                </div>
-            </a>
-
-            <a href="{{ route('detail') }}" class="listing-card">
-                <div class="listing-image-container">
-                    <div class="image-carousel">
-                        <div class="carousel-images">
-                            <img src="https://cf.bstatic.com/xdata/images/hotel/max1024x768/134475469.jpg?k=986e0385365fa9e17ef6497e2fb7d5e16552358ad343c4ad8fc35b29802eacac&o=&hp=1" alt="Biệt thự ven biển" class="listing-image">
-                            <img src="https://plus.unsplash.com/premium_photo-1682377521753-58d1fd9fa5ce?fm=jpg&q=60&w=3000&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NXx8bHV4dXJ5JTIwdmlsbGF8ZW58MHx8MHx8fDA%3D" alt="Biệt thự ven biển" class="listing-image">
-                            <img src="https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1980&q=80" alt="Biệt thự ven biển" class="listing-image">
-                        </div>
-                        <button class="carousel-nav prev" onclick="event.preventDefault(); prevImage(this);">
-                            <i class="fas fa-chevron-left"></i>
-                        </button>
-                        <button class="carousel-nav next" onclick="event.preventDefault(); nextImage(this);">
-                            <i class="fas fa-chevron-right"></i>
-                        </button>
-                        <div class="carousel-dots">
-                            <span class="dot active"></span>
-                            <span class="dot"></span>
-                            <span class="dot"></span>
-                        </div>
-                    </div>
-                    <button class="favorite-button" onclick="event.preventDefault(); toggleFavorite(this);">
-                        <i class="fas fa-heart"></i>
-                    </button>
-                </div>
-                <div class="listing-content">
-                    <div class="listing-header">
-                        <h3 class="listing-title">Biệt thự ven biển</h3>
-                        <div class="listing-rating">
-                            <i class="fas fa-star"></i>
-                            <span>4.89</span>
-                        </div>
-                    </div>
-                    <p class="listing-location">Nha Trang, Khánh Hòa</p>
-                    <p class="listing-dates">1-7 tháng 6</p>
-                    <p class="listing-price">
-                        <span class="price-amount">3,500,000₫</span>
-                        <span class="price-period">đêm</span>
-                    </p>
-                </div>
-            </a>
+            @include('pages.listings.posts', ['posts' => $posts])
         </div>
 
         <div class="load-more">
             <h4>Tiếp tục khám phá danh mục phòng</h4>
-            <button class="load-more-button">
+            <button class="load-more-button" id="loadMoreButton">
                 Hiển thị thêm
             </button>
         </div>
@@ -502,6 +179,7 @@
 
 @push('scripts')
 <script>
+ 
     document.addEventListener('DOMContentLoaded', function() {
         const container = document.getElementById('categoriesContainer');
         const prevButton = document.getElementById('prevButton');
@@ -656,5 +334,53 @@
             });
         });
     }
+    document.addEventListener('DOMContentLoaded', function () {
+        const loadMoreButton = document.getElementById('loadMoreButton');
+        const listingsGrid = document.querySelector('.listings-grid');
+        let offset = 18;
+        let isLoading = false;
+
+        loadMoreButton.addEventListener('click', function () {
+            if (isLoading) return;
+            
+            isLoading = true;
+            this.classList.add('loading');
+            
+            fetch(`/load-more?offset=${offset}`, {
+                method: 'GET',
+                headers: {
+                    'Accept': 'application/json',
+                }
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data.html) {
+                    listingsGrid.insertAdjacentHTML('beforeend', data.html);
+                }
+                
+                if (!data.hasMore) {
+                    loadMoreButton.style.display = 'none';
+                }
+                
+                offset += 18;
+                isLoading = false;
+                loadMoreButton.classList.remove('loading');
+                
+                // Reinitialize carousels for new posts
+                initializeCarousels();
+            })
+            .catch(error => {
+                console.error('Error loading more posts:', error);
+                isLoading = false;
+                loadMoreButton.classList.remove('loading');
+            });
+        });
+    });
+   
 </script>
 @endpush
