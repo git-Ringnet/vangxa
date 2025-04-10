@@ -21,6 +21,7 @@ class PostFactory extends Factory
             'updated_at' => function (array $attributes) {
                 return $this->faker->dateTimeBetween($attributes['created_at'], 'now');
             },
+            'type' => $this->faker->randomElement([1, 2]),
         ];
     }
 
