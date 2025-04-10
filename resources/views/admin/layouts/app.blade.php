@@ -20,10 +20,12 @@
         <!-- Sidebar -->
         <nav id="sidebar" class="sidebar">
             <div class="sidebar-header">
-                <div class="d-flex align-items-center">
-                    <div class="w-50px"><img src="{{ asset('image/ship.png') }}" alt="" class="w-100"></div>
-                    <h3>Vangxa</h3>
-                </div>
+                <a href="{{ route('vangxa.index') }}" class="text-decoration-none">
+                    <div class="d-flex align-items-center">
+                        <div class="w-50px"><img src="{{ asset('image/ship.png') }}" alt="" class="w-100"></div>
+                        <h3 style="color: #3889fa;">Vangxa</h3>
+                    </div>
+                </a>
             </div>
 
             <ul class="list-unstyled components">

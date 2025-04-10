@@ -1,11 +1,11 @@
 @extends('admin.layouts.app')
 
-@section('title', 'Sửa bài viết')
+@section('title', 'Chỉnh sửa bài viết')
 
 @section('content')
     <div class="container-fluid">
         <div class="d-flex justify-content-between align-items-center mb-4">
-            <h1 class="h3 mb-0 text-gray-800">Sửa bài viết</h1>
+            <h1 class="h3 mb-0 text-gray-800">Chỉnh sửa bài viết</h1>
             <a href="{{ route('posts.index') }}" class="btn btn-secondary">
                 <i class="fas fa-arrow-left"></i> Quay lại
             </a>
@@ -23,20 +23,12 @@
 
         <div class="card shadow mb-4">
             <div class="card-body">
-                <form action="{{ route('posts.update', $post->id) }}" method="POST" enctype="multipart/form-data">
+                <form action="{{ route('posts.update', $post) }}" method="POST" enctype="multipart/form-data">
                     @csrf
                     @method('PUT')
 
                     <div class="mb-4">
-                        <label for="title" class="form-label">Loại bài viết</label>
-                        <select name="type" class="form-control">
-                            <option value="1" {{ $post->type == 1 ? 'selected' : '' }}>Du lịch</option>
-                            <option value="2" {{ $post->type == 2 ? 'selected' : '' }}>Ẩm thực</option>
-                        </select>
-                    </div>
-
-                    <div class="mb-4">
-                        <label for="title" class="form-label">Tiêu đề bài viết</label>
+                        <label for="title" class="form-label">Tiêu đề</label>
                         <input type="text" class="form-control @error('title') is-invalid @enderror" id="title"
                             name="title" value="{{ old('title', $post->title) }}" required>
                         @error('title')
@@ -49,6 +41,17 @@
                         <input type="text" class="form-control @error('address') is-invalid @enderror" id="address"
                             name="address" value="{{ old('address', $post->address) }}" required>
                         @error('address')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="type" class="form-label">Loại bài viết</label>
+                        <select class="form-select @error('type') is-invalid @enderror" id="type" name="type" required>
+                            <option value="1" {{ old('type', $post->type) == 1 ? 'selected' : '' }}>Du lịch</option>
+                            <option value="2" {{ old('type', $post->type) == 2 ? 'selected' : '' }}>Ẩm thực</option>
+                        </select>
+                        @error('type')
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
                     </div>
@@ -107,36 +110,56 @@
 @endsection
 
 @push('scripts')
-    <script src="{{ asset('admin/scripts.js') }}"></script>
     <script>
         $(document).ready(function() {
-            // Hàm upload ảnh
-            function uploadImage(file, editor) {
-                let formData = new FormData();
-                formData.append('file', file);
-                formData.append('_token', '{{ csrf_token() }}');
+            // Xử lý preview ảnh mới
+            $("#images").on("change", function () {
+                const files = this.files;
+                const preview = $("#image-preview");
+                preview.empty();
 
-                $.ajax({
-                    url: '{{ route('posts.upload-image') }}',
-                    method: 'POST',
-                    data: formData,
-                    processData: false,
-                    contentType: false,
-                    success: function(response) {
-                        // Chèn ảnh vào editor
-                        $(editor).summernote('insertImage', response.location);
-                    },
-                    error: function(xhr) {
-                        console.error('Upload failed:', xhr);
-                        alert('Có lỗi xảy ra khi tải ảnh lên');
+                for (let i = 0; i < files.length; i++) {
+                    const file = files[i];
+                    if (file.type.startsWith("image/")) {
+                        const reader = new FileReader();
+                        reader.onload = function (e) {
+                            preview.append(`
+                            <div class="col-md-3 image-preview-item">
+                                <img src="${e.target.result}" alt="Preview">
+                                <div class="remove-image" data-index="${i}">
+                                    <i class="fas fa-times"></i>
+                                </div>
+                            </div>
+                            `);
+                        };
+                        reader.readAsDataURL(file);
                     }
-                });
-            }
+                }
+            });
+
+            // Xử lý xóa ảnh preview
+            $(document).on('click', '.remove-image', function() {
+                const index = $(this).data('index');
+                const dt = new DataTransfer();
+                const input = document.getElementById('images');
+                const { files } = input;
+
+                for (let i = 0; i < files.length; i++) {
+                    if (i !== index) {
+                        dt.items.add(files[i]);
+                    }
+                }
+
+                input.files = dt.files;
+                $(this).closest('.image-preview-item').remove();
+            });
 
             // Xử lý xóa ảnh hiện có
             $('.delete-image').on('click', function() {
                 if (confirm('Bạn có chắc chắn muốn xóa ảnh này?')) {
                     const imageId = $(this).data('image-id');
+                    const imageContainer = $(this).closest('.col-md-3');
+                    
                     $.ajax({
                         url: '{{ url('/posts/images') }}/' + imageId,
                         method: 'DELETE',
@@ -144,7 +167,7 @@
                             _token: '{{ csrf_token() }}'
                         },
                         success: function() {
-                            location.reload();
+                            imageContainer.remove();
                         },
                         error: function() {
                             alert('Có lỗi xảy ra khi xóa ảnh');

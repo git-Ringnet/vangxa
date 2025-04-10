@@ -11,9 +11,17 @@ use Illuminate\Support\Facades\Storage;
 
 class PostController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $posts = Post::with('images')->latest()->get();
+        $query = Post::with('user')->latest();
+        
+        // Lọc theo type nếu có
+        if ($request->has('type')) {
+            $query->where('type', $request->type);
+        }
+        
+        $posts = $query->paginate(10);
+        
         return view('admin.posts.index', compact('posts'));
     }
 
