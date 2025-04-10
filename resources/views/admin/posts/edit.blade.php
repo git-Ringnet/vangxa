@@ -28,6 +28,14 @@
                     @method('PUT')
 
                     <div class="mb-4">
+                        <label for="title" class="form-label">Loại bài viết</label>
+                        <select name="type" class="form-control">
+                            <option value="1" {{ $post->type == 1 ? 'selected' : '' }}>Du lịch</option>
+                            <option value="2" {{ $post->type == 2 ? 'selected' : '' }}>Ẩm thực</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-4">
                         <label for="title" class="form-label">Tiêu đề bài viết</label>
                         <input type="text" class="form-control @error('title') is-invalid @enderror" id="title"
                             name="title" value="{{ old('title', $post->title) }}" required>
@@ -48,7 +56,7 @@
                     <div class="mb-4">
                         <label for="description" class="form-label">Mô tả</label>
                         <textarea class="form-control @error('description') is-invalid @enderror" id="description" name="description"
-                            rows="10" required>{{ old('description', $post->description) }}</textarea>
+                            rows="10">{{ old('description', $post->description) }}</textarea>
                         @error('description')
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
@@ -60,9 +68,11 @@
                             @foreach ($post->images as $image)
                                 <div class="col-md-3 mb-3">
                                     <div class="position-relative">
-                                        <img src="{{ asset($image->image_path) }}" class="img-fluid rounded" alt="Post image">
-                                        <button type="button" class="btn btn-danger btn-sm position-absolute top-0 end-0 m-2 delete-image" 
-                                                data-image-id="{{ $image->id }}">
+                                        <img src="{{ asset($image->image_path) }}" class="img-fluid rounded"
+                                            alt="Post image">
+                                        <button type="button"
+                                            class="btn btn-danger btn-sm position-absolute top-0 end-0 m-2 delete-image"
+                                            data-image-id="{{ $image->id }}">
                                             <i class="fas fa-times"></i>
                                         </button>
                                     </div>
@@ -97,92 +107,51 @@
 @endsection
 
 @push('scripts')
-<script>
-    $(document).ready(function() {
-        // Hàm upload ảnh
-        function uploadImage(file, editor) {
-            let formData = new FormData();
-            formData.append('file', file);
-            formData.append('_token', '{{ csrf_token() }}');
-            
-            $.ajax({
-                url: '{{ route("posts.upload-image") }}',
-                method: 'POST',
-                data: formData,
-                processData: false,
-                contentType: false,
-                success: function(response) {
-                    // Chèn ảnh vào editor
-                    $(editor).summernote('insertImage', response.location);
-                },
-                error: function(xhr) {
-                    console.error('Upload failed:', xhr);
-                    alert('Có lỗi xảy ra khi tải ảnh lên');
-                }
-            });
-        }
+    <script src="{{ asset('admin/scripts.js') }}"></script>
+    <script>
+        $(document).ready(function() {
+            // Hàm upload ảnh
+            function uploadImage(file, editor) {
+                let formData = new FormData();
+                formData.append('file', file);
+                formData.append('_token', '{{ csrf_token() }}');
 
-        // Xử lý preview ảnh
-        $('#images').on('change', function() {
-            const files = this.files;
-            const preview = $('#image-preview');
-            preview.empty();
-
-            for (let i = 0; i < files.length; i++) {
-                const file = files[i];
-                if (file.type.startsWith('image/')) {
-                    const reader = new FileReader();
-                    reader.onload = function(e) {
-                        preview.append(`
-                            <div class="col-md-3 image-preview-item">
-                                <img src="${e.target.result}" alt="Preview">
-                                <div class="remove-image" data-index="${i}">
-                                    <i class="fas fa-times"></i>
-                                </div>
-                            </div>
-                        `);
-                    }
-                    reader.readAsDataURL(file);
-                }
-            }
-        });
-
-        // Xử lý xóa ảnh preview
-        $(document).on('click', '.remove-image', function() {
-            const index = $(this).data('index');
-            const dt = new DataTransfer();
-            const input = document.getElementById('images');
-            const { files } = input;
-
-            for (let i = 0; i < files.length; i++) {
-                if (i !== index) {
-                    dt.items.add(files[i]);
-                }
-            }
-
-            input.files = dt.files;
-            $(this).closest('.image-preview-item').remove();
-        });
-
-        // Xử lý xóa ảnh hiện có
-        $('.delete-image').on('click', function() {
-            if (confirm('Bạn có chắc chắn muốn xóa ảnh này?')) {
-                const imageId = $(this).data('image-id');
                 $.ajax({
-                    url: `/admin/posts/images/${imageId}`,
-                    method: 'DELETE',
-                    data: {
-                        _token: '{{ csrf_token() }}'
+                    url: '{{ route('posts.upload-image') }}',
+                    method: 'POST',
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    success: function(response) {
+                        // Chèn ảnh vào editor
+                        $(editor).summernote('insertImage', response.location);
                     },
-                    success: function() {
-                        location.reload();
-                    },
-                    error: function() {
-                        alert('Có lỗi xảy ra khi xóa ảnh');
+                    error: function(xhr) {
+                        console.error('Upload failed:', xhr);
+                        alert('Có lỗi xảy ra khi tải ảnh lên');
                     }
                 });
             }
+
+            // Xử lý xóa ảnh hiện có
+            $('.delete-image').on('click', function() {
+                if (confirm('Bạn có chắc chắn muốn xóa ảnh này?')) {
+                    const imageId = $(this).data('image-id');
+                    $.ajax({
+                        url: '{{ url('/posts/images') }}/' + imageId,
+                        method: 'DELETE',
+                        data: {
+                            _token: '{{ csrf_token() }}'
+                        },
+                        success: function() {
+                            location.reload();
+                        },
+                        error: function() {
+                            alert('Có lỗi xảy ra khi xóa ảnh');
+                        }
+                    });
+                }
+            });
         });
-    });
-</script>
+    </script>
 @endpush

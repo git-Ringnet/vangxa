@@ -35,7 +35,9 @@ class PostController extends Controller
             'title' => $request->title,
             'address' => $request->address,
             'description' => $request->description,
-            'user_id' => Auth::id() ?? 1
+            'user_id' => Auth::id() ?? 1,
+            'status' => '1',
+            'type' => $request->type,
         ]);
 
         if ($request->hasFile('images')) {
@@ -56,6 +58,8 @@ class PostController extends Controller
         return redirect()->route('posts.index')
             ->with('success', 'Bài đăng đã được tạo thành công!');
     }
+
+    
 
     public function destroy(Post $post)
     {
@@ -171,7 +175,9 @@ class PostController extends Controller
         $post->update([
             'title' => $request->title,
             'address' => $request->address,
-            'description' => $request->description
+            'description' => $request->description,
+            'status' => 1,
+            'type' => $request->type,
         ]);
 
         // Xử lý ảnh đính kèm
