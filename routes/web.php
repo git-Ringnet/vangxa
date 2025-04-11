@@ -9,6 +9,7 @@ use App\Http\Controllers\VangXaController;
 use App\Models\adminController;
 use App\Http\Controllers\Auth\GoogleController;
 use App\Http\Controllers\Auth\VerificationController;
+use App\Http\Controllers\ReviewController;
 
 // Main routes
 Route::get('/', [HomeController::class, 'index'])->name('home');
@@ -24,6 +25,9 @@ Route::view('dashboard', 'dashboard')
 Route::resource('posts', PostController::class);
 Route::post('/posts/upload-image', [PostController::class, 'uploadImage'])->name('posts.upload-image');
 Route::delete('/posts/images/{id}', [PostController::class, 'destroyImage'])->name('posts.images.destroy');
+
+// Review routes
+Route::resource('reviews', ReviewController::class);
 
 // Admin routes
 Route::resource('vangxa', VangXaController::class);
