@@ -27,7 +27,6 @@
         <div class="detail-page__gallery">
             <div class="detail-page__main-image" onclick="openPreview(0)">
                 <img src="{{ $post->images->isNotEmpty() ? asset($post->images->first()->image_path) : asset('default-image.jpg') }}" alt="{{ $post->title }}">
-                <div class="image-overlay">Xem tất cả ảnh</div>
             </div>
             @foreach ($post->images->skip(1)->take(4) as $index => $image)
             <div class="detail-page__gallery-item" onclick="openPreview({{ $index + 1 }})">
@@ -36,15 +35,32 @@
                 <i class="fas fa-search-plus zoom-icon"></i>
             </div>
             @endforeach
+            <button class="view-all-photos" data-bs-toggle="modal" data-bs-target="#imageGalleryModal">
+            <i class="fas fa-th"></i>
+            Xem tất cả {{ $post->images->count() }} ảnh
+        </button>
         </div>
 
         <!-- Image Preview Modal -->
-        <div class="image-preview-modal" id="previewModal">
-            <div class="image-preview-content">
-                <img src="" alt="" id="previewImage">
-                <i class="fas fa-times close-preview" onclick="closePreview()"></i>
-                <i class="fas fa-chevron-left nav-preview prev" onclick="prevImage()"></i>
-                <i class="fas fa-chevron-right nav-preview next" onclick="nextImage()"></i>
+        <div class="modal fade" id="previewModal" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-fullscreen">
+                <div class="modal-content bg-black">
+                    <div class="modal-header border-0">
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body d-flex align-items-center justify-content-center position-relative">
+                        <img src="" alt="" id="previewImage">
+                        <button class="nav-button prev" onclick="prevImage()">
+                            <i class="fas fa-chevron-left"></i>
+                        </button>
+                        <button class="nav-button next" onclick="nextImage()">
+                            <i class="fas fa-chevron-right"></i>
+                        </button>
+                    </div>
+                    <div class="modal-footer border-0 justify-content-center">
+                        <span class="text-white image-counter"></span>
+                    </div>
+                </div>
             </div>
         </div>
         <div class="detail-page__content">
@@ -280,6 +296,34 @@
     </div>
 </div>
 
+<!-- Image Gallery Modal -->
+<div class="modal fade" id="imageGalleryModal" tabindex="-1" aria-labelledby="imageGalleryModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="imageGalleryModalLabel">Tất cả ảnh ({{ $post->images->count() }})</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row g-3">
+                    @foreach($post->images as $index => $image)
+                    <div class="col-6 col-md-4 col-lg-3">
+                        <div class="gallery-item" onclick="openPreview({{ $index }})">
+                            <img src="{{ asset($image->image_path) }}" alt="{{ $post->title }}"
+                                class="img-fluid rounded modal-image">
+                            <div class="gallery-item-overlay">
+                                <span class="image-number">{{ $index + 1 }}/{{ $post->images->count() }}</span>
+                                <i class="fas fa-search-plus"></i>
+                            </div>
+                        </div>
+                    </div>
+                    @endforeach
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 <script>
    const images = [
         @foreach ($post->images as $image)
@@ -288,30 +332,33 @@
     ];
 
     let currentImageIndex = 0;
+    const previewModal = new bootstrap.Modal(document.getElementById('previewModal'));
+    const previewImage = document.getElementById('previewImage');
+    const imageCounter = document.querySelector('.image-counter');
 
     function openPreview(index) {
         currentImageIndex = index;
-        const modal = document.getElementById('previewModal');
-        const previewImage = document.getElementById('previewImage');
-        previewImage.src = images[index];
-        modal.classList.add('show');
-        document.body.style.overflow = 'hidden';
+        updatePreviewImage();
+        previewModal.show();
     }
 
     function closePreview() {
-        const modal = document.getElementById('previewModal');
-        modal.classList.remove('show');
-        document.body.style.overflow = '';
+        previewModal.hide();
     }
 
     function prevImage() {
         currentImageIndex = (currentImageIndex - 1 + images.length) % images.length;
-        document.getElementById('previewImage').src = images[currentImageIndex];
+        updatePreviewImage();
     }
 
     function nextImage() {
         currentImageIndex = (currentImageIndex + 1) % images.length;
-        document.getElementById('previewImage').src = images[currentImageIndex];
+        updatePreviewImage();
+    }
+
+    function updatePreviewImage() {
+        previewImage.src = images[currentImageIndex];
+        imageCounter.textContent = `${currentImageIndex + 1}/${images.length}`;
     }
 
     // Close modal when clicking outside
@@ -389,6 +436,18 @@
         document.querySelectorAll('.rating-input .rating-stars i').forEach(star => {
             star.classList.replace('fas', 'far');
         });
+    }
+
+    // Function to open gallery modal
+    function openGallery() {
+        const modal = new bootstrap.Modal(document.getElementById('imageGalleryModal'));
+        modal.show();
+    }
+
+    // Function to close gallery modal
+    function closeGallery() {
+        const modal = bootstrap.Modal.getInstance(document.getElementById('imageGalleryModal'));
+        modal.hide();
     }
 </script>
 @endsection

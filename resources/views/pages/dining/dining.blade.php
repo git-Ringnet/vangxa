@@ -82,12 +82,10 @@
                     </div>
                     <span class="category-name">Fusion</span>
                 </div>
-
             </div>
             <button class="categories-nav-button next" id="nextButton">
                 <i class="fas fa-chevron-right"></i>
             </button>
-
         </div>
         <button class="filter-button" id="filterButton">
             <i class="fas fa-sliders"></i>
@@ -129,326 +127,12 @@
     <!-- Listings -->
     <section class="listings-section">
         <div class="listings-grid">
-            <a href="{{ route('detail-dining') }}" class="listing-card">
-                <div class="listing-image-container">
-                    <div class="image-carousel">
-                        <div class="carousel-images">
-                            <img src="https://statics.vincom.com.vn/xu-huong/anh_thumbnail/Nha-hang-Ngoc-Suong.jpg" alt="Nhà hàng Sen" class="listing-image">
-                            <img src="https://simg.zalopay.com.vn/zlp-website/assets/nha_hang_17_ae655c3ea8.jpg" alt="Nhà hàng Sen" class="listing-image">
-                            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTc7Bz1IfBsZ14yyTJQz8ceCZwyKjgFXF-Fhg&s" alt="Nhà hàng Sen" class="listing-image">
-                        </div>
-                        <button class="carousel-nav prev" onclick="event.preventDefault(); prevImage(this);">
-                            <i class="fas fa-chevron-left"></i>
-                        </button>
-                        <button class="carousel-nav next" onclick="event.preventDefault(); nextImage(this);">
-                            <i class="fas fa-chevron-right"></i>
-                        </button>
-                        <div class="carousel-dots">
-                            <span class="dot active"></span>
-                            <span class="dot"></span>
-                            <span class="dot"></span>
-                        </div>
-                    </div>
-                    <button class="favorite-button" onclick="event.preventDefault(); toggleFavorite(this);">
-                        <i class="fas fa-heart"></i>
-                    </button>
-                </div>
-                <div class="listing-content">
-                    <div class="listing-header">
-                        <h3 class="listing-title">Nhà hàng Sen</h3>
-                        <div class="listing-rating">
-                            <i class="fas fa-star"></i>
-                            <span>4.96</span>
-                        </div>
-                    </div>
-                    <p class="listing-location">Quận 1, Hồ Chí Minh</p>
-                    <p class="listing-dates">Ẩm thực Việt Nam</p>
-                    <p class="listing-price">
-                        <span class="price-amount">200,000₫</span>
-                        <span class="price-period">/ người</span>
-                    </p>
-                </div>
-            </a>
-            <a href="{{ route('detail-dining') }}" class="listing-card">
-                <div class="listing-image-container">
-                    <div class="image-carousel">
-                        <div class="carousel-images">
-                            <img src="https://statics.vincom.com.vn/xu-huong/anh_thumbnail/Nha-hang-Ngoc-Suong.jpg" alt="Nhà hàng Sen" class="listing-image">
-                            <img src="https://simg.zalopay.com.vn/zlp-website/assets/nha_hang_17_ae655c3ea8.jpg" alt="Nhà hàng Sen" class="listing-image">
-                            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTc7Bz1IfBsZ14yyTJQz8ceCZwyKjgFXF-Fhg&s" alt="Nhà hàng Sen" class="listing-image">
-                        </div>
-                        <button class="carousel-nav prev" onclick="event.preventDefault(); prevImage(this);">
-                            <i class="fas fa-chevron-left"></i>
-                        </button>
-                        <button class="carousel-nav next" onclick="event.preventDefault(); nextImage(this);">
-                            <i class="fas fa-chevron-right"></i>
-                        </button>
-                        <div class="carousel-dots">
-                            <span class="dot active"></span>
-                            <span class="dot"></span>
-                            <span class="dot"></span>
-                        </div>
-                    </div>
-                    <button class="favorite-button" onclick="event.preventDefault(); toggleFavorite(this);">
-                        <i class="fas fa-heart"></i>
-                    </button>
-                </div>
-                <div class="listing-content">
-                    <div class="listing-header">
-                        <h3 class="listing-title">Nhà hàng Sen</h3>
-                        <div class="listing-rating">
-                            <i class="fas fa-star"></i>
-                            <span>4.96</span>
-                        </div>
-                    </div>
-                    <p class="listing-location">Quận 1, Hồ Chí Minh</p>
-                    <p class="listing-dates">Ẩm thực Việt Nam</p>
-                    <p class="listing-price">
-                        <span class="price-amount">200,000₫</span>
-                        <span class="price-period">/ người</span>
-                    </p>
-                </div>
-            </a><a href="{{ route('detail-dining') }}" class="listing-card">
-                <div class="listing-image-container">
-                    <div class="image-carousel">
-                        <div class="carousel-images">
-                            <img src="https://statics.vincom.com.vn/xu-huong/anh_thumbnail/Nha-hang-Ngoc-Suong.jpg" alt="Nhà hàng Sen" class="listing-image">
-                            <img src="https://simg.zalopay.com.vn/zlp-website/assets/nha_hang_17_ae655c3ea8.jpg" alt="Nhà hàng Sen" class="listing-image">
-                            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTc7Bz1IfBsZ14yyTJQz8ceCZwyKjgFXF-Fhg&s" alt="Nhà hàng Sen" class="listing-image">
-                        </div>
-                        <button class="carousel-nav prev" onclick="event.preventDefault(); prevImage(this);">
-                            <i class="fas fa-chevron-left"></i>
-                        </button>
-                        <button class="carousel-nav next" onclick="event.preventDefault(); nextImage(this);">
-                            <i class="fas fa-chevron-right"></i>
-                        </button>
-                        <div class="carousel-dots">
-                            <span class="dot active"></span>
-                            <span class="dot"></span>
-                            <span class="dot"></span>
-                        </div>
-                    </div>
-                    <button class="favorite-button" onclick="event.preventDefault(); toggleFavorite(this);">
-                        <i class="fas fa-heart"></i>
-                    </button>
-                </div>
-                <div class="listing-content">
-                    <div class="listing-header">
-                        <h3 class="listing-title">Nhà hàng Sen</h3>
-                        <div class="listing-rating">
-                            <i class="fas fa-star"></i>
-                            <span>4.96</span>
-                        </div>
-                    </div>
-                    <p class="listing-location">Quận 1, Hồ Chí Minh</p>
-                    <p class="listing-dates">Ẩm thực Việt Nam</p>
-                    <p class="listing-price">
-                        <span class="price-amount">200,000₫</span>
-                        <span class="price-period">/ người</span>
-                    </p>
-                </div>
-            </a><a href="{{ route('detail-dining') }}" class="listing-card">
-                <div class="listing-image-container">
-                    <div class="image-carousel">
-                        <div class="carousel-images">
-                            <img src="https://statics.vincom.com.vn/xu-huong/anh_thumbnail/Nha-hang-Ngoc-Suong.jpg" alt="Nhà hàng Sen" class="listing-image">
-                            <img src="https://simg.zalopay.com.vn/zlp-website/assets/nha_hang_17_ae655c3ea8.jpg" alt="Nhà hàng Sen" class="listing-image">
-                            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTc7Bz1IfBsZ14yyTJQz8ceCZwyKjgFXF-Fhg&s" alt="Nhà hàng Sen" class="listing-image">
-                        </div>
-                        <button class="carousel-nav prev" onclick="event.preventDefault(); prevImage(this);">
-                            <i class="fas fa-chevron-left"></i>
-                        </button>
-                        <button class="carousel-nav next" onclick="event.preventDefault(); nextImage(this);">
-                            <i class="fas fa-chevron-right"></i>
-                        </button>
-                        <div class="carousel-dots">
-                            <span class="dot active"></span>
-                            <span class="dot"></span>
-                            <span class="dot"></span>
-                        </div>
-                    </div>
-                    <button class="favorite-button" onclick="event.preventDefault(); toggleFavorite(this);">
-                        <i class="fas fa-heart"></i>
-                    </button>
-                </div>
-                <div class="listing-content">
-                    <div class="listing-header">
-                        <h3 class="listing-title">Nhà hàng Sen</h3>
-                        <div class="listing-rating">
-                            <i class="fas fa-star"></i>
-                            <span>4.96</span>
-                        </div>
-                    </div>
-                    <p class="listing-location">Quận 1, Hồ Chí Minh</p>
-                    <p class="listing-dates">Ẩm thực Việt Nam</p>
-                    <p class="listing-price">
-                        <span class="price-amount">200,000₫</span>
-                        <span class="price-period">/ người</span>
-                    </p>
-                </div>
-            </a><a href="{{ route('detail-dining') }}" class="listing-card">
-                <div class="listing-image-container">
-                    <div class="image-carousel">
-                        <div class="carousel-images">
-                            <img src="https://statics.vincom.com.vn/xu-huong/anh_thumbnail/Nha-hang-Ngoc-Suong.jpg" alt="Nhà hàng Sen" class="listing-image">
-                            <img src="https://simg.zalopay.com.vn/zlp-website/assets/nha_hang_17_ae655c3ea8.jpg" alt="Nhà hàng Sen" class="listing-image">
-                            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTc7Bz1IfBsZ14yyTJQz8ceCZwyKjgFXF-Fhg&s" alt="Nhà hàng Sen" class="listing-image">
-                        </div>
-                        <button class="carousel-nav prev" onclick="event.preventDefault(); prevImage(this);">
-                            <i class="fas fa-chevron-left"></i>
-                        </button>
-                        <button class="carousel-nav next" onclick="event.preventDefault(); nextImage(this);">
-                            <i class="fas fa-chevron-right"></i>
-                        </button>
-                        <div class="carousel-dots">
-                            <span class="dot active"></span>
-                            <span class="dot"></span>
-                            <span class="dot"></span>
-                        </div>
-                    </div>
-                    <button class="favorite-button" onclick="event.preventDefault(); toggleFavorite(this);">
-                        <i class="fas fa-heart"></i>
-                    </button>
-                </div>
-                <div class="listing-content">
-                    <div class="listing-header">
-                        <h3 class="listing-title">Nhà hàng Sen</h3>
-                        <div class="listing-rating">
-                            <i class="fas fa-star"></i>
-                            <span>4.96</span>
-                        </div>
-                    </div>
-                    <p class="listing-location">Quận 1, Hồ Chí Minh</p>
-                    <p class="listing-dates">Ẩm thực Việt Nam</p>
-                    <p class="listing-price">
-                        <span class="price-amount">200,000₫</span>
-                        <span class="price-period">/ người</span>
-                    </p>
-                </div>
-            </a><a href="{{ route('detail-dining') }}" class="listing-card">
-                <div class="listing-image-container">
-                    <div class="image-carousel">
-                        <div class="carousel-images">
-                            <img src="https://statics.vincom.com.vn/xu-huong/anh_thumbnail/Nha-hang-Ngoc-Suong.jpg" alt="Nhà hàng Sen" class="listing-image">
-                            <img src="https://simg.zalopay.com.vn/zlp-website/assets/nha_hang_17_ae655c3ea8.jpg" alt="Nhà hàng Sen" class="listing-image">
-                            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTc7Bz1IfBsZ14yyTJQz8ceCZwyKjgFXF-Fhg&s" alt="Nhà hàng Sen" class="listing-image">
-                        </div>
-                        <button class="carousel-nav prev" onclick="event.preventDefault(); prevImage(this);">
-                            <i class="fas fa-chevron-left"></i>
-                        </button>
-                        <button class="carousel-nav next" onclick="event.preventDefault(); nextImage(this);">
-                            <i class="fas fa-chevron-right"></i>
-                        </button>
-                        <div class="carousel-dots">
-                            <span class="dot active"></span>
-                            <span class="dot"></span>
-                            <span class="dot"></span>
-                        </div>
-                    </div>
-                    <button class="favorite-button" onclick="event.preventDefault(); toggleFavorite(this);">
-                        <i class="fas fa-heart"></i>
-                    </button>
-                </div>
-                <div class="listing-content">
-                    <div class="listing-header">
-                        <h3 class="listing-title">Nhà hàng Sen</h3>
-                        <div class="listing-rating">
-                            <i class="fas fa-star"></i>
-                            <span>4.96</span>
-                        </div>
-                    </div>
-                    <p class="listing-location">Quận 1, Hồ Chí Minh</p>
-                    <p class="listing-dates">Ẩm thực Việt Nam</p>
-                    <p class="listing-price">
-                        <span class="price-amount">200,000₫</span>
-                        <span class="price-period">/ người</span>
-                    </p>
-                </div>
-            </a><a href="{{ route('detail-dining') }}" class="listing-card">
-                <div class="listing-image-container">
-                    <div class="image-carousel">
-                        <div class="carousel-images">
-                            <img src="https://statics.vincom.com.vn/xu-huong/anh_thumbnail/Nha-hang-Ngoc-Suong.jpg" alt="Nhà hàng Sen" class="listing-image">
-                            <img src="https://simg.zalopay.com.vn/zlp-website/assets/nha_hang_17_ae655c3ea8.jpg" alt="Nhà hàng Sen" class="listing-image">
-                            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTc7Bz1IfBsZ14yyTJQz8ceCZwyKjgFXF-Fhg&s" alt="Nhà hàng Sen" class="listing-image">
-                        </div>
-                        <button class="carousel-nav prev" onclick="event.preventDefault(); prevImage(this);">
-                            <i class="fas fa-chevron-left"></i>
-                        </button>
-                        <button class="carousel-nav next" onclick="event.preventDefault(); nextImage(this);">
-                            <i class="fas fa-chevron-right"></i>
-                        </button>
-                        <div class="carousel-dots">
-                            <span class="dot active"></span>
-                            <span class="dot"></span>
-                            <span class="dot"></span>
-                        </div>
-                    </div>
-                    <button class="favorite-button" onclick="event.preventDefault(); toggleFavorite(this);">
-                        <i class="fas fa-heart"></i>
-                    </button>
-                </div>
-                <div class="listing-content">
-                    <div class="listing-header">
-                        <h3 class="listing-title">Nhà hàng Sen</h3>
-                        <div class="listing-rating">
-                            <i class="fas fa-star"></i>
-                            <span>4.96</span>
-                        </div>
-                    </div>
-                    <p class="listing-location">Quận 1, Hồ Chí Minh</p>
-                    <p class="listing-dates">Ẩm thực Việt Nam</p>
-                    <p class="listing-price">
-                        <span class="price-amount">200,000₫</span>
-                        <span class="price-period">/ người</span>
-                    </p>
-                </div>
-            </a><a href="{{ route('detail-dining') }}" class="listing-card">
-                <div class="listing-image-container">
-                    <div class="image-carousel">
-                        <div class="carousel-images">
-                            <img src="https://statics.vincom.com.vn/xu-huong/anh_thumbnail/Nha-hang-Ngoc-Suong.jpg" alt="Nhà hàng Sen" class="listing-image">
-                            <img src="https://simg.zalopay.com.vn/zlp-website/assets/nha_hang_17_ae655c3ea8.jpg" alt="Nhà hàng Sen" class="listing-image">
-                            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTc7Bz1IfBsZ14yyTJQz8ceCZwyKjgFXF-Fhg&s" alt="Nhà hàng Sen" class="listing-image">
-                        </div>
-                        <button class="carousel-nav prev" onclick="event.preventDefault(); prevImage(this);">
-                            <i class="fas fa-chevron-left"></i>
-                        </button>
-                        <button class="carousel-nav next" onclick="event.preventDefault(); nextImage(this);">
-                            <i class="fas fa-chevron-right"></i>
-                        </button>
-                        <div class="carousel-dots">
-                            <span class="dot active"></span>
-                            <span class="dot"></span>
-                            <span class="dot"></span>
-                        </div>
-                    </div>
-                    <button class="favorite-button" onclick="event.preventDefault(); toggleFavorite(this);">
-                        <i class="fas fa-heart"></i>
-                    </button>
-                </div>
-                <div class="listing-content">
-                    <div class="listing-header">
-                        <h3 class="listing-title">Nhà hàng Sen</h3>
-                        <div class="listing-rating">
-                            <i class="fas fa-star"></i>
-                            <span>4.96</span>
-                        </div>
-                    </div>
-                    <p class="listing-location">Quận 1, Hồ Chí Minh</p>
-                    <p class="listing-dates">Ẩm thực Việt Nam</p>
-                    <p class="listing-price">
-                        <span class="price-amount">200,000₫</span>
-                        <span class="price-period">/ người</span>
-                    </p>
-                </div>
-            </a>
-
+            @include('pages.dining.posts')
         </div>
 
         <div class="load-more">
             <h4>Tiếp tục khám phá ẩm thực</h4>
-            <button class="load-more-button">
+            <button class="load-more-button" id="loadMoreButton">
                 Hiển thị thêm
             </button>
         </div>
@@ -525,6 +209,30 @@
 
         // Initialize all carousels
         initializeCarousels();
+
+        // Load more functionality
+        const loadMoreButton = document.getElementById('loadMoreButton');
+        if (loadMoreButton) {
+            loadMoreButton.addEventListener('click', async function() {
+                const offset = document.querySelectorAll('.listing-card').length;
+                
+                try {
+                    const response = await fetch(`{{ route('dining.load-more') }}?offset=${offset}`);
+                    const data = await response.json();
+                    
+                    if (data.html) {
+                        document.querySelector('.listings-grid').insertAdjacentHTML('beforeend', data.html);
+                        initializeCarousels();
+                        
+                        if (!data.hasMore) {
+                            loadMoreButton.style.display = 'none';
+                        }
+                    }
+                } catch (error) {
+                    console.error('Error loading more posts:', error);
+                }
+            });
+        }
     });
 
     function toggleFavorite(button) {
@@ -558,42 +266,29 @@
     }
 
     function updateCarousel(images, dots, index) {
-        // Update data attribute
         images.dataset.currentIndex = index;
-
-        // Calculate the correct percentage based on number of images
         const percentage = (index * (100 / images.children.length));
-
-        // Apply transform
         images.style.transform = `translateX(-${percentage}%)`;
-
-        // Update dots
         dots.forEach((dot, i) => {
             dot.classList.toggle('active', i === index);
         });
     }
-    // Hàm khởi tạo các carousel (bộ sưu tập hình ảnh) trên trang
+
     function initializeCarousels() {
         const carousels = document.querySelectorAll('.image-carousel');
 
         carousels.forEach(carousel => {
             const dots = carousel.querySelectorAll('.dot');
             const images = carousel.querySelector('.carousel-images');
-            // Đếm số lượng hình ảnh trong carousel
             const imageCount = images.children.length;
 
-            // Set correct width for the carousel images container based on number of images
             images.style.width = `${imageCount * 100}%`;
-
-            // Thiết lập chiều rộng cho từng hình ảnh bên trong container
             Array.from(images.children).forEach(img => {
                 img.style.width = `${100 / imageCount}%`;
             });
 
-            // Set initial index
             images.dataset.currentIndex = 0;
 
-            // Add click events to dots
             dots.forEach((dot, index) => {
                 dot.addEventListener('click', (e) => {
                     e.preventDefault();
@@ -602,7 +297,6 @@
                 });
             });
 
-            // Prevent carousel navigation from triggering card click
             const navButtons = carousel.querySelectorAll('.carousel-nav');
             navButtons.forEach(btn => {
                 btn.addEventListener('click', (e) => {
