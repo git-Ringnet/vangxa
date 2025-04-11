@@ -7,6 +7,8 @@ use Livewire\Volt\Volt;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\VangXaController;
 use App\Models\adminController;
+use App\Http\Controllers\Auth\GoogleController;
+use App\Http\Controllers\Auth\VerificationController;
 
 // Main routes
 Route::get('/', [HomeController::class, 'index'])->name('home');
@@ -32,9 +34,14 @@ Route::middleware(['auth'])->group(function () {
     Volt::route('settings/profile', 'settings.profile')->name('settings.profile');
     Volt::route('settings/password', 'settings.password')->name('settings.password');
     Volt::route('settings/appearance', 'settings.appearance')->name('settings.appearance');
+
+    Route::post('/send-verification-code', [VerificationController::class, 'sendVerificationCode'])->name('send.verification.code');
+    Route::post('/verify-code', [VerificationController::class, 'verifyCode'])->name('verify.code');
 });
 
-// Other routes
+Route::get('/auth/google', [GoogleController::class, 'redirectToGoogle'])->name('google.login');
+Route::get('/auth/google/callback', [GoogleController::class, 'handleGoogleCallback'])->name('google.callback');
+
 Route::get('/detail-dining', function () {
     return view('pages/dining/detail-dining');
 })->name('detail-dining');
