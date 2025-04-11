@@ -1,12 +1,12 @@
 <?php
 
-use App\Http\Controllers\AdminController as ControllersAdminController;
+use App\Http\Controllers\RolePermissionController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Page\HomeController;
 use Livewire\Volt\Volt;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\VangXaController;
-use App\Models\adminController;
+use App\Http\Controllers\Admin\UserController;
 
 use App\Http\Controllers\Page\DiningController;
 use App\Http\Controllers\Auth\GoogleController;
@@ -48,6 +48,17 @@ Route::middleware(['auth'])->group(function () {
 
 Route::get('/auth/google', [GoogleController::class, 'redirectToGoogle'])->name('google.login');
 Route::get('/auth/google/callback', [GoogleController::class, 'handleGoogleCallback'])->name('google.callback');
+
+Route::prefix('admin')->group(function () {
+    Route::get('roles-permissions', [RolePermissionController::class, 'index'])->name('roles-permissions.index');
+    Route::post('roles', [RolePermissionController::class, 'storeRole'])->name('roles.store');
+    Route::put('roles/{id}', [RolePermissionController::class, 'updateRole'])->name('roles.update');
+    Route::delete('roles/{id}', [RolePermissionController::class, 'destroyRole'])->name('roles.destroy');
+    Route::post('permissions', [RolePermissionController::class, 'storePermission'])->name('permissions.store');
+    Route::delete('permissions/{id}', [RolePermissionController::class, 'destroyPermission'])->name('permissions.destroy');
+
+    Route::resource('users', UserController::class);
+})->middleware(['auth', 'role:Admin']);
 
 Route::get('/detail-dining', function () {
     return view('pages/dining/detail-dining');
