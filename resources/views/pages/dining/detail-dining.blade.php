@@ -48,8 +48,7 @@
             </div>
         </div>
     </div>
-
-    <!-- Image Gallery Modal -->
+     <!-- Image Gallery Modal -->
     <div class="modal fade" id="imageGalleryModal" tabindex="-1" aria-labelledby="imageGalleryModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-xl modal-dialog-centered">
             <div class="modal-content">
@@ -133,54 +132,116 @@
             </div>
         </div>
 
-        <!-- Rating & Reviews -->
-        <div class="rating-section">
-            <h2>Đánh giá và nhận xét</h2>
-            <div class="rating-overview">
-                <div class="rating-score">
-                    <span class="score">4.8</span>
-                    <div class="score-details">
-                        <div class="stars">
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star-half-alt"></i>
-                        </div>
-                        <span class="reviews-count">458 đánh giá</span>
+         <div class="rating-section" id="ratingSection">
+                    <h2>Đánh giá và nhận xét</h2>
+
+                    <!-- Toast Notifications -->
+                    <div id="toastContainer" class="toast-container"></div>
+
+                    <!-- Review Form -->
+                    <div class="write-review">
+                        <h3>Viết đánh giá của bạn</h3>
+                        <form action="{{ route('reviews.store') }}" method="POST" id="reviewForm">
+                            @csrf
+                            <div class="form-group my-3">
+                                <label>Đánh giá món ăn <span class="text-danger">*</span></label>
+                                <div class="rating">
+                                    <input type="radio" name="food_rating" value="5" id="food-5"
+                                        {{ old('food_rating') == 5 ? 'checked' : '' }}><label for="food-5">5</label>
+                                    <input type="radio" name="food_rating" value="4" id="food-4"
+                                        {{ old('food_rating') == 4 ? 'checked' : '' }}><label for="food-4">4</label>
+                                    <input type="radio" name="food_rating" value="3" id="food-3"
+                                        {{ old('food_rating') == 3 ? 'checked' : '' }}><label for="food-3">3</label>
+                                    <input type="radio" name="food_rating" value="2" id="food-2"
+                                        {{ old('food_rating') == 2 ? 'checked' : '' }}><label for="food-2">2</label>
+                                    <input type="radio" name="food_rating" value="1" id="food-1"
+                                        {{ old('food_rating') == 1 ? 'checked' : '' }}><label for="food-1">1</label>
+                                </div>
+                                <div class="error-message" id="foodRatingError"></div>
+                            </div>
+
+                            <div class="form-group my-3">
+                                <label>Mức độ hài lòng <span class="text-danger">*</span></label>
+                                <div class="satisfaction-icons">
+                                    <input type="radio" name="satisfaction_level" value="5" id="satisfaction-5"
+                                        {{ old('satisfaction_level') == 5 ? 'checked' : '' }}>
+                                    <label for="satisfaction-5"><i class="fas fa-laugh-beam"></i></label>
+
+                                    <input type="radio" name="satisfaction_level" value="4" id="satisfaction-4"
+                                        {{ old('satisfaction_level') == 4 ? 'checked' : '' }}>
+                                    <label for="satisfaction-4"><i class="fas fa-laugh"></i></label>
+
+                                    <input type="radio" name="satisfaction_level" value="3" id="satisfaction-3"
+                                        {{ old('satisfaction_level') == 3 ? 'checked' : '' }}>
+                                    <label for="satisfaction-3"><i class="fas fa-meh"></i></label>
+
+                                    <input type="radio" name="satisfaction_level" value="2" id="satisfaction-2"
+                                        {{ old('satisfaction_level') == 2 ? 'checked' : '' }}>
+                                    <label for="satisfaction-2"><i class="fas fa-frown"></i></label>
+
+                                    <input type="radio" name="satisfaction_level" value="1" id="satisfaction-1"
+                                        {{ old('satisfaction_level') == 1 ? 'checked' : '' }}>
+                                    <label for="satisfaction-1"><i class="fas fa-sad-tear"></i></label>
+                                </div>
+                                <div class="error-message" id="satisfactionLevelError"></div>
+                            </div>
+
+                            <div class="form-group my-3">
+                                <label for="comment">Nhận xét của bạn <span class="text-danger">*</span></label>
+                                <textarea name="comment" id="comment" rows="4" class="form-control"
+                                    placeholder="Chia sẻ trải nghiệm của bạn...">{{ old('comment') }}</textarea>
+                                <div class="error-message" id="commentError"></div>
+                            </div>
+
+                            <button type="submit" class="submit-review-green">Gửi đánh giá</button>
+                        </form>
                     </div>
+
+                    <!-- Reviews List -->
+                    {{-- <div class="reviews-list">
+                        @foreach ($post->reviews()->with('user')->latest()->get() as $review)
+                            <div class="review-item">
+                                <div class="review-header">
+                                    <img src="{{ $review->user->avatar ?? 'https://ui-avatars.com/api/?name='.urlencode($review->user->name) }}" 
+                                         alt="{{ $review->user->name }}" class="reviewer-avatar">
+                                    <div class="reviewer-info">
+                                        <h4>{{ $review->user->name }}</h4>
+                                        <div class="review-meta">
+                                            <div class="review-stars">
+                                                @for ($i = 1; $i <= 5; $i++)
+                                                    <i class="fas fa-star {{ $i <= $review->food_rating ? 'text-warning' : 'text-muted' }}"></i>
+                                                @endfor
+                                            </div>
+                                            <span class="review-date">{{ $review->created_at->format('d/m/Y') }}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="review-content">
+                                    <div class="satisfaction-icon">
+                                        @switch($review->satisfaction_level)
+                                            @case(5)
+                                                <i class="fas fa-laugh-beam text-success"></i>
+                                                @break
+                                            @case(4)
+                                                <i class="fas fa-laugh text-info"></i>
+                                                @break
+                                            @case(3)
+                                                <i class="fas fa-meh text-warning"></i>
+                                                @break
+                                            @case(2)
+                                                <i class="fas fa-frown text-danger"></i>
+                                                @break
+                                            @case(1)
+                                                <i class="fas fa-sad-tear text-danger"></i>
+                                                @break
+                                        @endswitch
+                                    </div>
+                                    <p>{{ $review->comment }}</p>
+                                </div>
+                            </div>
+                        @endforeach
+                    </div> --}}
                 </div>
-                <div class="rating-bars">
-                    <div class="rating-bar-item">
-                        <span class="rating-label">Đồ ăn</span>
-                        <div class="rating-progress">
-                            <div class="progress-fill" style="width: 96%"></div>
-                        </div>
-                        <span class="rating-value">4.8</span>
-                    </div>
-                    <div class="rating-bar-item">
-                        <span class="rating-label">Dịch vụ</span>
-                        <div class="rating-progress">
-                            <div class="progress-fill" style="width: 92%"></div>
-                        </div>
-                        <span class="rating-value">4.6</span>
-                    </div>
-                    <div class="rating-bar-item">
-                        <span class="rating-label">Không gian</span>
-                        <div class="rating-progress">
-                            <div class="progress-fill" style="width: 98%"></div>
-                        </div>
-                        <span class="rating-value">4.9</span>
-                    </div>
-                    <div class="rating-bar-item">
-                        <span class="rating-label">Giá cả</span>
-                        <div class="rating-progress">
-                            <div class="progress-fill" style="width: 84%"></div>
-                        </div>
-                        <span class="rating-value">4.2</span>
-                    </div>
-                </div>
-            </div>
 
             <!-- User Reviews -->
             <div class="user-reviews">
@@ -324,8 +385,10 @@
 </div>
 @endsection
 
+
+
 @push('scripts')
-<script>
+    <script>
     document.addEventListener('DOMContentLoaded', function() {
         const images = @json($post->images->pluck('image_path'));
         let currentImageIndex = 0;
@@ -392,13 +455,158 @@
                 if (icon.classList.contains('far')) {
                     icon.classList.remove('far');
                     icon.classList.add('fas');
-                    // Update like count logic would go here
+                    } else {
+                        icon.classList.remove('fas');
+                        icon.classList.add('far');
+                    }
+                });
+            });
+
+            // Reply button functionality
+            const replyButtons = document.querySelectorAll('.review-reply-btn');
+            replyButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    // Reply form logic would go here
+                    alert('Tính năng đang được phát triển');
+                });
+            });
+
+            // Load more reviews
+            const loadMoreButton = document.querySelector('.load-more-button');
+            if (loadMoreButton) {
+                loadMoreButton.addEventListener('click', function() {
+                    // Load more reviews logic would go here
+                    alert('Đang tải thêm đánh giá...');
+                });
+            }
+
+            // View all photos
+            const viewAllPhotosBtn = document.querySelector('.view-all-photos');
+            if (viewAllPhotosBtn) {
+                viewAllPhotosBtn.addEventListener('click', function() {
+                    // Photo gallery modal logic would go here
+                    alert('Tính năng xem tất cả ảnh đang được phát triển');
+                });
+            }
+
+            // Hiển thị thông báo toast
+            function showToast(message, type = 'success') {
+                // Xóa tất cả toast cũ
+                const toastContainer = document.getElementById('toastContainer');
+                toastContainer.innerHTML = '';
+
+                const toast = document.createElement('div');
+                toast.className = `toast toast-${type}`;
+                toast.innerHTML = `
+                    <div class="toast-content">
+                        <i class="fas ${type === 'success' ? 'fa-check-circle' : 'fa-exclamation-circle'}"></i>
+                        <span>${message}</span>
+                    </div>
+                    <button class="toast-close">&times;</button>
+                `;
+
+                toastContainer.appendChild(toast);
+
+                // Hiển thị toast
+                setTimeout(() => {
+                    toast.classList.add('show');
+                }, 10);
+
+                // Tự động ẩn sau 5 giây
+                const timeout = setTimeout(() => {
+                    hideToast(toast);
+                }, 5000);
+
+                // Nút đóng toast
+                const closeBtn = toast.querySelector('.toast-close');
+                closeBtn.addEventListener('click', () => {
+                    clearTimeout(timeout);
+                    hideToast(toast);
+                });
+            }
+
+            // Ẩn toast
+            function hideToast(toast) {
+                toast.classList.remove('show');
+                toast.classList.add('hide');
+
+                // Xóa toast sau khi animation kết thúc
+                setTimeout(() => {
+                    toast.remove();
+                }, 300);
+            }
+
+            // Kiểm tra và hiển thị thông báo từ session
+            @if (session('success'))
+                showToast("{{ session('success') }}", 'success');
+            @endif
+
+            // Kiểm tra và hiển thị lỗi validation
+            @if ($errors->any())
+                showToast("{{ $errors->first() }}", 'error');
+            @endif
+
+            // Client-side validation
+            const form = document.getElementById('reviewForm');
+            const foodRatingError = document.getElementById('foodRatingError');
+            const satisfactionLevelError = document.getElementById('satisfactionLevelError');
+            const commentError = document.getElementById('commentError');
+
+            form.addEventListener('submit', function(e) {
+                let isValid = true;
+
+                // Reset error messages
+                foodRatingError.textContent = '';
+                satisfactionLevelError.textContent = '';
+                commentError.textContent = '';
+
+                // Kiểm tra đánh giá sao
+                const foodRating = document.querySelector('input[name="food_rating"]:checked');
+                if (!foodRating) {
+                    foodRatingError.textContent = 'Vui lòng chọn đánh giá sao cho món ăn';
+                    isValid = false;
                 } else {
-                    icon.classList.remove('fas');
-                    icon.classList.add('far');
+                    const ratingValue = parseInt(foodRating.value);
+                    if (isNaN(ratingValue) || ratingValue < 1 || ratingValue > 5) {
+                        foodRatingError.textContent = 'Đánh giá sao phải từ 1-5';
+                        isValid = false;
+                    }
+                }
+
+                // Kiểm tra mức độ hài lòng
+                const satisfactionLevel = document.querySelector(
+                'input[name="satisfaction_level"]:checked');
+                if (!satisfactionLevel) {
+                    satisfactionLevelError.textContent = 'Vui lòng chọn mức độ hài lòng';
+                    isValid = false;
+                } else {
+                    const satisfactionValue = parseInt(satisfactionLevel.value);
+                    if (isNaN(satisfactionValue) || satisfactionValue < 1 || satisfactionValue > 5) {
+                        satisfactionLevelError.textContent = 'Mức độ hài lòng phải từ 1-5';
+                        isValid = false;
+                    }
+                }
+
+                // Kiểm tra nhận xét
+                const comment = document.getElementById('comment').value.trim();
+                if (!comment) {
+                    commentError.textContent = 'Vui lòng viết nhận xét của bạn';
+                    isValid = false;
+                } else if (comment.length < 10) {
+                    commentError.textContent = 'Nhận xét phải có ít nhất 10 ký tự';
+                    isValid = false;
+                } else if (comment.length > 1000) {
+                    commentError.textContent = 'Nhận xét không được vượt quá 1000 ký tự';
+                    isValid = false;
+                }
+
+                // Nếu có lỗi, ngăn form submit
+                if (!isValid) {
+                    e.preventDefault();
                 }
             });
         });
+
 
         // Reply button functionality
         const replyButtons = document.querySelectorAll('.review-reply-btn');
@@ -420,4 +628,3 @@
     });
 </script>
 @endpush
-

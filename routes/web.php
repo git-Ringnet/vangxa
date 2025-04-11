@@ -7,7 +7,12 @@ use Livewire\Volt\Volt;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\VangXaController;
 use App\Models\adminController;
+
 use App\Http\Controllers\Page\DiningController;
+use App\Http\Controllers\Auth\GoogleController;
+use App\Http\Controllers\Auth\VerificationController;
+use App\Http\Controllers\ReviewController;
+
 
 // Main routes
 Route::get('/', [HomeController::class, 'index'])->name('home');
@@ -24,6 +29,9 @@ Route::resource('posts', PostController::class);
 Route::post('/posts/upload-image', [PostController::class, 'uploadImage'])->name('posts.upload-image');
 Route::delete('/posts/images/{id}', [PostController::class, 'destroyImage'])->name('posts.images.destroy');
 
+// Review routes
+Route::resource('reviews', ReviewController::class);
+
 // Admin routes
 Route::resource('vangxa', VangXaController::class);
 
@@ -33,8 +41,17 @@ Route::middleware(['auth'])->group(function () {
     Volt::route('settings/profile', 'settings.profile')->name('settings.profile');
     Volt::route('settings/password', 'settings.password')->name('settings.password');
     Volt::route('settings/appearance', 'settings.appearance')->name('settings.appearance');
+
+    Route::post('/send-verification-code', [VerificationController::class, 'sendVerificationCode'])->name('send.verification.code');
+    Route::post('/verify-code', [VerificationController::class, 'verifyCode'])->name('verify.code');
 });
 
+Route::get('/auth/google', [GoogleController::class, 'redirectToGoogle'])->name('google.login');
+Route::get('/auth/google/callback', [GoogleController::class, 'handleGoogleCallback'])->name('google.callback');
+
+Route::get('/detail-dining', function () {
+    return view('pages/dining/detail-dining');
+})->name('detail-dining');
 
 Route::get('/dining', [DiningController::class, 'index'])->name('dining');
 Route::get('/dining/detail/{id}', [DiningController::class, 'detail'])->name('dining.detail-dining');

@@ -29,4 +29,9 @@ class Post extends Model
     {
         return $this->hasMany(PostImage::class);
     }
+
+    public function reviews()
+    {
+        return $this->hasMany(Review::class);
+    }
 }
