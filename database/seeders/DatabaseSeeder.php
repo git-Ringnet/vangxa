@@ -25,5 +25,9 @@ class DatabaseSeeder extends Seeder
 
         // Tạo 20 bài viết với ảnh
         Post::factory(20)->create();
+
+        $this->call([
+            RolePermissionSeeder::class,
+        ]);
     }
 }

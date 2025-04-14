@@ -10,6 +10,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
     <!-- Custom CSS -->
     <link rel="stylesheet" href="{{ asset('admin/styles.css') }}">
     @stack('styles')
@@ -42,13 +43,13 @@
                     </a>
                 </li>
                 <li>
-                    <a href="#">
+                    <a href="{{ route('users.index') }}">
                         <i class="fas fa-users"></i>
                         <span>Quản lý người dùng</span>
                     </a>
                 </li>
                 <li>
-                    <a href="#">
+                    <a href="{{ route('roles-permissions.index') }}">
                         <i class="fas fa-cog"></i>
                         <span>Cài đặt</span>
                     </a>
@@ -243,6 +244,7 @@
         });
     </script>
     @stack('scripts')
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
 </body>
 
 </html>
