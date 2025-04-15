@@ -34,6 +34,7 @@
                     <a href="{{ route('lodging') }}" class="nav-link {{ request()->is('lodging') ? 'active' : '' }}">Lưu Trú</a>
                     <a href="{{ route('dining') }}" class="nav-link {{ request()->is('dining') ? 'active' : '' }}">Ăn Uống</a>
                     <a href="#" class="nav-link" id="rankingLink">Bảng xếp hạng</a>
+                    <a href="{{ route('community.index') }}" class="nav-link {{ request()->routeIs('community.*') ? 'active' : '' }}">Cộng đồng</a>
                 </div>
 
                 <!-- Rankings Modal -->
