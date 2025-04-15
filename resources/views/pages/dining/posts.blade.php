@@ -35,10 +35,10 @@
         </div>
         <p class="listing-location">{{ $post->location }}</p>
         <p class="listing-dates">{{ $post->content }}</p>
-        <p class="listing-price">
+        <!-- <p class="listing-price">
             <span class="price-amount">200,000₫</span>
             <span class="price-period">/ người</span>
-        </p>
+        </p> -->
     </div>
 </a>
 @endforeach 
