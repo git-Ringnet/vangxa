@@ -3,6 +3,7 @@
 use App\Http\Controllers\RolePermissionController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Page\HomeController;
+use App\Http\Controllers\Page\LodgingController;
 use Livewire\Volt\Volt;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\VangXaController;
@@ -15,9 +16,13 @@ use App\Http\Controllers\ReviewController;
 
 
 // Main routes
-Route::get('/', [HomeController::class, 'index'])->name('home');
-Route::get('/detail/{id}', [HomeController::class, 'detail'])->name('detail');
-Route::get('/load-more', [HomeController::class, 'loadMore'])->name('load-more');
+Route::get('/', function () {
+    return view('landing');
+});
+Route::get('/lodging', [LodgingController::class, 'index'])->name('lodging');
+
+Route::get('/detail/{id}', [LodgingController::class, 'detail'])->name('detail');
+Route::get('/load-more', [LodgingController::class, 'loadMore'])->name('load-more');
 
 // Auth routes
 Route::view('dashboard', 'dashboard')
@@ -59,10 +64,6 @@ Route::prefix('admin')->group(function () {
 
     Route::resource('users', UserController::class);
 })->middleware(['auth', 'role:Admin']);
-
-Route::get('/detail-dining', function () {
-    return view('pages/dining/detail-dining');
-})->name('detail-dining');
 
 Route::get('/dining', [DiningController::class, 'index'])->name('dining');
 Route::get('/dining/detail/{id}', [DiningController::class, 'detail'])->name('dining.detail-dining');
