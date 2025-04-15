@@ -7,7 +7,7 @@ use App\Models\Post;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 
-class HomeController extends Controller
+class LodgingController extends Controller
 {
     public function index()
     {
@@ -16,7 +16,7 @@ class HomeController extends Controller
             ->take(18)
             ->get();
 
-        return view('pages.listings.home', compact('posts'));
+        return view('pages.listings.lodging', compact('posts'));
     }
 
     public function detail($id)
@@ -35,7 +35,7 @@ class HomeController extends Controller
                 'error' => $e->getMessage()
             ]);
             
-            return redirect()->route('home')->with('error', 'Không tìm thấy bài viết');
+            return redirect()->route('lodging')->with('error', 'Không tìm thấy bài viết');
         }
     }
 
