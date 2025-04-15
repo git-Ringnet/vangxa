@@ -3083,8 +3083,6 @@ a {
     width: 40px;
     height: 40px;
     margin: 0 5px;
-    background: #f0f0f0;
-    border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -3095,8 +3093,7 @@ a {
 .rating input:checked ~ label,
 .rating label:hover,
 .rating label:hover ~ label {
-    background: #ffd700;
-    color: #fff;
+    color: #ffd700;
 }
 
 .satisfaction-icons {

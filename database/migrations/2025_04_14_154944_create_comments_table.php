@@ -3,6 +3,7 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use Kalnoy\Nestedset\NestedSet;
 
 return new class extends Migration
 {
@@ -11,14 +12,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('posts', function (Blueprint $table) {
+        Schema::create('comments', function (Blueprint $table) {
             $table->id();
-            $table->string('address')->nullable();
-            $table->string('title');
-            $table->longText('description');
+            $table->integer('post_id');
             $table->integer('user_id');
-            $table->integer('status')->comment('1: đã đăng, 2: đã ẩn')->default(1);
-            $table->integer('type')->comment('1: du lịch, 2: ẩm thực, 3: cộng đồng')->default(1);
+            $table->text('content');
+            NestedSet::columns($table); // Thêm _lft, _rgt, parent_id
             $table->timestamps();
         });
     }
@@ -28,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('posts');
+        Schema::dropIfExists('comments');
     }
 };

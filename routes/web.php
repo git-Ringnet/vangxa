@@ -13,7 +13,9 @@ use App\Http\Controllers\HomeController as MainHomeController;
 use App\Http\Controllers\Page\DiningController;
 use App\Http\Controllers\Auth\GoogleController;
 use App\Http\Controllers\Auth\VerificationController;
+use App\Http\Controllers\CommentController;
 use App\Http\Controllers\ReviewController;
+use App\Http\Controllers\Page\CommunityController;
 
 
 // Main routes
@@ -67,5 +69,11 @@ Route::prefix('admin')->group(function () {
 Route::get('/dining', [DiningController::class, 'index'])->name('dining');
 Route::get('/dining/detail/{id}', [DiningController::class, 'detail'])->name('dining.detail-dining');
 Route::get('/dining/load-more', [DiningController::class, 'loadMore'])->name('dining.load-more');
+
+// Community routes
+Route::resource('community', CommunityController::class);
+
+// Comment routes
+Route::resource('comments', CommentController::class);
 
 require __DIR__ . '/auth.php';

@@ -30,7 +30,7 @@ class ReviewController extends Controller
         ]);
 
         $review = Review::create([
-            'post_id' => 1,
+            'post_id' => $request->post_id,
             'user_id' => Auth::id() ?? 1,
             'food_rating' => $request->food_rating,
             'satisfaction_level' => $request->satisfaction_level,
