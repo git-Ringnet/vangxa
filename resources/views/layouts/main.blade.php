@@ -199,16 +199,36 @@
                             <i class="fas fa-user-circle"></i>
                         </button>
                         <div class="dropdown-menu" id="userDropdown">
-                            <div class="dropdown-section">
-                                <a href="#" class="dropdown-item"><strong>Đăng ký</strong></a>
-                                <a href="#" class="dropdown-item">Đăng nhập</a>
-                            </div>
-                            <div class="dropdown-divider"></div>
-                            <div class="dropdown-section">
-                                <a href="#" class="dropdown-item">Cho thuê chỗ ở qua Vangxa</a>
-                                <a href="#" class="dropdown-item">Tổ chức trải nghiệm</a>
-                                <a href="#" class="dropdown-item">Trung tâm trợ giúp</a>
-                            </div>
+                            @auth
+                                <div class="dropdown-section">
+                                    <a href="{{ route('settings.profile') }}" class="dropdown-item"><strong>Hồ sơ</strong></a>
+                                    <a href="{{ route('dashboard') }}" class="dropdown-item">Bảng điều khiển</a>
+                                </div>
+                                <div class="dropdown-divider"></div>
+                                <div class="dropdown-section">
+                                    <a href="#" class="dropdown-item">Cho thuê chỗ ở qua Vangxa</a>
+                                    <a href="#" class="dropdown-item">Tổ chức trải nghiệm</a>
+                                    <a href="#" class="dropdown-item">Trung tâm trợ giúp</a>
+                                </div>
+                                <div class="dropdown-divider"></div>
+                                <div class="dropdown-section">
+                                    <form method="POST" action="{{ route('logout') }}">
+                                        @csrf
+                                        <button type="submit" class="dropdown-item">Đăng xuất</button>
+                                    </form>
+                                </div>
+                            @else
+                                <div class="dropdown-section">
+                                    <a href="{{ route('register') }}" class="dropdown-item"><strong>Đăng ký</strong></a>
+                                    <a href="{{ route('login') }}" class="dropdown-item">Đăng nhập</a>
+                                </div>
+                                <div class="dropdown-divider"></div>
+                                <div class="dropdown-section">
+                                    <a href="#" class="dropdown-item">Cho thuê chỗ ở qua Vangxa</a>
+                                    <a href="#" class="dropdown-item">Tổ chức trải nghiệm</a>
+                                    <a href="#" class="dropdown-item">Trung tâm trợ giúp</a>
+                                </div>
+                            @endauth
                         </div>
                     </div>
                 </div>
