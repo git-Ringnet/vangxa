@@ -8,6 +8,7 @@ use Livewire\Volt\Volt;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\VangXaController;
 use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\HomeController as MainHomeController;
 
 use App\Http\Controllers\Page\DiningController;
 use App\Http\Controllers\Auth\GoogleController;
@@ -18,9 +19,7 @@ use App\Http\Controllers\Page\CommunityController;
 
 
 // Main routes
-Route::get('/', function () {
-    return view('landing');
-});
+Route::get('/', [MainHomeController::class, 'index'])->name('home');
 Route::get('/lodging', [LodgingController::class, 'index'])->name('lodging');
 
 Route::get('/detail/{id}', [LodgingController::class, 'detail'])->name('detail');
