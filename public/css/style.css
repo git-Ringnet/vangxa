@@ -1,0 +1,47 @@
+.favorite-btn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: rgba(255, 255, 255, 0.9);
+    border: none;
+    border-radius: 50%;
+    width: 35px;
+    height: 35px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.favorite-btn i {
+    color: #999;
+    font-size: 16px;
+    transition: all 0.3s ease;
+}
+
+.favorite-btn:hover i {
+    color: #ff4d4d;
+}
+
+.favorite-btn.active i {
+    color: #ff4d4d;
+}
+
+.listing-meta {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 10px;
+    background: rgba(0, 0, 0, 0.7);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.listing-meta .price {
+    color: #fff;
+    font-weight: bold;
+    font-size: 18px;
+} 

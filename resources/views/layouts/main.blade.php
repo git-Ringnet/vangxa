@@ -5,14 +5,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>Vangxa.vn - Nhà nghỉ dưỡng cho thuê, Cabin, Nhà trên bãi biển</title>
+    <title>@yield('title')</title>
     <link rel="icon" href="/image/ship.png" type="image/x-icon">
     @vite(['resources/css/main.css', 'resources/js/app.js'])
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
-
-
+   
 </head>
 @stack('scripts')
 
@@ -342,6 +341,73 @@
                 });
             }
         });
+
+        // Toast notification function
+        function showToast(message, type = 'success') {
+            // Create toast element
+            const toast = document.createElement('div');
+            toast.className = `toast toast-${type}`;
+            
+            // Create toast content
+            const toastContent = document.createElement('div');
+            toastContent.className = 'toast-content';
+            
+            // Add icon based on type
+            const icon = document.createElement('i');
+            if (type === 'success') {
+                icon.className = 'fas fa-check-circle';
+            } else if (type === 'error') {
+                icon.className = 'fas fa-exclamation-circle';
+            } else if (type === 'warning') {
+                icon.className = 'fas fa-exclamation-triangle';
+            } else if (type === 'info') {
+                icon.className = 'fas fa-info-circle';
+            }
+            toastContent.appendChild(icon);
+            
+            // Add message
+            const messageSpan = document.createElement('span');
+            messageSpan.textContent = message;
+            toastContent.appendChild(messageSpan);
+            
+            toast.appendChild(toastContent);
+            
+            // Add close button
+            const closeBtn = document.createElement('button');
+            closeBtn.className = 'toast-close';
+            closeBtn.innerHTML = '<i class="fas fa-times"></i>';
+            closeBtn.addEventListener('click', () => {
+                toast.classList.remove('show');
+                setTimeout(() => toast.remove(), 300);
+            });
+            toast.appendChild(closeBtn);
+            
+            // Add toast to container
+            const toastContainer = document.querySelector('.toast-container') || (() => {
+                const container = document.createElement('div');
+                container.className = 'toast-container';
+                document.body.appendChild(container);
+                return container;
+            })();
+            
+            toastContainer.appendChild(toast);
+            
+            // Show toast
+            setTimeout(() => toast.classList.add('show'), 100);
+            
+            // Remove toast after 5 seconds
+            const timeoutId = setTimeout(() => {
+                toast.classList.remove('show');
+                setTimeout(() => toast.remove(), 300);
+            }, 5000);
+            
+            // Cancel timeout if close button is clicked
+            closeBtn.addEventListener('click', () => {
+                clearTimeout(timeoutId);
+            });
+        }
+
+       
     </script>
 </body>
 

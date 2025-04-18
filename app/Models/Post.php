@@ -38,4 +38,14 @@ class Post extends Model
     {
         return $this->hasMany(Comment::class)->whereIsRoot(); // chỉ lấy comment gốc
     }
+
+    public function favorites()
+    {
+        return $this->hasMany(Favorite::class);
+    }
+
+    public function getFavoritesCountAttribute()
+    {
+        return $this->favorites()->count();
+    }
 }

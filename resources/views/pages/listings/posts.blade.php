@@ -21,9 +21,12 @@
                 @endforeach
             </div>
         </div>
-        <button class="favorite-button" onclick="event.preventDefault(); toggleFavorite(this);">
-            <i class="fas fa-heart"></i>
-        </button>
+        <form action="{{ route('favorites.favorite', ['id' => $post->id]) }}" method="POST" class="favorite-form" data-post-id="{{ $post->id }}">
+            @csrf
+            <button type="button" class="favorite-button favorite-btn" data-post-id="{{ $post->id }}" data-favorited="{{ Auth::check() && $post->isFavorited ? 'true' : 'false' }}" data-authenticated="{{ Auth::check() ? 'true' : 'false' }}" onclick="event.preventDefault(); handleFavorite(this);">
+                <i class="{{ Auth::check() && $post->isFavorited ? 'fas' : 'far' }} fa-heart {{ Auth::check() && $post->isFavorited ? 'text-danger' : '' }}"></i>
+            </button>
+        </form>
     </div>
     <div class="listing-content">
         <div class="listing-header">
@@ -41,4 +44,17 @@
         </p> -->
     </div>
 </a>
-@endforeach 
+@endforeach
+
+<script>
+function handleFavoriteClick(button, postId, isAuthenticated) {
+    event.preventDefault();
+    
+    if (!isAuthenticated) {
+        showToast('Vui lòng đăng nhập để thêm vào yêu thích', 'warning');
+        return false;
+    }
+    
+    toggleFavorite(button, postId);
+}
+</script> 
