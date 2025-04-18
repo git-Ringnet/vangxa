@@ -281,6 +281,61 @@
             </div>
         </div>
     </div>
+
+    <!-- Share Modal -->
+    <div class="share-modal" id="shareModal">
+        <div class="share-content">
+            <div class="share-header">
+                <h3>Chia sẻ</h3>
+                <button class="share-close" onclick="closeShareModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="share-body">
+                <div class="share-url-container">
+                    <input type="text" class="share-url-input" id="shareUrl" readonly>
+                    <button class="share-copy-btn" onclick="copyShareUrl()">Sao chép</button>
+                </div>
+                <div class="share-social">
+                    <a href="#" class="share-social-btn facebook" onclick="shareToFacebook()">
+                        <i class="fab fa-facebook"></i>
+                        <span>Facebook</span>
+                    </a>
+                    <a href="#" class="share-social-btn twitter" onclick="shareToTwitter()">
+                        <i class="fab fa-twitter"></i>
+                        <span>Twitter</span>
+                    </a>
+                    <a href="#" class="share-social-btn telegram" onclick="shareToTelegram()">
+                        <i class="fab fa-telegram"></i>
+                        <span>Telegram</span>
+                    </a>
+                    <a href="#" class="share-social-btn whatsapp" onclick="shareToWhatsApp()">
+                        <i class="fab fa-whatsapp"></i>
+                        <span>WhatsApp</span>
+                    </a>
+                    <a href="#" class="share-social-btn email" onclick="shareToEmail()">
+                        <i class="fas fa-envelope"></i>
+                        <span>Email</span>
+                    </a>
+                    <a href="#" class="share-social-btn messenger" onclick="shareToMessenger()">
+                        <i class="fab fa-facebook-messenger"></i>
+                        <span>Messenger</span>
+                    </a>
+                    <a href="#" class="share-social-btn line" onclick="shareToLine()">
+                        <i class="fab fa-line"></i>
+                        <span>Line</span>
+                    </a>
+                    <a href="#" class="share-social-btn zalo" onclick="shareToZalo()">
+                        <i class="fas fa-comment"></i>
+                        <span>Zalo</span>
+                    </a>
+                </div>
+            </div>
+            <div class="share-footer">
+                <p>Chia sẻ trang này với bạn bè của bạn</p>
+            </div>
+        </div>
+    </div>
 </div>
 @endsection
 
@@ -489,6 +544,88 @@
                 showToast('Có lỗi xảy ra, vui lòng thử lại sau', 'error');
             });
         };
+    });
+
+    function sharePost() {
+        const modal = document.getElementById('shareModal');
+        const shareUrl = document.getElementById('shareUrl');
+        shareUrl.value = window.location.href;
+        modal.classList.add('show');
+    }
+
+    function closeShareModal() {
+        const modal = document.getElementById('shareModal');
+        modal.classList.remove('show');
+    }
+
+    function copyShareUrl() {
+        const shareUrl = document.getElementById('shareUrl');
+        const copyBtn = document.querySelector('.share-copy-btn');
+        
+        shareUrl.select();
+        document.execCommand('copy');
+        
+        copyBtn.textContent = 'Đã sao chép!';
+        copyBtn.classList.add('copied');
+        
+        setTimeout(() => {
+            copyBtn.textContent = 'Sao chép';
+            copyBtn.classList.remove('copied');
+        }, 2000);
+    }
+
+    function shareToFacebook() {
+        const url = encodeURIComponent(window.location.href);
+        const title = encodeURIComponent(document.title);
+        window.open(`https://www.facebook.com/sharer/sharer.php?u=${url}`, '_blank');
+    }
+
+    // function shareToTwitter() {
+    //     const url = encodeURIComponent(window.location.href);
+    //     const title = encodeURIComponent(document.title);
+    //     window.open(`https://twitter.com/intent/tweet?url=${url}&text=${title}`, '_blank');
+    // }
+
+    // function shareToTelegram() {
+    //     const url = encodeURIComponent(window.location.href);
+    //     const title = encodeURIComponent(document.title);
+    //     window.open(`https://t.me/share/url?url=${url}&text=${title}`, '_blank');
+    // }
+
+    // function shareToWhatsApp() {
+    //     const url = encodeURIComponent(window.location.href);
+    //     const title = encodeURIComponent(document.title);
+    //     window.open(`https://wa.me/?text=${title}%20${url}`, '_blank');
+    // }
+
+    // function shareToEmail() {
+    //     const url = encodeURIComponent(window.location.href);
+    //     const title = encodeURIComponent(document.title);
+    //     window.open(`mailto:?subject=${title}&body=${url}`, '_blank');
+    // }
+
+    // function shareToMessenger() {
+    //     const url = encodeURIComponent(window.location.href);
+    //     window.open(`https://www.facebook.com/dialog/send?link=${url}&app_id=YOUR_APP_ID`, '_blank');
+    // }
+
+    // function shareToLine() {
+    //     const url = encodeURIComponent(window.location.href);
+    //     const title = encodeURIComponent(document.title);
+    //     window.open(`https://line.me/R/share?text=${title}%0A${url}`, '_blank');
+    // }
+
+    // function shareToZalo() {
+    //     const url = encodeURIComponent(window.location.href);
+    //     const title = encodeURIComponent(document.title);
+    //     window.open(`https://zalo.me/share?u=${url}&t=${title}`, '_blank');
+    // }
+
+    // Đóng modal khi click bên ngoài
+    document.getElementById('shareModal').addEventListener('click', function(e) {
+        if (e.target === this) {
+            closeShareModal();
+        }
     });
 </script>
 @endpush

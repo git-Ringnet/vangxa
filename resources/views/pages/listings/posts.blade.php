@@ -36,7 +36,7 @@
                 <span>4.96</span>
             </div>
         </div>
-        <p class="listing-location">{{ $post->address }}</p>
+        <!-- <p class="listing-location">{{ $post->address }}</p> -->
         <!-- <p class="listing-dates">22-27 tháng 5</p>
         <p class="listing-price">
             <span class="price-amount">2,000,000₫</span>

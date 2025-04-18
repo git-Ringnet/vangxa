@@ -73,11 +73,11 @@ Route::get('/dining/detail/{id}', [DiningController::class, 'detail'])->name('di
 Route::get('/dining/load-more', [DiningController::class, 'loadMore'])->name('dining.load-more');
 
 // Favorites routes
-// Favorites routes
 Route::middleware(['auth'])->group(function () {
     Route::get('/favorites', [FavoriteController::class, 'index'])->name('favorites');
     Route::post('/favorites/{id}', [FavoriteController::class, 'toggleFavorite'])->name('favorites.favorite');
 });
+
 
 // Community routes
 Route::resource('community', CommunityController::class);
