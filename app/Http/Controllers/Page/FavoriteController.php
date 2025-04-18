@@ -13,20 +13,26 @@ class FavoriteController extends Controller
     /**
      * Hiển thị danh sách yêu thích của người dùng
      */
-    public function index()
+    public function index(Request $request)
     {
-        $user = Auth::user();
-        
-        if (!$user) {
-            return redirect()->route('login');
+        $type = $request->query('type');
+        $query = Post::whereHas('favorites', function($q) {
+            $q->where('user_id', Auth::id());
+        });
+
+        if ($type) {
+            $query->where('type', $type);
         }
+
+        $posts = $query->with(['images', 'favorites'])->get();
         
-        $favorites = Favorite::with('post.images')
-            ->where('user_id', $user->id)
-            ->orderBy('created_at', 'desc')
-            ->get();
-        
-        return view('pages.favorites.favorites', compact('favorites'));
+        // Kiểm tra trạng thái yêu thích cho mỗi bài viết
+        foreach ($posts as $post) {
+            $post->isFavorited = true; // Đã yêu thích
+            $post->favorites_count = $post->favorites()->count();
+        }
+
+        return view('pages.favorites.favorite', compact('posts', 'type'));
     }
 
     /**

@@ -203,7 +203,8 @@
                                 <div class="dropdown-section">
                                     <a href="{{ route('settings.profile') }}" class="dropdown-item"><strong>Hồ sơ</strong></a>
                                     <a href="{{ route('dashboard') }}" class="dropdown-item">Bảng điều khiển</a>
-                                </div>
+                                    <a href="{{ route('favorites') }}" class="dropdown-item">Danh sách đã yêu thích</a>
+                                    </div>
                                 <div class="dropdown-divider"></div>
                                 <div class="dropdown-section">
                                     <a href="#" class="dropdown-item">Cho thuê chỗ ở qua Vangxa</a>

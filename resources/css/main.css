@@ -3403,3 +3403,236 @@ a {
 .listings-grid .favorite-button.active i {
     color: #ff4d4d !important;
 }
+/* Favorite page lọc*/
+.filter-section {
+    padding: 1rem 0;
+    background: #fff;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.filter-btn {
+    padding: 0.5rem 1.5rem;
+    border-radius: 9999px;
+    font-weight: 500;
+    color: #6b7280;
+    transition: all 0.3s ease;
+    background: #f3f4f6;
+    text-decoration: none;
+
+}
+
+.filter-btn:hover {
+    background: #e5e7eb;
+    color: #374151;
+}
+
+.filter-btn.active {
+    background: #3b82f6;
+    color: white;
+}
+
+.filter-btn i {
+    font-size: 1rem;
+    text-decoration: none;
+
+}
+
+/* Share Modal */
+.share-modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+    justify-content: center;
+    align-items: center;
+}
+
+.share-modal.show {
+    display: flex;
+}
+
+.share-content {
+    background: white;
+    border-radius: 16px;
+    width: 90%;
+    max-width: 500px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    animation: modalFadeIn 0.3s ease;
+}
+
+@keyframes modalFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.share-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    border-bottom: 1px solid #eee;
+}
+
+.share-header h3 {
+    font-size: 18px;
+    font-weight: 600;
+    margin: 0;
+    color: #333;
+}
+
+.share-close {
+    background: none;
+    border: none;
+    font-size: 20px;
+    cursor: pointer;
+    color: #666;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    transition: all 0.2s;
+}
+
+.share-close:hover {
+    background-color: #f5f5f5;
+    color: #333;
+}
+
+.share-body {
+    padding: 20px;
+}
+
+.share-url-container {
+    display: flex;
+    margin-bottom: 20px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.share-url-input {
+    flex: 1;
+    padding: 12px 15px;
+    border: none;
+    outline: none;
+    font-size: 14px;
+    color: #333;
+    background-color: #f9f9f9;
+}
+
+.share-copy-btn {
+    background: #3b82f6;
+    color: white;
+    border: none;
+    padding: 0 15px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: background 0.2s;
+}
+
+.share-copy-btn:hover {
+    background: #2563eb;
+}
+
+.share-copy-btn.copied {
+    background: #10b981;
+}
+
+.share-social {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.share-social-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 15px 10px;
+    border: 1px solid #eee;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-decoration: none;
+    color: #333;
+}
+
+.share-social-btn:hover {
+    background-color: #f9f9f9;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+}
+
+.share-social-btn i {
+    font-size: 24px;
+    margin-bottom: 8px;
+}
+
+.share-social-btn span {
+    font-size: 12px;
+    font-weight: 500;
+}
+
+.share-social-btn.facebook i {
+    color: #1877f2;
+}
+
+.share-social-btn.twitter i {
+    color: #1da1f2;
+}
+
+.share-social-btn.telegram i {
+    color: #0088cc;
+}
+
+.share-social-btn.whatsapp i {
+    color: #25d366;
+}
+
+.share-social-btn.email i {
+    color: #ea4335;
+}
+
+.share-social-btn.messenger i {
+    color: #0084ff;
+}
+
+.share-social-btn.line i {
+    color: #00b900;
+}
+
+.share-social-btn.zalo i {
+    color: #0068ff;
+}
+
+.share-footer {
+    padding: 15px 20px;
+    border-top: 1px solid #eee;
+    text-align: center;
+}
+
+.share-footer p {
+    margin: 0;
+    font-size: 14px;
+    color: #666;
+}
+
+@media (max-width: 576px) {
+    .share-social {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
