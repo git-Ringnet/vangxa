@@ -15,10 +15,13 @@
                     <i class="fas fa-share"></i>
                     <span>Chia sẻ</span>
                 </button>
-                <button class="detail-page__action-button detail-page__action-button--save">
-                    <i class="fas fa-heart"></i>
-                    <span>Lưu</span>
-                </button>
+                <form action="{{ route('favorites.favorite', ['id' => $post->id]) }}" method="POST" class="favorite-form" data-post-id="{{ $post->id }}">
+                    @csrf
+                    <button type="button" class="detail-page__action-button detail-page__action-button--save btn-favorite" data-post-id="{{ $post->id }}" data-favorited="{{ Auth::check() && $post->isFavorited ? 'true' : 'false' }}" data-authenticated="{{ Auth::check() ? 'true' : 'false' }}" onclick="event.preventDefault(); handleFavorite(this);">
+                        <i class="{{ Auth::check() && $post->isFavorited ? 'fas' : 'far' }} fa-heart {{ Auth::check() && $post->isFavorited ? 'text-danger' : '' }}"></i>
+                        <span>Lưu</span>
+                    </button>
+                </form>
             </div>
         </div>
 
@@ -449,6 +452,99 @@
         const modal = bootstrap.Modal.getInstance(document.getElementById('imageGalleryModal'));
         modal.hide();
     }
+
+    // Function to handle favorite button click
+    window.handleFavorite = function(button) {
+        const isAuthenticated = button.dataset.authenticated === 'true';
+        const postId = button.dataset.postId;
+        
+        if (!isAuthenticated) {
+            showToast('Vui lòng đăng nhập để thêm vào yêu thích', 'warning');
+            return false;
+        }
+        
+        toggleFavorite(button, postId);
+    };
+
+    // Function to toggle favorite status
+    window.toggleFavorite = function(button, postId) {
+        button.disabled = true; // Prevent rapid clicks
+        const token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+        fetch(`/favorites/${postId}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': token,
+                'Accept': 'application/json'
+            },
+            credentials: 'same-origin'
+        })
+        .then(response => {
+            if (!response.ok) {
+                if (response.status === 401) {
+                    window.location.href = '/login';
+                    return;
+                }
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+        })
+        .then(data => {
+            if (!data) return;
+            const icon = button.querySelector('i');
+            const text = button.querySelector('.favorite-count');
+            if (data.favorited) {
+                icon.classList.remove('far');
+                icon.classList.add('fas');
+                icon.classList.add('text-danger');
+                button.classList.add('active');
+                button.setAttribute('data-favorited', 'true');
+                button.title = 'Bỏ yêu thích';
+            } else {
+                icon.classList.remove('fas');
+                icon.classList.add('far');
+                icon.classList.remove('text-danger');
+                button.classList.remove('active');
+                button.setAttribute('data-favorited', 'false');
+                button.title = 'Yêu thích';
+            }
+            if (text) {
+                text.textContent = data.favoritesCount;
+            }
+            showToast(data.message, data.favorited ? 'success' : 'info');
+            document.querySelectorAll(`.favorite-btn[data-post-id="${postId}"], .btn-favorite[data-post-id="${postId}"]`).forEach(btn => {
+                if (btn !== button) {
+                    const btnIcon = btn.querySelector('i');
+                    const btnText = btn.querySelector('.favorite-count');
+                    if (data.favorited) {
+                        btnIcon.classList.remove('far');
+                        btnIcon.classList.add('fas');
+                        btnIcon.classList.add('text-danger');
+                        btn.classList.add('active');
+                        btn.setAttribute('data-favorited', 'true');
+                        btn.title = 'Bỏ yêu thích';
+                    } else {
+                        btnIcon.classList.remove('fas');
+                        btnIcon.classList.add('far');
+                        btnIcon.classList.remove('text-danger');
+                        btn.classList.remove('active');
+                        btn.setAttribute('data-favorited', 'false');
+                        btn.title = 'Yêu thích';
+                    }
+                    if (btnText) {
+                        btnText.textContent = data.favoritesCount;
+                    }
+                }
+            });
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            showToast('Có lỗi xảy ra, vui lòng thử lại sau', 'error');
+        })
+        .finally(() => {
+            button.disabled = false; // Re-enable button
+        });
+    };
 </script>
 @endsection
 

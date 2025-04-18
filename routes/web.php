@@ -16,6 +16,7 @@ use App\Http\Controllers\Auth\VerificationController;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\Page\CommunityController;
+use App\Http\Controllers\Page\FavoriteController;
 
 
 // Main routes
@@ -66,9 +67,17 @@ Route::prefix('admin')->group(function () {
     Route::resource('users', UserController::class);
 })->middleware(['auth', 'role:Admin']);
 
+// Dining routes
 Route::get('/dining', [DiningController::class, 'index'])->name('dining');
 Route::get('/dining/detail/{id}', [DiningController::class, 'detail'])->name('dining.detail-dining');
 Route::get('/dining/load-more', [DiningController::class, 'loadMore'])->name('dining.load-more');
+
+// Favorites routes
+// Favorites routes
+Route::middleware(['auth'])->group(function () {
+    Route::get('/favorites', [FavoriteController::class, 'index'])->name('favorites');
+    Route::post('/favorites/{id}', [FavoriteController::class, 'toggleFavorite'])->name('favorites.favorite');
+});
 
 // Community routes
 Route::resource('community', CommunityController::class);
