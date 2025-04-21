@@ -7,6 +7,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Laravel\Socialite\Facades\Socialite;
+use Str;
 
 class GoogleController extends Controller
 {
@@ -30,12 +31,19 @@ class GoogleController extends Controller
                     'password' => bcrypt(rand(100000, 999999)),
                     'provider' => 'google',
                     'email_verified_at'=> now(),
+                    'is_verified'=> 1,
+                    'remember_token' => Str::random(60)
                 ]);
+                $user->markEmailAsVerified();
             } else {
                 $user->update([
                     'google_id' => $googleUser->id,
-                    'provider' => 'google'
+                    'provider' => 'google',
+                    'email_verified_at'=> now(),
+                    'is_verified'=> 1,
+                    'remember_token' => Str::random(60)
                 ]);
+                $user->markEmailAsVerified();
             }
 
             Auth::login($user);
