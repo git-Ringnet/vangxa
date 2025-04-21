@@ -19,6 +19,12 @@ use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\Page\CommunityController;
 use App\Http\Controllers\Page\FavoriteController;
 
+Route::get('/test-scheme', function () {
+    return request()->getScheme(); // Nó nên trả về 'https'
+});
+Route::get('/test-header', function () {
+    return request()->headers->all();
+});
 
 // Main routes
 Route::get('/', [MainHomeController::class, 'index'])->name('home');
