@@ -1,6 +1,8 @@
 <?php
 
+use App\Events\TestReverbEvent;
 use App\Http\Controllers\RolePermissionController;
+use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Page\HomeController;
 use App\Http\Controllers\Page\LodgingController;
@@ -42,6 +44,13 @@ Route::resource('reviews', ReviewController::class);
 // Admin routes
 Route::resource('vangxa', VangXaController::class);
 
+
+Route::get('/email/verify/{id}/{hash}', function (EmailVerificationRequest $request) {
+    $request->fulfill();
+
+    return redirect('/home');
+})->middleware(['auth', 'signed'])->name('verification.verify');
+
 // Settings routes
 Route::middleware(['auth'])->group(function () {
     Route::redirect('settings', 'settings/profile');
@@ -49,12 +58,15 @@ Route::middleware(['auth'])->group(function () {
     Volt::route('settings/password', 'settings.password')->name('settings.password');
     Volt::route('settings/appearance', 'settings.appearance')->name('settings.appearance');
 
-    Route::post('/send-verification-code', [VerificationController::class, 'sendVerificationCode'])->name('send.verification.code');
-    Route::post('/verify-code', [VerificationController::class, 'verifyCode'])->name('verify.code');
+    // Route::post('/send-verification-code', [VerificationController::class, 'sendVerificationCode'])->name('send.verification.code');
+    // Route::post('/verify-code', [VerificationController::class, 'verifyCode'])->name('verify.code');
 });
 
 Route::get('/auth/google', [GoogleController::class, 'redirectToGoogle'])->name('google.login');
 Route::get('/auth/google/callback', [GoogleController::class, 'handleGoogleCallback'])->name('google.callback');
+
+Route::get('/auth/tiktok', [TiktokController::class, 'redirectToTiktok'])->name('tiktok.login');
+Route::get('/auth/tiktok/callback', [TiktokController::class, 'handleTiktokCallback'])->name('tiktok.callback');
 
 Route::prefix('admin')->group(function () {
     Route::get('roles-permissions', [RolePermissionController::class, 'index'])->name('roles-permissions.index');
@@ -84,5 +96,15 @@ Route::resource('community', CommunityController::class);
 
 // Comment routes
 Route::resource('comments', CommentController::class);
+
+
+Route::get('/test-reverb', function () {
+    event(new TestReverbEvent('Hello, Reverb!'));
+    return 'Conmeno!';
+});
+
+Route::get('/test-reverb-page', function () {
+    return view('test-reverb');
+});
 
 require __DIR__ . '/auth.php';
