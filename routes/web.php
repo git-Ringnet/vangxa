@@ -2,7 +2,6 @@
 
 use App\Events\TestReverbEvent;
 use App\Http\Controllers\RolePermissionController;
-use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Page\HomeController;
 use App\Http\Controllers\Page\LodgingController;
@@ -43,13 +42,6 @@ Route::resource('reviews', ReviewController::class);
 
 // Admin routes
 Route::resource('vangxa', VangXaController::class);
-
-
-Route::get('/email/verify/{id}/{hash}', function (EmailVerificationRequest $request) {
-    $request->fulfill();
-
-    return redirect('/home');
-})->middleware(['auth', 'signed'])->name('verification.verify');
 
 // Settings routes
 Route::middleware(['auth'])->group(function () {
