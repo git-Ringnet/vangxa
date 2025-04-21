@@ -14,21 +14,17 @@ class VerifyEmailController extends Controller
      */
     public function __invoke(EmailVerificationRequest $request): RedirectResponse
     {
-        // Nếu người dùng đã xác minh email trước đó, chuyển hướng đến dashboard
         if ($request->user()->hasVerifiedEmail()) {
-            return redirect()->intended(route('dashboard', absolute: false) . '?verified=1');
+            return redirect()->intended(route('dashboard', absolute: false).'?verified=1');
         }
 
-        // Nếu người dùng chưa xác minh email, đánh dấu email là đã xác minh
         if ($request->user()->markEmailAsVerified()) {
             /** @var \Illuminate\Contracts\Auth\MustVerifyEmail $user */
             $user = $request->user();
 
-            // Gửi sự kiện khi email được xác minh thành công
             event(new Verified($user));
         }
 
-        // Chuyển hướng sau khi xác minh email
-        return redirect()->intended(route('dashboard', absolute: false) . '?verified=1');
+        return redirect()->intended(route('dashboard', absolute: false).'?verified=1');
     }
 }
