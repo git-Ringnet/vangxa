@@ -20,28 +20,44 @@ class GoogleController extends Controller
         try {
             $googleUser = Socialite::driver('google')->user();
 
-            $user = User::where('email', $googleUser->email)->first();
+            // Tìm user theo email
+            $user = User::where('email', $googleUser->getEmail())->first();
 
             if (!$user) {
+                // Nếu user chưa tồn tại, tạo mới
                 $user = User::create([
-                    'name' => $googleUser->name,
-                    'email' => $googleUser->email,
-                    'google_id' => $googleUser->id,
-                    'password' => bcrypt(rand(100000, 999999)),
-                    'provider' => 'google'
+                    'name'       => $googleUser->getName(),
+                    'email'      => $googleUser->getEmail(),
+                    'google_id'  => $googleUser->getId(),
+                    'password'   => bcrypt(Str::random(10)),
+                    'provider'   => 'google',
+                    'email_verified_at' => now(), // Xác minh luôn nếu tin tưởng Google
                 ]);
             } else {
+                // Nếu đã có user, cập nhật thông tin
                 $user->update([
-                    'google_id' => $googleUser->id,
-                    'provider' => 'google'
+                    'google_id' => $googleUser->getId(),
+                    'provider'  => 'google',
                 ]);
+
+                // Nếu chưa xác minh email, đánh dấu là đã xác minh
+                if (!$user->hasVerifiedEmail()) {
+                    $user->markEmailAsVerified();
+                }
             }
 
+            // Đăng nhập user
             Auth::login($user);
 
-            return redirect()->intended('/');
+            // Chuyển hướng sau đăng nhập
+            return redirect()->intended(route('dashboard'));
+
         } catch (\Exception $e) {
-            return redirect()->route('login')->with('error', 'Something went wrong with Google login.');
+            // Ghi log lỗi để dễ debug khi có vấn đề
+            Log::error('Google login error: ' . $e->getMessage());
+
+            return redirect()->route('login')->with('error', 'Đăng nhập Google thất bại. Vui lòng thử lại.');
         }
     }
+
 }
