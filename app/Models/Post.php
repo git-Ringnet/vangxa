@@ -39,13 +39,13 @@ class Post extends Model
         return $this->hasMany(Comment::class)->whereIsRoot(); // chỉ lấy comment gốc
     }
 
-    public function favorites()
+    public function trustlist()
     {
-        return $this->hasMany(Favorite::class);
+        return $this->hasMany(Trustlist::class);
     }
 
-    public function getFavoritesCountAttribute()
+    public function getSavesCountAttribute()
     {
-        return $this->favorites()->count();
+        return $this->trustlist()->count();
     }
 }

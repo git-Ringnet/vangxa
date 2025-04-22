@@ -617,15 +617,13 @@ a {
 }
 
 /* Book Animation styles removed */
-
-.favorite-button {
-    position: absolute;
+.trustlist-btn{
     top: 15px;
     right: 15px;
-    background: rgba(0, 0, 0, 0.5);
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.5);
+    width: 44px;
+    height: 38px;
+    border-radius: 44%;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -634,15 +632,40 @@ a {
     z-index: 10;
     transition: all 0.3s ease;
 }
-
-.favorite-button i {
+.trustlist-button {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    background: rgba(2, 2, 2, 0.5);
+    width: 44px;
+    height: 38px;
+    border-radius: 44%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    cursor: pointer;
+    z-index: 10;
+    transition: all 0.3s ease;
+}
+.trustlist-btn i {
+    color: rgb(41, 41, 41);
+    font-size: 18px;
+    transition: all 0.3s ease;
+    padding: 4px;
+}
+.trustlist-button i {
     color: white;
     font-size: 18px;
     transition: all 0.3s ease;
+    padding: 4px;
 }
-
-.favorite-button:hover {
-    background: rgba(0, 0, 0, 0.7);
+.trustlist-btn:hover {
+    background: #b1eaee;
+    transform: scale(1.1);
+}
+.trustlist-button:hover {
+    background: #b1eaee;
     transform: scale(1.1);
 }
 
@@ -650,7 +673,7 @@ a {
     background: rgba(255, 255, 255, 0.8);
 } */
 
-.favorite-button.active i {
+.trustlist-button.active i {
     color: #ff4d4d;
 }
 
@@ -2184,7 +2207,7 @@ a {
     color: var(--dining-dark);
 }
 
-.favorite-badge {
+.trustlist-badge {
     position: absolute;
     top: 12px;
     left: 12px;
@@ -3251,7 +3274,7 @@ a {
 }
 
 .toast-info .toast-content i {
-    color: #d00a0a;
+    color: #0fdfe2;
 }
 
 .toast-content span {
@@ -3315,7 +3338,7 @@ a {
     align-items: center;
 }
 
-.btn-favorite, .btn-share {
+.btn-trustlist, .btn-share {
     background: none;
     border: none;
     padding: 10px 15px;
@@ -3335,25 +3358,25 @@ a {
     text-decoration: none;
 }
 
-.btn-favorite:hover, .btn-share:hover {
+.btn-trustlist:hover, .btn-share:hover {
     background: rgba(0, 0, 0, 0.05);
     transform: translateY(-2px);
 }
 
-.btn-favorite.active {
+.btn-trustlist.active {
     color: #ff4d4d;
     background: rgba(255, 77, 77, 0.1);
 }
 
-.btn-favorite.active:hover {
+.btn-trustlist.active:hover {
     background: rgba(255, 77, 77, 0.15);
 }
 
-.btn-favorite i, .btn-share i {
+.btn-trustlist i, .btn-share i {
     font-size: 18px;
 }
 
-.favorite-count {
+.trustlist-count {
     font-size: 14px;
     font-weight: 500;
 }
@@ -3362,7 +3385,7 @@ a {
     color: #666;
 }
 
-.btn-share:hover {
+.btn-share:hover, .btn-trustlist:hover {
     color: #2196F3;
     background: rgba(33, 150, 243, 0.1);
 }
@@ -3370,7 +3393,7 @@ a {
 /* Style rõ ràng hơn cho nút yêu thích - đặt ở cuối file để có độ ưu tiên cao nhất */
 
 /* Detail dining page specific styles */
-.detail-dining-page .btn-favorite {
+.detail-dining-page .btn-trustlist {
     background: none;
     border: none;
     padding: 10px 15px;
@@ -3384,23 +3407,23 @@ a {
     border-radius: 50px;
 }
 
-.detail-dining-page .btn-favorite i {
+.detail-dining-page .btn-trustlist i {
     font-size: 18px;
     color: #666;
     transition: all 0.3s ease;
 }
 
-.detail-dining-page .btn-favorite.active {
+.detail-dining-page .btn-trustlist.active {
     background: rgba(255, 77, 77, 0.1);
 }
 
-.detail-dining-page .btn-favorite.active i {
+.detail-dining-page .btn-trustlist.active i {
     color: #ff4d4d !important;
 }
 
 
 
-.listings-grid .favorite-button.active i {
+.listings-grid .trustlist-button.active i {
     color: #ff4d4d !important;
 }
 /* Favorite page lọc*/

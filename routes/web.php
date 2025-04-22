@@ -17,6 +17,7 @@ use App\Http\Controllers\CommentController;
 use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\Page\CommunityController;
 use App\Http\Controllers\Page\FavoriteController;
+use App\Http\Controllers\Page\TrustlistController;
 
 
 // Main routes
@@ -73,11 +74,16 @@ Route::get('/dining/detail/{id}', [DiningController::class, 'detail'])->name('di
 Route::get('/dining/load-more', [DiningController::class, 'loadMore'])->name('dining.load-more');
 
 // Favorites routes
-Route::middleware(['auth'])->group(function () {
-    Route::get('/favorites', [FavoriteController::class, 'index'])->name('favorites');
-    Route::post('/favorites/{id}', [FavoriteController::class, 'toggleFavorite'])->name('favorites.favorite');
-});
+// Route::middleware(['auth'])->group(function () {
+//     Route::get('/favorites', [FavoriteController::class, 'index'])->name('favorites');
+//     Route::post('/favorites/{id}', [FavoriteController::class, 'toggleFavorite'])->name('favorites.favorite');
+// });
 
+// Trustlist routes
+Route::middleware(['auth'])->group(function () {
+    Route::get('/trustlist', [TrustlistController::class, 'index'])->name('trustlist');
+    Route::post('/trustlist/{id}', [TrustlistController::class, 'toggle'])->name('trustlist.toggle');
+});
 
 // Community routes
 Route::resource('community', CommunityController::class);
