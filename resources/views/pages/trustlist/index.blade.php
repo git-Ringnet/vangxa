@@ -5,17 +5,17 @@
     <!-- Filter Section -->
     <section class="filter-section mb-6">
         <div class="flex justify-center space-x-4">
-            <a href="{{ route('favorites') }}"
+            <a href="{{ route('trustlist') }}"
                 class="filter-btn {{ !$type ? 'active' : '' }}">
-                <i class="fas fa-heart mr-2"></i>
+                <i class="fas fa-bookmark mr-2"></i>
                 Tất cả
             </a>
-            <a href="{{ route('favorites', ['type' => 2]) }}"
+            <a href="{{ route('trustlist', ['type' => 2]) }}"
                 class="filter-btn {{ $type == 2 ? 'active' : '' }}">
                 <i class="fas fa-utensils mr-2"></i>
                 Ẩm thực
             </a>
-            <a href="{{ route('favorites', ['type' => 1]) }}"
+            <a href="{{ route('trustlist', ['type' => 1]) }}"
                 class="filter-btn {{ $type == 1 ? 'active' : '' }}">
                 <i class="fas fa-bed mr-2"></i>
                 Nghỉ dưỡng
@@ -28,7 +28,7 @@
         <div class="listings-grid">
             @if($posts->isEmpty())
             <div class="text-center py-8">
-                <p class="text-gray-500">Bạn chưa có bài viết yêu thích nào.</p>
+                <p class="text-gray-500">Bạn chưa có nhà cung cấp nào trong danh sách tin cậy.</p>
             </div>
             @else
             @foreach($posts as $post)
@@ -52,14 +52,14 @@
                                 @endfor
                         </div>
                     </div>
-                    <form action="{{ route('favorites.favorite', ['id' => $post->id]) }}" method="POST" class="favorite-form">
+                    <form action="{{ route('trustlist.toggle', ['id' => $post->id]) }}" method="POST" class="trustlist-form">
                         @csrf
-                        <button type="button" class="favorite-button favorite-btn"
+                        <button type="button" class="trustlist-button trustlist-btn"
                             data-post-id="{{ $post->id }}"
-                            data-favorited="{{ Auth::check() && $post->isFavorited ? 'true' : 'false' }}"
+                            data-saved="{{ Auth::check() && $post->isSaved ? 'true' : 'false' }}"
                             data-authenticated="{{ Auth::check() ? 'true' : 'false' }}"
-                            onclick="event.preventDefault(); handleFavorite(this);">
-                            <i class="{{ Auth::check() && $post->isFavorited ? 'fas' : 'far' }} fa-heart {{ Auth::check() && $post->isFavorited ? 'text-danger' : '' }}"></i>
+                            onclick="event.preventDefault(); handleSave(this);">
+                            <i class="{{ Auth::check() && $post->isSaved ? 'fas' : 'far' }} fa-bookmark {{ Auth::check() && $post->isSaved ? 'text-primary' : '' }}"></i>
                         </button>
                     </form>
                 </div>
@@ -82,38 +82,7 @@
 </div>
 
 <style>
-    .filter-section {
-        padding: 1rem 0;
-        background: #fff;
-        border-bottom: 1px solid #e5e7eb;
-    }
-
-    .filter-btn {
-        padding: 0.5rem 1.5rem;
-        border-radius: 9999px;
-        font-weight: 500;
-        color: #6b7280;
-        transition: all 0.3s ease;
-        background: #f3f4f6;
-        text-decoration: none;
-
-    }
-
-    .filter-btn:hover {
-        background: #e5e7eb;
-        color: #374151;
-    }
-
-    .filter-btn.active {
-        background: #3b82f6;
-        color: white;
-    }
-
-    .filter-btn i {
-        font-size: 1rem;
-        text-decoration: none;
-
-    }
+   
 </style>
 @endsection
 
@@ -121,24 +90,24 @@
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         initializeCarousels();
-        preventFavoriteFormSubmit();
+        preventTrustlistFormSubmit();
     });
 
-    function preventFavoriteFormSubmit() {
-        document.querySelectorAll('.favorite-form').forEach(form => {
+    function preventTrustlistFormSubmit() {
+        document.querySelectorAll('.trustlist-form').forEach(form => {
             form.addEventListener('submit', function(e) {
                 e.preventDefault();
             });
         });
     }
 
-    function handleFavorite(button) {
+    function handleSave(button) {
         const form = button.closest('form');
         const isAuthenticated = button.dataset.authenticated === 'true';
         const postId = button.dataset.postId;
 
         if (!isAuthenticated) {
-            showToast('Vui lòng đăng nhập để thêm vào yêu thích', 'warning');
+            showToast('Vui lòng đăng nhập để thêm vào danh sách tin cậy', 'warning');
             return false;
         }
 
@@ -157,18 +126,18 @@
             })
             .then(response => response.json())
             .then(data => {
-                if (data.message && data.favorited !== undefined) {
+                if (data.message && data.saved !== undefined) {
                     const icon = button.querySelector('i');
                     const listingCard = button.closest('.listing-card');
 
-                    if (data.favorited) {
-                        // Thêm vào yêu thích
+                    if (data.saved) {
+                        // Thêm vào danh sách tin cậy
                         icon.classList.remove('far');
-                        icon.classList.add('fas', 'text-danger');
-                        button.setAttribute('data-favorited', 'true');
+                        icon.classList.add('fas', 'text-primary');
+                        button.setAttribute('data-saved', 'true');
                         showToast(data.message, 'success');
                     } else {
-                        // Bỏ yêu thích
+                        // Bỏ khỏi danh sách tin cậy
                         if (listingCard) {
                             // Thêm hiệu ứng mờ dần trước khi xóa
                             listingCard.style.transition = 'opacity 0.3s ease';
@@ -181,14 +150,14 @@
                                 if (remainingCards.length === 0) {
                                     listingsGrid.innerHTML = `
                                 <div class="text-center py-8">
-                                    <p class="text-gray-500">Bạn chưa có bài viết yêu thích nào.</p>
+                                    <p class="text-gray-500">Bạn chưa có nhà cung cấp nào trong danh sách tin cậy.</p>
                                 </div>
                             `;
                                 }
                             }, 300); // Đợi hiệu ứng hoàn tất
                         }
-                        button.setAttribute('data-favorited', 'false');
-                        showToast(data.message, 'error');
+                        button.setAttribute('data-saved', 'false');
+                        showToast(data.message, 'info');
                     }
                 } else {
                     showToast(data.error || 'Có lỗi xảy ra', 'error');
@@ -203,8 +172,6 @@
                 button.disabled = false;
             });
     }
-
-
 
     function prevImage(button) {
         const carousel = button.closest('.image-carousel');
@@ -269,4 +236,4 @@
         });
     }
 </script>
-@endpush
+@endpush 
