@@ -14,14 +14,14 @@ class PostController extends Controller
     public function index(Request $request)
     {
         $query = Post::with('user')->latest();
-        
+
         // Lọc theo type nếu có
         if ($request->has('type')) {
             $query->where('type', $request->type);
         }
-        
+
         $posts = $query->paginate(10);
-        
+
         return view('admin.posts.index', compact('posts'));
     }
 
@@ -52,10 +52,10 @@ class PostController extends Controller
             foreach ($request->file('images') as $image) {
                 // Tạo tên file duy nhất
                 $filename = time() . '_' . $image->getClientOriginalName();
-                
+
                 // Lưu ảnh vào thư mục public/image/posts
                 $image->move(public_path('image/posts'), $filename);
-                
+
                 // Lưu đường dẫn vào database
                 $post->images()->create([
                     'image_path' => 'image/posts/' . $filename
@@ -67,7 +67,7 @@ class PostController extends Controller
             ->with('success', 'Bài đăng đã được tạo thành công!');
     }
 
-    
+
 
     public function destroy(Post $post)
     {
@@ -83,16 +83,16 @@ class PostController extends Controller
         if ($post->description) {
             // Tìm tất cả các thẻ img trong nội dung
             preg_match_all('/<img[^>]+src="([^">]+)"/', $post->description, $matches);
-            
+
             if (!empty($matches[1])) {
                 foreach ($matches[1] as $imageUrl) {
                     // Lấy đường dẫn tương đối từ URL
                     $path = parse_url($imageUrl, PHP_URL_PATH);
-                    
+
                     if ($path) {
                         // Loại bỏ tất cả các tiền tố có thể có
                         $path = preg_replace('/^.*image\//', 'image/', $path);
-                        
+
                         // Xóa cả ảnh trong thư mục posts và uploads
                         if (strpos($path, 'image/posts/') === 0 || strpos($path, 'image/uploads/') === 0) {
                             $fullPath = public_path($path);
@@ -139,31 +139,31 @@ class PostController extends Controller
     {
         // Chuẩn bị nội dung mô tả với đường dẫn ảnh đúng định dạng
         $description = $post->description;
-        
+
         // Tìm tất cả các thẻ img trong nội dung
         preg_match_all('/<img[^>]+src="([^">]+)"/', $description, $matches);
-        
+
         if (!empty($matches[1])) {
             foreach ($matches[1] as $imageUrl) {
                 // Lấy đường dẫn tương đối từ URL
                 $path = parse_url($imageUrl, PHP_URL_PATH);
-                
+
                 if ($path) {
                     // Loại bỏ tất cả các tiền tố có thể có
                     $path = preg_replace('/^.*image\//', 'image/', $path);
-                    
+
                     // Tạo đường dẫn mới với định dạng chuẩn
                     $newPath = asset($path);
-                    
+
                     // Thay thế đường dẫn cũ bằng đường dẫn mới
                     $description = str_replace($imageUrl, $newPath, $description);
                 }
             }
         }
-        
+
         // Cập nhật nội dung mô tả với đường dẫn ảnh đã chuẩn hóa
         $post->description = $description;
-        
+
         return view('admin.posts.edit', compact('post'));
     }
 
@@ -192,10 +192,10 @@ class PostController extends Controller
         if ($request->hasFile('images')) {
             foreach ($request->file('images') as $image) {
                 $filename = time() . '_' . $image->getClientOriginalName();
-                
+
                 // Lưu ảnh vào thư mục public/image/posts
                 $image->move(public_path('image/posts'), $filename);
-                
+
                 // Lưu đường dẫn vào database
                 $post->images()->create([
                     'image_path' => 'image/posts/' . $filename
@@ -267,5 +267,49 @@ class PostController extends Controller
         $image->delete();
 
         return response()->json(['success' => true]);
+    }
+
+    public function getPosts(Request $request)
+    {
+        try {
+            $perPage = 5;
+            $page = $request->get('page', 1);
+            $offset = ($page - 1) * $perPage;
+
+            $posts = Post::with(['user', 'group'])
+                ->where('type', '3')
+                ->orderBy('created_at', 'desc')
+                ->skip($offset)
+                ->take($perPage)
+                ->get();
+
+            $total = Post::count();
+            $hasMore = ($offset + $posts->count()) < $total;
+
+            return response()->json([
+                'posts' => $posts->map(function ($post) {
+                    return [
+                        'id' => $post->id,
+                        'description' => $post->description,
+                        'created_at' => $post->created_at->diffForHumans(),
+                        'user' => $post->user ? [
+                            'id' => $post->user->id,
+                            'name' => $post->user->name,
+                        ] : null,
+                        'group' => $post->group ? [
+                            'id' => $post->group->id,
+                            'name' => $post->group->name
+                        ] : null
+                    ];
+                }),
+                'hasMore' => $hasMore,
+                'nextPage' => $hasMore ? $page + 1 : null
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'error' => 'Server error',
+                'message' => $e->getMessage()
+            ], 500);
+        }
     }
 }

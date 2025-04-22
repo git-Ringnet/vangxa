@@ -18,6 +18,7 @@ class Post extends Model
         'user_id',
         'status',
         'type',
+        'group_id',
     ];
 
     public function user(): BelongsTo
@@ -47,5 +48,15 @@ class Post extends Model
     public function getSavesCountAttribute()
     {
         return $this->trustlist()->count();
+    }
+
+    public function group()
+    {
+        return $this->belongsTo(Group::class);
+    }
+
+    public function group()
+    {
+        return $this->belongsTo(Group::class);
     }
 }
