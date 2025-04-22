@@ -276,7 +276,7 @@ class PostController extends Controller
             $page = $request->get('page', 1);
             $offset = ($page - 1) * $perPage;
 
-            $posts = Post::with(['user', 'group'])
+            $posts = Post::with(['user', 'group', 'likes'])
                 ->where('type', '3')
                 ->orderBy('created_at', 'desc')
                 ->skip($offset)
@@ -288,6 +288,7 @@ class PostController extends Controller
 
             return response()->json([
                 'posts' => $posts->map(function ($post) {
+                    $isLiked = $post->likes->contains(auth()->id());
                     return [
                         'id' => $post->id,
                         'description' => $post->description,
@@ -299,7 +300,11 @@ class PostController extends Controller
                         'group' => $post->group ? [
                             'id' => $post->group->id,
                             'name' => $post->group->name
-                        ] : null
+                        ] : null,
+                        'likes' => [
+                            'count' => $post->likes->count(),
+                            'is_liked' => $isLiked
+                        ]
                     ];
                 }),
                 'hasMore' => $hasMore,

@@ -17,7 +17,7 @@
                                 <div class="mb-3">
                                     <label for="name" class="form-label">Tên nhóm <span
                                             class="text-danger">*</span></label>
-                                    <input type="text" class="form-control @error('name') is-invalid @enderror"
+                                    <input type="text" class="form-control @error('name') is-invalid @enderror" autocomplete="off"
                                         id="name" name="name" value="{{ old('name') }}" required>
                                     @error('name')
                                         <div class="invalid-feedback">{{ $message }}</div>
@@ -87,70 +87,4 @@
             </div>
         </div>
     </div>
-
-    <style>
-        .card {
-            border: none;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-            border-radius: 10px;
-        }
-
-        .card-header {
-            background: none;
-            border-bottom: 1px solid #eee;
-            padding: 1.5rem;
-        }
-
-        .form-control {
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            padding: 0.75rem 1rem;
-        }
-
-        .form-control:focus {
-            border-color: #0056b3;
-            box-shadow: 0 0 0 0.2rem rgba(0, 86, 179, 0.25);
-        }
-
-        .form-check-input:checked {
-            background-color: #0056b3;
-            border-color: #0056b3;
-        }
-
-        .btn {
-            padding: 0.75rem 1.5rem;
-            border-radius: 8px;
-            font-weight: 500;
-        }
-
-        .btn-primary {
-            background-color: #0056b3;
-            border-color: #0056b3;
-        }
-
-        .btn-primary:hover {
-            background-color: #004494;
-            border-color: #004494;
-        }
-
-        .btn-secondary {
-            background-color: #6c757d;
-            border-color: #6c757d;
-        }
-
-        .btn-secondary:hover {
-            background-color: #5a6268;
-            border-color: #545b62;
-        }
-
-        @media (max-width: 768px) {
-            .card-header {
-                padding: 1rem;
-            }
-
-            .btn {
-                padding: 0.5rem 1rem;
-            }
-        }
-    </style>
 @endsection

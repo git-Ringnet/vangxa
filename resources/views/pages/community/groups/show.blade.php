@@ -88,7 +88,7 @@
                     @if ($group->isMember(auth()->user()))
                         <div class="card shadow-sm mb-4">
                             <div class="card-body">
-                                <form action="{{ route('community.store') }}" method="POST" enctype="multipart/form-data">
+                                <form action="{{ route('communities.store') }}" method="POST" enctype="multipart/form-data">
                                     @csrf
                                     <input type="hidden" name="group_id" value="{{ $group->id }}">
                                     <input type="hidden" name="type" value="3">
@@ -122,15 +122,17 @@
                                         {{ $post->description }}
                                     </div>
                                     <div class="d-flex gap-4 text-muted">
-                                        <button class="btn btn-link text-decoration-none p-0">
-                                            <i class="far fa-heart me-1"></i>
-                                            Thích
+                                        <button class="btn btn-link text-decoration-none p-0 like-btn" 
+                                                data-post-id="{{ $post->id }}"
+                                                data-liked="{{ $post->likes->contains(auth()->id()) ? 'true' : 'false' }}">
+                                            <i class="{{ $post->likes->contains(auth()->id()) ? 'fas' : 'far' }} fa-heart me-1 {{ $post->likes->contains(auth()->id()) ? 'text-danger' : '' }}"></i>
+                                            <span class="like-count">{{ $post->likes->count() }}</span>
                                         </button>
                                         @if (!$post->group || ($post->group && $post->group->members->contains(auth()->id())))
                                             <button class="btn btn-link text-decoration-none p-0 comment-toggle"
-                                                data-post-id="{{ $post->id }}">
+                                                    data-post-id="{{ $post->id }}">
                                                 <i class="far fa-comment me-1"></i>
-                                                Bình luận
+                                                {{ count($post->comments) }}
                                             </button>
                                         @endif
                                     </div>
@@ -332,6 +334,49 @@
                     if (form.style.display === 'block') {
                         form.querySelector('input[name="content"]').focus();
                     }
+                });
+            });
+
+            // Handle like button clicks
+            document.querySelectorAll('.like-btn').forEach(button => {
+                button.addEventListener('click', function() {
+                    const postId = this.dataset.postId;
+                    const isLiked = this.dataset.liked === 'true';
+                    const icon = this.querySelector('i');
+                    const countSpan = this.querySelector('.like-count');
+                    const currentCount = parseInt(countSpan.textContent);
+
+                    // Toggle like status
+                    fetch(`/posts/${postId}/like`, {
+                        method: isLiked ? 'DELETE' : 'POST',
+                        headers: {
+                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                            'Accept': 'application/json',
+                            'Content-Type': 'application/json'
+                        }
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            // Update button state
+                            this.dataset.liked = data.is_liked;
+                            if (data.is_liked) {
+                                icon.classList.remove('far');
+                                icon.classList.add('fas', 'text-danger');
+                            } else {
+                                icon.classList.remove('fas', 'text-danger');
+                                icon.classList.add('far');
+                            }
+                            
+                            // Update count
+                            countSpan.textContent = data.count;
+                        } else {
+                            console.error(data.message);
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                    });
                 });
             });
         });

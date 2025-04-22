@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Post extends Model
 {
@@ -35,9 +36,10 @@ class Post extends Model
     {
         return $this->hasMany(Review::class);
     }
-    public function comments()
+
+    public function comments(): HasMany
     {
-        return $this->hasMany(Comment::class)->whereIsRoot(); // chỉ lấy comment gốc
+        return $this->hasMany(Comment::class);
     }
 
     public function trustlist()
@@ -50,13 +52,14 @@ class Post extends Model
         return $this->trustlist()->count();
     }
 
-    public function group()
+    public function group(): BelongsTo
     {
         return $this->belongsTo(Group::class);
     }
 
-    public function group()
+    public function likes(): BelongsToMany
     {
-        return $this->belongsTo(Group::class);
+        return $this->belongsToMany(User::class, 'likes', 'post_id', 'user_id')
+            ->withTimestamps();
     }
 }

@@ -19,6 +19,8 @@ use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\Page\CommunityController;
 use App\Http\Controllers\Page\FavoriteController;
 use App\Http\Controllers\GroupController;
+use App\Http\Controllers\LikeController;
+use App\Http\Controllers\ShareController;
 
 
 // Main routes
@@ -90,7 +92,7 @@ Route::middleware(['auth'])->group(function () {
 });
 
 // Community routes
-Route::resource('community', CommunityController::class);
+Route::resource('communities', CommunityController::class);
 
 // Group Routes
 Route::middleware(['auth'])->group(function () {
@@ -110,5 +112,11 @@ Route::middleware(['auth'])->group(function () {
 Route::resource('comments', CommentController::class);
 
 Route::get('/posts', [PostController::class, 'getPosts'])->name('posts.getPosts');
+
+// Like routes
+Route::middleware(['auth'])->group(function () {
+    Route::post('/posts/{post}/like', [LikeController::class, 'store'])->name('posts.like');
+    Route::delete('/posts/{post}/like', [LikeController::class, 'destroy'])->name('posts.unlike');
+});
 
 require __DIR__ . '/auth.php';

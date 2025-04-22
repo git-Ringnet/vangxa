@@ -18,7 +18,9 @@ class GroupController extends Controller
             ->withCount('members')
             ->withCount('posts')
             ->paginate(20);
-        $posts = Post::where('type', 3)->get();
+        $posts = Post::with(['user', 'group', 'likes'])
+            ->where('type', 3)
+            ->get();
         $userGroups = Group::all();
         return view('pages.community.groups.index', compact('groups', 'posts', 'userGroups'));
     }
