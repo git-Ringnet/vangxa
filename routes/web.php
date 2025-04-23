@@ -20,6 +20,7 @@ use App\Http\Controllers\Page\CommunityController;
 use App\Http\Controllers\Page\FavoriteController;
 use App\Http\Controllers\GroupController;
 use App\Http\Controllers\LikeController;
+use App\Http\Controllers\Page\TrustlistController;
 use App\Http\Controllers\ShareController;
 
 Route::get('/test-scheme', function () {
@@ -101,23 +102,23 @@ Route::middleware(['auth'])->group(function () {
 Route::resource('communities', CommunityController::class);
 
 // Group Routes
+Route::resource('groupss', GroupController::class);
+
+// Group Membership Routes
 Route::middleware(['auth'])->group(function () {
-    Route::resource('groupss', GroupController::class);
-    
-    // Group Membership Routes
     Route::post('/groups/{group}/join', [GroupController::class, 'join'])->name('groups.join');
-    Route::post('/groups/{group}/leave', [GroupController::class, 'leave'])->name('groups.leave');
-    Route::post('/groups/{group}/add-member', [GroupController::class, 'addMember'])->name('groups.add-member');
-    Route::get('/groups/{id}/members', [GroupController::class, 'members'])->name('groups.members');
-    Route::delete('/groups/{group}/members/{user}', [GroupController::class, 'removeMember'])->name('groups.remove-member');
-    Route::get('/groups/{id}/edit', [GroupController::class, 'edit'])->name('groups.edit');
-    Route::put('/groups/{id}', [GroupController::class, 'update'])->name('groups.update');
 });
+Route::post('/groups/{group}/leave', [GroupController::class, 'leave'])->name('groups.leave');
+Route::post('/groups/{group}/add-member', [GroupController::class, 'addMember'])->name('groups.add-member');
+Route::get('/groups/{id}/members', [GroupController::class, 'members'])->name('groups.members');
+Route::delete('/groups/{group}/members/{user}', [GroupController::class, 'removeMember'])->name('groups.remove-member');
+Route::get('/groups/{id}/edit', [GroupController::class, 'edit'])->name('groups.edit');
+Route::put('/groups/{id}', [GroupController::class, 'update'])->name('groups.update');
 
 // Comment routes
 Route::resource('comments', CommentController::class);
 
-Route::get('/posts', [PostController::class, 'getPosts'])->name('posts.getPosts');
+Route::get('/loadmore-posts', [PostController::class, 'getPosts'])->name('posts.getPosts');
 
 // Like routes
 Route::middleware(['auth'])->group(function () {

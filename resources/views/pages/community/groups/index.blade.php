@@ -4,28 +4,32 @@
     <div class="main-content">
         <div class="container py-4">
             <div class="row">
-                <div class="swiper mySwiper">
-                    <div class="swiper-wrapper">
-                        <!-- Nút tạo nhóm mới ở đầu -->
-                        <div class="swiper-slide">
-                            <a href="{{ route('groupss.create') }}" class="text-decoration-none">
-                                <div class="category-item text-center">
-                                    <div class="category-name create-group">
-                                        <i class="fas fa-plus me-1"></i>
-                                        Tạo nhóm mới
-                                    </div>
+                <div class="swiper-container">
+                    <div class="swiper mySwiper">
+                        <div class="swiper-wrapper">
+                            @if (Auth::check())
+                                <!-- Nút tạo nhóm mới ở đầu -->
+                                <div class="swiper-slide">
+                                    <a href="{{ route('groupss.create') }}" class="text-decoration-none">
+                                        <div class="category-item text-center">
+                                            <div class="category-name create-group">
+                                                <i class="fas fa-plus me-1"></i>
+                                                Tạo nhóm mới
+                                            </div>
+                                        </div>
+                                    </a>
                                 </div>
-                            </a>
+                            @endif
+                            @foreach ($groups as $group)
+                                <div class="swiper-slide">
+                                    <a href="{{ route('groupss.show', $group) }}" class="text-decoration-none">
+                                        <div class="category-item text-center">
+                                            <div class="category-name">{{ $group->name }}</div>
+                                        </div>
+                                    </a>
+                                </div>
+                            @endforeach
                         </div>
-                        @foreach ($groups as $group)
-                            <div class="swiper-slide">
-                                <a href="{{ route('groupss.show', $group) }}" class="text-decoration-none">
-                                    <div class="category-item text-center">
-                                        <div class="category-name">{{ $group->name }}</div>
-                                    </div>
-                                </a>
-                            </div>
-                        @endforeach
                     </div>
                     <div class="swiper-button-prev custom-nav"></div>
                     <div class="swiper-button-next custom-nav"></div>
@@ -45,7 +49,9 @@
                                                 </span>
                                                 @if ($post->group)
                                                     <span>></span>
-                                                    <span><b>{{ $post->group->name }}</b></span>
+                                                    <a class="text-decoration-none text-dark" href="{{ route('groupss.show', $post->group) }}">
+                                                        <span><b>{{ $post->group->name }}</b></span>
+                                                    </a>
                                                 @endif
                                                 <span>
                                                     {{ $post->created_at->diffForHumans() }}
@@ -55,19 +61,56 @@
                                         <div class="post-content mb-3">
                                             {{ $post->description }}
                                         </div>
+                                        @if ($post->images->count() > 0)
+                                            <div class="post-images mb-3" data-post-id="{{ $post->id }}"
+                                                data-total-images="{{ $post->images->count() }}"
+                                                data-images='@json($post->images->pluck('image_path'))'>
+                                                @if ($post->images->count() == 1)
+                                                    <div class="single-image">
+                                                        <img src="{{ asset($post->images[0]->image_path) }}"
+                                                            alt="Ảnh bài viết" class="img-fluid rounded cursor-pointer"
+                                                            onclick="showImage(this.src, {{ $post->id }}, 0)">
+                                                    </div>
+                                                @else
+                                                    <div class="row g-2">
+                                                        @foreach ($post->images->take(4) as $index => $image)
+                                                            <div
+                                                                class="{{ $post->images->count() == 2 ? 'col-6' : 'col-4' }}">
+                                                                <div class="position-relative">
+                                                                    <img src="{{ asset($image->image_path) }}"
+                                                                        alt="Ảnh bài viết"
+                                                                        class="img-fluid rounded cursor-pointer"
+                                                                        onclick="showImage(this.src, {{ $post->id }}, {{ $index }})">
+                                                                    @if ($index == 3 && $post->images->count() > 4)
+                                                                        <div class="position-absolute top-0 start-0 w-100 h-100 bg-dark bg-opacity-50 rounded d-flex align-items-center justify-content-center cursor-pointer"
+                                                                            onclick="showImage(this.parentElement.querySelector('img').src, {{ $post->id }}, 3)">
+                                                                            <span
+                                                                                class="text-white fs-4">+{{ $post->images->count() - 4 }}</span>
+                                                                        </div>
+                                                                    @endif
+                                                                </div>
+                                                            </div>
+                                                        @endforeach
+                                                    </div>
+                                                @endif
+                                            </div>
+                                        @endif
                                         <div class="d-flex gap-4 text-muted">
-                                            <button class="btn btn-link text-decoration-none p-0 like-btn" 
+                                            @if (Auth::check())
+                                                <button class="btn btn-link text-decoration-none p-0 like-btn"
                                                     data-post-id="{{ $post->id }}"
                                                     data-liked="{{ $post->likes->contains(auth()->id()) ? 'true' : 'false' }}">
-                                                <i class="{{ $post->likes->contains(auth()->id()) ? 'fas' : 'far' }} fa-heart me-1 {{ $post->likes->contains(auth()->id()) ? 'text-danger' : '' }}"></i>
-                                                <span class="like-count">{{ $post->likes->count() }}</span>
-                                            </button>
-                                            @if (!$post->group || ($post->group && $post->group->members->contains(auth()->id())))
-                                                <button class="btn btn-link text-decoration-none p-0 comment-toggle"
-                                                        data-post-id="{{ $post->id }}">
-                                                    <i class="far fa-comment me-1"></i>
-                                                    {{ count($post->comments) }}
+                                                    <i
+                                                        class="{{ $post->likes->contains(auth()->id()) ? 'fas' : 'far' }} fa-heart me-1 {{ $post->likes->contains(auth()->id()) ? 'text-danger' : '' }}"></i>
+                                                    <span class="like-count">{{ $post->likes->count() }}</span>
                                                 </button>
+                                                @if (!$post->group || ($post->group && $post->group->members->contains(auth()->id())))
+                                                    <button class="btn btn-link text-decoration-none p-0 comment-toggle"
+                                                        data-post-id="{{ $post->id }}">
+                                                        <i class="far fa-comment me-1"></i>
+                                                        {{ count($post->comments) }}
+                                                    </button>
+                                                @endif
                                             @endif
                                         </div>
                                     </div>
@@ -117,6 +160,12 @@
                                                 </div>
                                             @endif
                                         </div>
+                                        @if (!Auth::check())
+                                            <div class="alert alert-info mt-3">
+                                                <i class="fas fa-info-circle me-2"></i>
+                                                Bạn cần đăng nhập để bình luận
+                                            </div>
+                                        @endif
                                     @else
                                         <div class="alert alert-info mt-3">
                                             <i class="fas fa-info-circle me-2"></i>
@@ -145,11 +194,13 @@
             </div>
         </div>
         <!-- Button trigger modal -->
-        <div class="create-post-btn mx-2 pb-3" data-bs-toggle="modal" data-bs-target="#postModal">
-            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M10 2V18M18 10H2" stroke="white" stroke-width="3" stroke-linecap="round" />
-            </svg>
-        </div>
+        @if (Auth::check())
+            <div class="create-post-btn mx-2 pb-3" data-bs-toggle="modal" data-bs-target="#postModal">
+                <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M10 2V18M18 10H2" stroke="white" stroke-width="3" stroke-linecap="round" />
+                </svg>
+            </div>
+        @endif
         <!-- Modal -->
         <div class="modal fade" id="postModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
             <div class="modal-dialog">
@@ -161,7 +212,14 @@
                     <form action="{{ route('communities.store') }}" method="POST" enctype="multipart/form-data">
                         @csrf
                         <div class="modal-body">
-                            <textarea name="description" rows="3" class="form-control" placeholder="Bạn viết gì đi..." autocomplete="off"></textarea>
+                            <textarea name="description" rows="3" class="form-control" placeholder="Bạn viết gì đi..."
+                                autocomplete="off"></textarea>
+                            <div class="mb-3">
+                                <label for="images" class="form-label">Thêm ảnh</label>
+                                <input type="file" class="form-control" id="images" name="images[]" multiple
+                                    accept="image/*">
+                                <div class="form-text">Bạn có thể chọn nhiều ảnh cùng lúc</div>
+                            </div>
                         </div>
                         <div class="modal-footer">
                             <div class="d-flex justify-content-between align-items-center">
@@ -176,291 +234,108 @@
             </div>
         </div>
     </div>
-
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            let currentPage = 1;
-            let isLoading = false;
-            const postsContainer = document.querySelector('.posts-container');
-            const loadMoreBtn = document.querySelector('.load-more-posts');
-
-            // Show load more button if there are posts
-            if (document.querySelectorAll('.card[data-post-id]').length > 0) {
-                loadMoreBtn.style.display = 'block';
-            }
-
-            // Load more posts
-            loadMoreBtn.addEventListener('click', function() {
-                if (isLoading) return;
-                isLoading = true;
-
-                currentPage++;
-                loadMoreBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Đang tải...';
-
-                fetch(`posts?page=${currentPage}`, {
-                        headers: {
-                            'Accept': 'application/json',
-                            'X-Requested-With': 'XMLHttpRequest'
-                        }
-                    })
-                    .then(response => {
-                        if (!response.ok) {
-                            throw new Error('Network response was not ok');
-                        }
-                        return response.json();
-                    })
-                    .then(data => {
-                        if (data.error) {
-                            throw new Error(data.message);
-                        }
-
-                        data.posts.forEach(post => {
-                            const postElement = createPostElement(post);
-                            postsContainer.insertBefore(postElement, loadMoreBtn.parentElement);
-                        });
-
-                        if (!data.hasMore) {
-                            loadMoreBtn.style.display = 'none';
-                        } else {
-                            loadMoreBtn.innerHTML =
-                                '<i class="fas fa-spinner fa-spin me-2"></i>Tải thêm bài viết';
-                        }
-                    })
-                    .catch(error => {
-                        console.error('Error loading more posts:', error);
-                        loadMoreBtn.innerHTML =
-                            '<i class="fas fa-exclamation-circle me-2"></i>Lỗi khi tải bài viết';
-                        // Reset button state after 3 seconds
-                        setTimeout(() => {
-                            loadMoreBtn.innerHTML =
-                                '<i class="fas fa-spinner fa-spin me-2"></i>Tải thêm bài viết';
-                        }, 3000);
-                    })
-                    .finally(() => {
-                        isLoading = false;
-                    });
-            });
-
-            // Function to create post element
-            function createPostElement(post) {
-                const div = document.createElement('div');
-                div.className = 'card shadow-sm mb-4';
-                div.dataset.postId = post.id;
-
-                let groupInfo = '';
-                if (post.group) {
-                    groupInfo = `
-                        <h5 class="mb-0">${post.group.name}</h5>
-                        <div class="d-flex align-items-center gap-2">
-                            <small>${post.user.name}</small>
-                            <small class="d-block text-muted">${post.created_at}</small>
-                        </div>
-                    `;
-                } else {
-                    groupInfo = `
-                        <h5 class="mb-0">${post.user.name}</h5>
-                        <small class="d-block text-muted">${post.created_at}</small>
-                    `;
-                }
-
-                div.innerHTML = `
-                    <div class="card-body">
-                        <div class="border-bottom pb-2">
-                            <div class="d-flex align-items-center mb-3">
-                                <div>
-                                    ${groupInfo}
-                                </div>
-                            </div>
-                            <div class="post-content mb-3">
-                                ${post.description}
-                            </div>
-                            <div class="d-flex gap-4 text-muted">
-                                <button class="btn btn-link text-decoration-none p-0 like-btn" 
-                                        data-post-id="${post.id}"
-                                        data-liked="${post.likes.is_liked}">
-                                    <i class="${post.likes.is_liked ? 'fas' : 'far'} fa-heart me-1 ${post.likes.is_liked ? 'text-danger' : ''}"></i>
-                                    <span class="like-count">${post.likes.count}</span>
-                                </button>
-                                <button class="btn btn-link text-decoration-none p-0 comment-toggle" data-post-id="${post.id}">
-                                    <i class="far fa-comment me-1"></i>
-                                    Bình luận
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                `;
-
-                return div;
-            }
-
-            // Toggle comment form (bình luận chính)
-            document.querySelectorAll('.comment-toggle').forEach(button => {
-                button.addEventListener('click', function() {
-                    const postId = this.dataset.postId;
-                    const form = document.getElementById(`comment-form-${postId}`);
-                    form.style.display = form.style.display === 'none' ? 'block' : 'none';
-                    if (form.style.display === 'block') {
-                        form.querySelector('input[name="content"]').focus();
-                    }
-                });
-            });
-
-            // Toggle reply form (phản hồi)
-            document.querySelectorAll('.reply-toggle').forEach(button => {
-                button.addEventListener('click', function() {
-                    const commentId = this.dataset.commentId;
-                    const form = document.getElementById(`reply-form-${commentId}`);
-                    form.style.display = form.style.display === 'none' ? 'block' : 'none';
-                    if (form.style.display === 'block') {
-                        form.querySelector('input[name="content"]').focus();
-                    }
-                });
-            });
-
-            // Handle like button clicks
-            document.querySelectorAll('.like-btn').forEach(button => {
-                button.addEventListener('click', function() {
-                    const postId = this.dataset.postId;
-                    const isLiked = this.dataset.liked === 'true';
-                    const icon = this.querySelector('i');
-                    const countSpan = this.querySelector('.like-count');
-                    const currentCount = parseInt(countSpan.textContent);
-
-                    // Toggle like status
-                    fetch(`/posts/${postId}/like`, {
-                        method: isLiked ? 'DELETE' : 'POST',
-                        headers: {
-                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
-                            'Accept': 'application/json',
-                            'Content-Type': 'application/json'
-                        }
-                    })
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.success) {
-                            // Update button state
-                            this.dataset.liked = data.is_liked;
-                            if (data.is_liked) {
-                                icon.classList.remove('far');
-                                icon.classList.add('fas', 'text-danger');
-                            } else {
-                                icon.classList.remove('fas', 'text-danger');
-                                icon.classList.add('far');
-                            }
-                            
-                            // Update count
-                            countSpan.textContent = data.count;
-                        } else {
-                            console.error(data.message);
-                        }
-                    })
-                    .catch(error => {
-                        console.error('Error:', error);
-                    });
-                });
-            });
-
-            const swiper = new Swiper(".mySwiper", {
-                slidesPerView: "auto",
-                spaceBetween: 15,
-                navigation: {
-                    nextEl: ".swiper-button-next",
-                    prevEl: ".swiper-button-prev",
-                },
-                breakpoints: {
-                    320: {
-                        slidesPerView: 3,
-                    },
-                    480: {
-                        slidesPerView: 4,
-                    },
-                    768: {
-                        slidesPerView: 6,
-                    },
-                    1024: {
-                        slidesPerView: 8,
-                    }
-                },
-                on: {
-                    init: function() {
-                        // Ẩn nút prev khi khởi tạo
-                        document.querySelector('.swiper-button-prev').style.display = 'none';
-                    },
-                    slideChange: function() {
-                        const prevButton = document.querySelector('.swiper-button-prev');
-                        // Hiển thị/ẩn nút prev dựa vào vị trí slide
-                        if (this.activeIndex > 0) {
-                            prevButton.style.display = 'flex';
-                        } else {
-                            prevButton.style.display = 'none';
-                        }
-
-                        // Thêm hiệu ứng mờ cho slide tiếp theo
-                        const slides = this.slides;
-                        slides.forEach((slide, index) => {
-                            if (index > this.activeIndex + this.params.slidesPerView - 1) {
-                                slide.style.opacity = '0.5';
-                            } else {
-                                slide.style.opacity = '1';
-                            }
-                        });
-                    }
-                }
-            });
-        });
-    </script>
-
+    <x-community.community-js />
     <style>
-        @media (max-width: 768px) {
-            .d-flex.gap-4 {
-                flex-direction: column;
-                gap: 1rem !important;
-            }
-
-            .swiper {
-                padding: 10px 30px;
-            }
-
-            .category-button {
-                width: 50px;
-                height: 50px;
-                font-size: 1rem;
-            }
-
-            .category-name {
-                font-size: 0.8rem;
-                max-width: 80px;
-            }
+        /* Container cha bao quanh .swiper */
+        .swiper-container {
+            position: relative;
+            width: 80%;
+            max-width: 800px;
+            /* Tăng max-width để hiển thị nhiều slide hơn */
+            margin: 0 auto;
         }
 
+        /* Container của Swiper */
         .swiper {
             width: 100%;
-            padding: 10px 40px;
+            padding: 10px 20px;
+            /* Tăng padding phải để gradient không che nội dung */
             margin-bottom: 20px;
             background: white;
             position: relative;
+            overflow: hidden;
         }
 
+        /* Wrapper chứa các slide */
+        .swiper-wrapper {
+            display: flex;
+            transition: transform 0.3s ease;
+        }
+
+        /* Slide */
         .swiper-slide {
-            width: auto;
+            width: 120px !important;
             display: flex;
             justify-content: center;
             transition: opacity 0.3s ease;
+            margin-right: 10px !important;
         }
 
-        /* Tạo hiệu ứng gradient mờ dần cho phần cuối */
+        /* Gradient mờ dần */
         .swiper::after {
             content: '';
             position: absolute;
-            right: 40px;
+            right: 0;
             top: 0;
             height: 100%;
-            width: 100px;
+            width: 60px;
+            /* Giảm width của gradient để không che nội dung */
             background: linear-gradient(to right, rgba(255, 255, 255, 0), rgba(255, 255, 255, 1));
             pointer-events: none;
             z-index: 1;
         }
 
+        /* Nút prev/next */
+        .custom-nav {
+            width: 32px;
+            height: 32px;
+            background: white;
+            border: 1px solid #dee2e6;
+            border-radius: 50%;
+            color: #495057;
+            display: flex !important;
+            justify-content: center;
+            align-items: center;
+            position: absolute;
+            top: 60%;
+            transform: translateY(-50%);
+            z-index: 2;
+            transition: all 0.3s ease;
+        }
+
+        .custom-nav:hover {
+            background: #f8f9fa;
+            color: #212529;
+        }
+
+        .swiper-button-prev {
+            left: -40px;
+            opacity: 1 !important;
+        }
+
+        .swiper-button-next {
+            right: -40px;
+            opacity: 1 !important;
+        }
+
+        .swiper-button-prev::after {
+            content: '\2039';
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .swiper-button-next::after {
+            content: '\203A';
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .swiper-button-disabled {
+            opacity: 0.5 !important;
+            pointer-events: none;
+        }
+
+        /* Category item */
         .category-item {
             display: flex;
             flex-direction: column;
@@ -468,6 +343,7 @@
             padding: 5px;
         }
 
+        /* Category name */
         .category-name {
             font-size: 0.9rem;
             color: #495057;
@@ -486,48 +362,121 @@
             color: #212529;
         }
 
-        .custom-nav {
-            width: 32px;
-            height: 32px;
-            background: white;
-            border: 1px solid #dee2e6;
-            border-radius: 50%;
-            color: #495057;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 2;
-            transition: all 0.3s ease;
+        /* Responsive với các breakpoint */
+        @media (max-width: 240px) {
+            .swiper-container {
+                width: 95%;
+            }
+
+            .swiper {
+                padding: 10px 10px;
+            }
+
+            .swiper-slide {
+                width: 90px !important;
+                margin-right: 8px !important;
+            }
+
+            .category-name {
+                font-size: 0.7rem;
+                max-width: 70px;
+                padding: 6px 10px;
+            }
+
+            .swiper::after {
+                width: 30px;
+                right: 0;
+            }
+
+            .swiper-button-prev {
+                left: -20px;
+            }
+
+            .swiper-button-next {
+                right: -20px;
+            }
         }
 
-        .custom-nav:hover {
-            background: #f8f9fa;
-            color: #212529;
+        @media (max-width: 320px) {
+            .swiper-container {
+                width: 90%;
+            }
+
+            .swiper {
+                padding: 10px 15px;
+            }
+
+            .swiper-slide {
+                width: 100px !important;
+                margin-right: 8px !important;
+            }
+
+            .category-name {
+                font-size: 0.7rem;
+                max-width: 80px;
+                padding: 6px 10px;
+            }
+
+            .swiper::after {
+                width: 40px;
+                right: 0;
+            }
+
+            .swiper-button-prev {
+                left: -25px;
+            }
+
+            .swiper-button-next {
+                right: -25px;
+            }
         }
 
-        .swiper-button-prev::after,
-        .swiper-button-next::after {
-            font-size: 14px;
-            font-weight: bold;
-        }
+        @media (max-width: 480px) {
+            .swiper-container {
+                width: 90%;
+            }
 
-        .swiper-button-disabled {
-            opacity: 0;
-            pointer-events: none;
-        }
+            .swiper {
+                padding: 10px 15px;
+            }
 
-        .swiper-button-prev {
-            left: 5px;
-            opacity: 1 !important;
-        }
+            .swiper-slide {
+                width: 100px !important;
+                margin-right: 8px !important;
+            }
 
-        .swiper-button-next {
-            right: 5px;
+            .category-name {
+                font-size: 0.8rem;
+                max-width: 80px;
+                padding: 6px 12px;
+            }
+
+            .swiper::after {
+                width: 50px;
+                right: 0;
+            }
+
+            .swiper-button-prev {
+                left: -30px;
+            }
+
+            .swiper-button-next {
+                right: -30px;
+            }
         }
 
         @media (max-width: 768px) {
+            .swiper-container {
+                width: 90%;
+            }
+
             .swiper {
-                padding: 10px 30px;
+                padding: 10px 20px;
+            }
+
+            .swiper-slide {
+                width: 100px !important;
+                margin-right: 8px !important;
             }
 
             .category-name {
@@ -538,10 +487,90 @@
 
             .swiper::after {
                 width: 60px;
-                right: 30px;
+                right: 0;
+            }
+
+            .swiper-button-prev {
+                left: -30px;
+            }
+
+            .swiper-button-next {
+                right: -30px;
             }
         }
 
+        @media (min-width: 1024px) {
+            .swiper-container {
+                width: 80%;
+                max-width: 1000px;
+                /* Tăng max-width để hiển thị nhiều slide */
+            }
+
+            .swiper {
+                padding: 10px 20px;
+            }
+
+            .swiper-slide {
+                width: 120px !important;
+                margin-right: 10px !important;
+            }
+
+            .category-name {
+                font-size: 0.9rem;
+                max-width: 150px;
+                padding: 8px 16px;
+            }
+
+            .swiper::after {
+                width: 80px;
+                right: 0;
+            }
+
+            .swiper-button-prev {
+                left: -40px;
+            }
+
+            .swiper-button-next {
+                right: -40px;
+            }
+        }
+
+        @media (min-width: 1440px) {
+            .swiper-container {
+                width: 80%;
+                max-width: 1200px;
+            }
+
+            .swiper {
+                padding: 10px 20px;
+            }
+
+            .swiper-slide {
+                width: 120px !important;
+                margin-right: 30px !important;
+            }
+
+            .category-name {
+                font-size: 1rem;
+                max-width: 160px;
+                padding: 8px 16px;
+            }
+
+            .swiper::after {
+                width: 100px;
+                right: 0;
+            }
+
+            .swiper-button-prev {
+                left: -50px;
+            }
+
+            .swiper-button-next {
+                right: -50px;
+            }
+        }
+
+        /* Style cho nút tạo nhóm mới */
         .category-name.create-group {
             background: #e7f1ff;
             color: #0d6efd;

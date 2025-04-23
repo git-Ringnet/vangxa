@@ -43,13 +43,20 @@ class Group extends Model
         return $this->hasMany(Post::class);
     }
 
-    public function isMember(User $user)
+    public function isMember(?User $user)
     {
+        if (!$user) {
+            return false;
+        }
+
         return $this->members()->where('user_id', $user->id)->exists();
     }
 
-    public function isAdmin(User $user)
+    public function isAdmin(?User $user)
     {
+        if (!$user) {
+            return false;
+        }
         return $this->members()
             ->where('user_id', $user->id)
             ->where('role', 'admin')
@@ -63,4 +70,4 @@ class Group extends Model
             ->where('role', 'moderator')
             ->exists();
     }
-} 
+}

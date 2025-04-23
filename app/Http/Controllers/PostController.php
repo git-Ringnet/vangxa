@@ -276,7 +276,7 @@ class PostController extends Controller
             $page = $request->get('page', 1);
             $offset = ($page - 1) * $perPage;
 
-            $posts = Post::with(['user', 'group', 'likes'])
+            $posts = Post::with(['user', 'group', 'likes', 'comments'])
                 ->where('type', '3')
                 ->orderBy('created_at', 'desc')
                 ->skip($offset)
@@ -304,6 +304,9 @@ class PostController extends Controller
                         'likes' => [
                             'count' => $post->likes->count(),
                             'is_liked' => $isLiked
+                        ],
+                        'comments' => [
+                            'count' => $post->comments->count(),
                         ]
                     ];
                 }),
