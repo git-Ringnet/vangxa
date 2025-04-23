@@ -18,6 +18,9 @@ use App\Http\Controllers\CommentController;
 use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\Page\CommunityController;
 use App\Http\Controllers\Page\FavoriteController;
+use App\Http\Controllers\GroupController;
+use App\Http\Controllers\LikeController;
+use App\Http\Controllers\ShareController;
 
 Route::get('/test-scheme', function () {
     return request()->getScheme(); // Nó nên trả về 'https'
@@ -83,26 +86,43 @@ Route::get('/dining/detail/{id}', [DiningController::class, 'detail'])->name('di
 Route::get('/dining/load-more', [DiningController::class, 'loadMore'])->name('dining.load-more');
 
 // Favorites routes
+// Route::middleware(['auth'])->group(function () {
+//     Route::get('/favorites', [FavoriteController::class, 'index'])->name('favorites');
+//     Route::post('/favorites/{id}', [FavoriteController::class, 'toggleFavorite'])->name('favorites.favorite');
+// });
+
+// Trustlist routes
 Route::middleware(['auth'])->group(function () {
-    Route::get('/favorites', [FavoriteController::class, 'index'])->name('favorites');
-    Route::post('/favorites/{id}', [FavoriteController::class, 'toggleFavorite'])->name('favorites.favorite');
+    Route::get('/trustlist', [TrustlistController::class, 'index'])->name('trustlist');
+    Route::post('/trustlist/{id}', [TrustlistController::class, 'toggle'])->name('trustlist.toggle');
 });
 
-
 // Community routes
-Route::resource('community', CommunityController::class);
+Route::resource('communities', CommunityController::class);
+
+// Group Routes
+Route::middleware(['auth'])->group(function () {
+    Route::resource('groupss', GroupController::class);
+    
+    // Group Membership Routes
+    Route::post('/groups/{group}/join', [GroupController::class, 'join'])->name('groups.join');
+    Route::post('/groups/{group}/leave', [GroupController::class, 'leave'])->name('groups.leave');
+    Route::post('/groups/{group}/add-member', [GroupController::class, 'addMember'])->name('groups.add-member');
+    Route::get('/groups/{id}/members', [GroupController::class, 'members'])->name('groups.members');
+    Route::delete('/groups/{group}/members/{user}', [GroupController::class, 'removeMember'])->name('groups.remove-member');
+    Route::get('/groups/{id}/edit', [GroupController::class, 'edit'])->name('groups.edit');
+    Route::put('/groups/{id}', [GroupController::class, 'update'])->name('groups.update');
+});
 
 // Comment routes
 Route::resource('comments', CommentController::class);
 
+Route::get('/posts', [PostController::class, 'getPosts'])->name('posts.getPosts');
 
-Route::get('/test-reverb', function () {
-    event(new TestReverbEvent('Hello, Reverb!'));
-    return 'Conmeno!';
-});
-
-Route::get('/test-reverb-page', function () {
-    return view('test-reverb');
+// Like routes
+Route::middleware(['auth'])->group(function () {
+    Route::post('/posts/{post}/like', [LikeController::class, 'store'])->name('posts.like');
+    Route::delete('/posts/{post}/like', [LikeController::class, 'destroy'])->name('posts.unlike');
 });
 
 require __DIR__ . '/auth.php';

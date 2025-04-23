@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Page;
 
 use App\Http\Controllers\Controller;
 use App\Models\Post;
-use App\Models\Favorite;
+use App\Models\Trustlist;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
@@ -13,24 +13,13 @@ class DiningController extends Controller
 {
     public function index()
     {
-        $posts = Post::with('images')
-            ->where('type', 2) // Type 2 for dining
-            ->take(18)
-            ->get();
-            
-        // Kiểm tra trạng thái yêu thích cho mỗi bài viết
-        if (Auth::check()) {
-            $userFavorites = Favorite::where('user_id', Auth::id())
-                ->pluck('post_id')
-                ->toArray();
-                
-            foreach ($posts as $post) {
-                $post->isFavorited = in_array($post->id, $userFavorites);
-            }
-        } else {
-            foreach ($posts as $post) {
-                $post->isFavorited = false;
-            }
+        $posts = Post::where('type', 2)->with('images')->get();
+        $userTrustlist = Trustlist::where('user_id', Auth::id())
+            ->pluck('post_id')
+            ->toArray();
+
+        foreach ($posts as $post) {
+            $post->isSaved = in_array($post->id, $userTrustlist);
         }
 
         return view('pages.dining.dining', compact('posts'));
@@ -51,7 +40,7 @@ class DiningController extends Controller
             // Kiểm tra xem người dùng đã đăng nhập chưa và đã yêu thích bài viết chưa
             $isFavorited = false;
             if (Auth::check()) {
-                $isFavorited = Favorite::where('user_id', Auth::id())
+                $isFavorited = Trustlist::where('user_id', Auth::id())
                     ->where('post_id', $post->id)
                     ->exists();
             }

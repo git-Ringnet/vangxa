@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Page;
 
 use App\Http\Controllers\Controller;
 use App\Models\Post;
-use App\Models\Favorite;
+use App\Models\Trustlist;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
@@ -13,24 +13,13 @@ class LodgingController extends Controller
 {
     public function index()
     {
-        $posts = Post::with('images')
-            ->where('type', 1) // Type 1 for accommodations
-            ->take(18)
-            ->get();
-            
-        // Kiểm tra trạng thái yêu thích cho mỗi bài viết
-        if (Auth::check()) {
-            $userFavorites = Favorite::where('user_id', Auth::id())
-                ->pluck('post_id')
-                ->toArray();
-                
-            foreach ($posts as $post) {
-                $post->isFavorited = in_array($post->id, $userFavorites);
-            }
-        } else {
-            foreach ($posts as $post) {
-                $post->isFavorited = false;
-            }
+        $posts = Post::where('type', 1)->with('images')->get();
+        $userTrustlist = Trustlist::where('user_id', Auth::id())
+            ->pluck('post_id')
+            ->toArray();
+
+        foreach ($posts as $post) {
+            $post->isSaved = in_array($post->id, $userTrustlist);
         }
 
         return view('pages.listings.lodging', compact('posts'));
@@ -45,11 +34,11 @@ class LodgingController extends Controller
                 
             // Kiểm tra trạng thái yêu thích
             if (Auth::check()) {
-                $post->isFavorited = Favorite::where('user_id', Auth::id())
+                $post->isSaved = Trustlist::where('user_id', Auth::id())
                     ->where('post_id', $post->id)
                     ->exists();
             } else {
-                $post->isFavorited = false;
+                $post->isSaved = false;
             }
 
             Log::info('Accommodation detail loaded', ['post_id' => $id, 'post' => $post]);
@@ -76,16 +65,16 @@ class LodgingController extends Controller
             
         // Kiểm tra trạng thái yêu thích cho mỗi bài viết
         if (Auth::check()) {
-            $userFavorites = Favorite::where('user_id', Auth::id())
+            $userTrustlist = Trustlist::where('user_id', Auth::id())
                 ->pluck('post_id')
                 ->toArray();
                 
             foreach ($posts as $post) {
-                $post->isFavorited = in_array($post->id, $userFavorites);
+                $post->isSaved = in_array($post->id, $userTrustlist);
             }
         } else {
             foreach ($posts as $post) {
-                $post->isFavorited = false;
+                $post->isSaved = false;
             }
         }
 

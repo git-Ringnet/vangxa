@@ -11,13 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('favorites', function (Blueprint $table) {
+        Schema::create('likes', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained()->onDelete('cascade');
-            $table->foreignId('post_id')->constrained()->onDelete('cascade');
+            $table->integer('user_id');
+            $table->integer('post_id');
             $table->timestamps();
-
-            // Add unique constraint to prevent duplicate favorites
+            
+            // Ensure a user can only like a post once
             $table->unique(['user_id', 'post_id']);
         });
     }
@@ -27,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('favorites');
+        Schema::dropIfExists('likes');
     }
 };

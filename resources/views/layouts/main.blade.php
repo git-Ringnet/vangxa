@@ -8,9 +8,12 @@
     <title>@yield('title')</title>
     <link rel="icon" href="/image/ship.png" type="image/x-icon">
     @vite(['resources/css/main.css', 'resources/js/app.js'])
+    <link rel="stylesheet" href="{{ asset('community/styles.css') }}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.css" />
+    <script src="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.js"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 </head>
 @stack('scripts')
@@ -33,7 +36,7 @@
                     <a href="{{ route('lodging') }}" class="nav-link {{ request()->is('lodging') ? 'active' : '' }}">Lưu Trú</a>
                     <a href="{{ route('dining') }}" class="nav-link {{ request()->is('dining') ? 'active' : '' }}">Ăn Uống</a>
                     <a href="#" class="nav-link" id="rankingLink">Bảng xếp hạng</a>
-                    <a href="{{ route('community.index') }}" class="nav-link {{ request()->routeIs('community.*') ? 'active' : '' }}">Cộng đồng</a>
+                    <a href="{{ route('groupss.index') }}" class="nav-link {{ request()->routeIs('groupss.*') ? 'active' : '' }}">Cộng đồng</a>
                 </div>
 
                 <!-- Rankings Modal -->
@@ -203,7 +206,7 @@
                                 <div class="dropdown-section">
                                     <a href="{{ route('settings.profile') }}" class="dropdown-item"><strong>Hồ sơ</strong></a>
                                     <a href="{{ route('dashboard') }}" class="dropdown-item">Bảng điều khiển</a>
-                                    <a href="{{ route('favorites') }}" class="dropdown-item">Danh sách đã yêu thích</a>
+                                    <a href="{{ route('trustlist') }}" class="dropdown-item">My Trustlist</a>
                                     </div>
                                 <div class="dropdown-divider"></div>
                                 <div class="dropdown-section">

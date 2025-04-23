@@ -2,14 +2,20 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Kalnoy\Nestedset\NodeTrait;
 
 class Comment extends Model
 {
-    use NodeTrait;
+    use HasFactory, NodeTrait;
 
-    protected $fillable = ['post_id', 'user_id', 'content', 'parent_id', '_lft', '_rgt'];
+    protected $fillable = [
+        'content',
+        'user_id',
+        'post_id',
+        'parent_id'
+    ];
 
     public function user()
     {
@@ -21,8 +27,18 @@ class Comment extends Model
         return $this->belongsTo(Post::class);
     }
 
+    public function parent()
+    {
+        return $this->belongsTo(Comment::class, 'parent_id');
+    }
+
+    public function replies()
+    {
+        return $this->hasMany(Comment::class, 'parent_id');
+    }
+
     public function children()
     {
-        return $this->hasMany(Comment::class, 'parent_id')->defaultOrder();
+        return $this->hasMany(Comment::class, 'parent_id')->with('children', 'user');
     }
 }

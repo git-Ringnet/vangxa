@@ -14,12 +14,15 @@
             <button class="btn-share" onclick="sharePost()" title="Chia sẻ">
                             <i class="fas fa-share-alt"></i>
                         </button>
-                <form action="{{ route('favorites.favorite', ['id' => $post->id]) }}" method="POST" class="favorite-form" data-post-id="{{ $post->id }}">
+                <form action="{{ route('trustlist.toggle', ['id' => $post->id]) }}" method="POST" class="trustlist-form" data-post-id="{{ $post->id }}">
                     @csrf
-                    <button type="button" class="detail-page__action-button detail-page__action-button--save btn-favorite" data-post-id="{{ $post->id }}" data-favorited="{{ Auth::check() && $post->isFavorited ? 'true' : 'false' }}" data-authenticated="{{ Auth::check() ? 'true' : 'false' }}" onclick="event.preventDefault(); handleFavorite(this);">
-                        <i class="{{ Auth::check() && $post->isFavorited ? 'fas' : 'far' }} fa-heart {{ Auth::check() && $post->isFavorited ? 'text-danger' : '' }}"></i>
-                        <!-- <span>Lưu</span> -->
-                        <span class="favorite-count">{{ $post->favorites_count ?? 0 }}</span>
+                    <button type="button" class="trustlist-btn"
+                        data-post-id="{{ $post->id }}"
+                        data-saved="{{ Auth::check() && $post->isSaved ? 'true' : 'false' }}"
+                        data-authenticated="{{ Auth::check() ? 'true' : 'false' }}"
+                        onclick="event.preventDefault(); handleSave(this);">
+                        <i class="{{ Auth::check() && $post->isSaved ? 'fas' : 'far' }} fa-bookmark {{ Auth::check() && $post->isSaved ? 'text-primary' : '' }}"></i>
+                        <span class="saves-count">{{ $post->saves_count ?? 0 }}</span>
                     </button>
                 </form>
             </div>
@@ -509,7 +512,7 @@
     }
 
     // Function to handle favorite button click
-    window.handleFavorite = function(button) {
+    window.handleSave = function(button) {
         const isAuthenticated = button.dataset.authenticated === 'true';
         const postId = button.dataset.postId;
         
@@ -518,14 +521,14 @@
             return false;
         }
         
-        toggleFavorite(button, postId);
+        toggleSave(button, postId);
     };
 
-    // Function to toggle favorite status
-    window.toggleFavorite = function(button, postId) {
+    // Function to toggle trustlist status
+    window.toggleSave = function(button, postId) {
         button.disabled = true; // Prevent rapid clicks
         const token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
-        fetch(`/favorites/${postId}`, {
+        fetch(`/trustlist/${postId}`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -547,47 +550,47 @@
         .then(data => {
             if (!data) return;
             const icon = button.querySelector('i');
-            const text = button.querySelector('.favorite-count');
-            if (data.favorited) {
+            const text = button.querySelector('.saves-count');
+            if (data.saved) {
                 icon.classList.remove('far');
                 icon.classList.add('fas');
-                icon.classList.add('text-danger');
+                icon.classList.add('text-primary');
                 button.classList.add('active');
-                button.setAttribute('data-favorited', 'true');
-                button.title = 'Bỏ yêu thích';
+                button.setAttribute('data-saved', 'true');
+                button.title = 'Bỏ lưu';
             } else {
                 icon.classList.remove('fas');
                 icon.classList.add('far');
-                icon.classList.remove('text-danger');
+                icon.classList.remove('text-primary');
                 button.classList.remove('active');
-                button.setAttribute('data-favorited', 'false');
-                button.title = 'Yêu thích';
+                button.setAttribute('data-saved', 'false');
+                button.title = 'Lưu';
             }
             if (text) {
-                text.textContent = data.favoritesCount;
+                text.textContent = data.savesCount;
             }
-            showToast(data.message, data.favorited ? 'success' : 'info');
-            document.querySelectorAll(`.favorite-btn[data-post-id="${postId}"], .btn-favorite[data-post-id="${postId}"]`).forEach(btn => {
+            showToast(data.message, data.saved ? 'success' : 'info');
+            document.querySelectorAll(`.trustlist-btn[data-post-id="${postId}"]`).forEach(btn => {
                 if (btn !== button) {
                     const btnIcon = btn.querySelector('i');
-                    const btnText = btn.querySelector('.favorite-count');
-                    if (data.favorited) {
+                    const btnText = btn.querySelector('.saves-count');
+                    if (data.saved) {
                         btnIcon.classList.remove('far');
                         btnIcon.classList.add('fas');
-                        btnIcon.classList.add('text-danger');
+                        btnIcon.classList.add('text-primary');
                         btn.classList.add('active');
-                        btn.setAttribute('data-favorited', 'true');
-                        btn.title = 'Bỏ yêu thích';
+                        btn.setAttribute('data-saved', 'true');
+                        btn.title = 'Bỏ lưu';
                     } else {
                         btnIcon.classList.remove('fas');
                         btnIcon.classList.add('far');
-                        btnIcon.classList.remove('text-danger');
+                        btnIcon.classList.remove('text-primary');
                         btn.classList.remove('active');
-                        btn.setAttribute('data-favorited', 'false');
-                        btn.title = 'Yêu thích';
+                        btn.setAttribute('data-saved', 'false');
+                        btn.title = 'Lưu';
                     }
                     if (btnText) {
-                        btnText.textContent = data.favoritesCount;
+                        btnText.textContent = data.savesCount;
                     }
                 }
             });

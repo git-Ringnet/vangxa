@@ -8,9 +8,7 @@ import mkcert from 'vite-plugin-mkcert';
 export default defineConfig({
     plugins: [
         laravel({
-            input: ['resources/css/app.css', 
-            'resources/css/main.css', 
-            'resources/js/app.js'],
+            input: ['resources/css/app.css','resources/css/main.css', 'resources/js/app.js'],
             refresh: [`resources/views/**/*`],
         }),
         tailwindcss(),
