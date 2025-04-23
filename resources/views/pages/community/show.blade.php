@@ -33,7 +33,7 @@
                     @endif
 
                     <!-- Comments Section -->
-                    <div class="comments-section">
+                    <div x-data="progressBar" class="comments-section">
                         <h3 class="mb-4">Bình luận ({{ $post->comments->count() }})</h3>
 
                         <form action="{{ route('comments.store') }}" method="POST" class="comment-form mb-4">
@@ -57,7 +57,35 @@
             </div>
         </div>
     </div>
+    <script>
+        document.addEventListener('alpine:init', () => {
+            Alpine.data('progressBar', () => ({
+                currentStatus: '{{ $post->status }}',
+                message: '',
+                init() {
+                    this.currentStatus = '{{ $post->status }}';
+                    this.updateProgressBar();
 
+                    Echo.private('posts.1')
+                        .subscribed(() => {
+                            console.log('Subscribed to posts.1');
+                        })
+                        .listen('TestReverbEvent', (e) => {
+                            console.log('event:', e);
+                        });
+                },
+                updateProgressBar() {
+                    if (this.currentStatus === 0) {
+                        console.log('Status: 0');
+                    } else if (this.currentStatus === 1) {
+                        console.log('Status: 1');
+                    } else if (this.currentStatus === 2) {
+                        console.log('Status: 2');
+                    }
+                }
+            }));
+        });
+    </script>
     <style>
         /* Post Styles */
         .post-title {

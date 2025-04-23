@@ -22,6 +22,12 @@ use App\Http\Controllers\GroupController;
 use App\Http\Controllers\LikeController;
 use App\Http\Controllers\ShareController;
 
+Route::get('/test-scheme', function () {
+    return request()->getScheme(); // Nó nên trả về 'https'
+});
+Route::get('/test-header', function () {
+    return request()->headers->all();
+});
 
 // Main routes
 Route::get('/', [MainHomeController::class, 'index'])->name('home');
