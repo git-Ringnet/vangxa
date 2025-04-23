@@ -30,8 +30,12 @@ class CommunityController extends Controller
     {
         $request->validate([
             'description' => 'required|string',
+            'images.*' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ], [
             'description.required' => 'Vui lòng nhập nội dung bài viết',
+            'images.*.image' => 'File phải là ảnh',
+            'images.*.mimes' => 'Ảnh phải có định dạng jpeg, png, jpg hoặc gif',
+            'images.*.max' => 'Ảnh không được lớn hơn 2MB',
         ]);
 
         try {
@@ -42,11 +46,27 @@ class CommunityController extends Controller
             $post->status = 1; // Active
 
             if ($request->filled('group_id') && $request->group_id != 0) {
-                $group = Group::findOrFail($request->group_id); // chỉ gọi khi chắc chắn có group
+                $group = Group::findOrFail($request->group_id);
                 $post->group_id = $request->group_id;
             }
 
             $post->save();
+
+            // Xử lý upload ảnh
+            if ($request->hasFile('images')) {
+                foreach ($request->file('images') as $image) {
+                    // Tạo tên file duy nhất
+                    $filename = time() . '_' . $image->getClientOriginalName();
+
+                    // Lưu ảnh vào thư mục public/image/posts
+                    $image->move(public_path('community/posts'), $filename);
+
+                    // Lưu đường dẫn vào database
+                    $post->images()->create([
+                        'image_path' => 'community/posts/' . $filename
+                    ]);
+                }
+            }
 
             // Nếu bài viết có group_id, thì tăng post_count
             if ($post->group_id) {

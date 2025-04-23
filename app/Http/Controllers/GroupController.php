@@ -17,10 +17,12 @@ class GroupController extends Controller
         $groups = Group::with('owner')
             ->withCount('members')
             ->withCount('posts')
-            ->paginate(20);
-        $posts = Post::with(['user', 'group', 'likes'])
-            ->where('type', 3)
             ->get();
+        $perPage = 5;
+        $posts = Post::with(['user', 'group', 'likes', 'comments'])
+            ->where('type', 3)
+            ->orderBy('created_at', 'desc')
+            ->paginate($perPage);
         $userGroups = Group::all();
         return view('pages.community.groups.index', compact('groups', 'posts', 'userGroups'));
     }

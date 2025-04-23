@@ -7,9 +7,12 @@
             </div>
             <div class="d-flex align-items-center mt-1">
                 <small class="text-muted me-2">{{ $comment->created_at->diffForHumans() }}</small>
-                <button class="btn btn-link text-decoration-none p-0 reply-toggle" data-comment-id="{{ $comment->id }}">
-                    <i class="far fa-comment me-1"></i> Phản hồi
-                </button>
+                @if (Auth::check())
+                    <button class="btn btn-link text-decoration-none p-0 reply-toggle"
+                        data-comment-id="{{ $comment->id }}">
+                        <i class="far fa-comment me-1"></i> Phản hồi
+                    </button>
+                @endif
             </div>
 
             <!-- Reply Form -->
