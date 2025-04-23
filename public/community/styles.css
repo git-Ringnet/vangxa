@@ -1,0 +1,25 @@
+/* Base Styles */
+:root {
+    --primary-color: #FF385C;
+    --text-color: #222222;
+    --gray-light: #717171;
+    --border-color: #DDDDDD;
+
+    /* Dining page specific colors */
+    --dining-primary: #34D399;
+    --dining-secondary: #6EE7B7;
+    --dining-dark: #065F46;
+    --dining-light: #ECFDF5;
+    --dining-accent: #F59E0B;
+    --sky-blue: #008CFF;
+}
+.create-post-btn {
+    position: fixed;
+    right: 0;
+    top: 50%;
+    background-color: var(--sky-blue);
+    border-radius: 10px;
+    border: none;
+    padding: 10px 20px;
+    cursor: pointer;
+}

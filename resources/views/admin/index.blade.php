@@ -106,7 +106,7 @@
                                                     <button type="submit" class="btn btn-sm btn-danger"
                                                         onclick="return confirm('Bạn có chắc chắn muốn xóa bài viết này?')">
                                                         <i class="fas fa-trash"></i>
-                                                    </button>
+                  </button>
                                                 </form>
                                             </td>
                                         </tr>

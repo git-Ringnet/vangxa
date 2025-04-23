@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Page;
 
 use App\Http\Controllers\Controller;
+use App\Models\Group;
 use App\Models\Post;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -28,28 +29,39 @@ class CommunityController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'title' => 'required|string|max:255',
             'description' => 'required|string',
-            'images.*' => 'image|mimes:jpeg,png,jpg,gif|max:2048'
         ], [
-            'title.required' => 'Vui lòng nhập tiêu đề bài viết',
-            'title.max' => 'Tiêu đề không được vượt quá 255 ký tự',
             'description.required' => 'Vui lòng nhập nội dung bài viết',
-            'images.*.image' => 'File phải là hình ảnh',
-            'images.*.mimes' => 'Hình ảnh phải có định dạng: jpeg, png, jpg, gif',
-            'images.*.max' => 'Kích thước hình ảnh không được vượt quá 2MB'
         ]);
 
         try {
             $post = new Post();
-            $post->title = $request->title;
             $post->description = $request->description;
             $post->user_id = Auth::id() ?? 1;
             $post->type = 3; // Type 3 for community
             $post->status = 1; // Active
+
+            if ($request->filled('group_id') && $request->group_id != 0) {
+                $group = Group::findOrFail($request->group_id); // chỉ gọi khi chắc chắn có group
+                $post->group_id = $request->group_id;
+            }
+
             $post->save();
 
-            return redirect()->route('community.index')->with('success', 'Bài viết đã được đăng thành công!');
+            // Nếu bài viết có group_id, thì tăng post_count
+            if ($post->group_id) {
+                $post->group->increment('post_count');
+            }
+
+            if ($post->group_id) {
+                return redirect()
+                    ->route('groupss.show', $post->group_id)
+                    ->with('success', 'Bài viết đã được đăng thành công!');
+            } else {
+                return redirect()
+                    ->route('groupss.index')
+                    ->with('success', 'Bài viết đã được đăng thành công!');
+            }
         } catch (\Exception $e) {
             Log::error('Error creating community post', [
                 'error' => $e->getMessage(),

@@ -7,8 +7,6 @@
                 <div class="card-body">
                     <div class="post-header mb-4">
                         <div class="d-flex align-items-center mb-3">
-                            <img src="{{ $post->user->avatar ?? asset('images/default-avatar.png') }}"
-                                class="rounded-circle me-2" style="width: 40px; height: 40px; object-fit: cover;">
                             <div>
                                 <h5 class="mb-0">{{ $post->user->name }}</h5>
                                 <small class="text-muted">{{ $post->created_at->format('d/m/Y H:i') }}</small>
@@ -18,7 +16,7 @@
                     </div>
 
                     <div class="post-content mb-4">
-                        {!! nl2br(e($post->content)) !!}
+                        {!! nl2br(e($post->description)) !!}
                     </div>
 
                     @if ($post->images->count() > 0)
@@ -34,17 +32,8 @@
                         </div>
                     @endif
 
-                    <div class="post-actions mb-4">
-                        <button class="btn btn-outline-primary me-2">
-                            <i class="far fa-heart"></i> Thích
-                        </button>
-                        <button class="btn btn-outline-primary">
-                            <i class="far fa-bookmark"></i> Lưu
-                        </button>
-                    </div>
-
                     <!-- Comments Section -->
-                    <div class="comments-section">
+                    <div x-data="progressBar" class="comments-section">
                         <h3 class="mb-4">Bình luận ({{ $post->comments->count() }})</h3>
 
                         <form action="{{ route('comments.store') }}" method="POST" class="comment-form mb-4">
@@ -53,7 +42,7 @@
                             <div class="form-group">
                                 <textarea name="content" class="form-control" rows="3" placeholder="Viết bình luận của bạn..." required></textarea>
                             </div>
-                            <button type="submit" class="btn btn-primary mt-2">
+                            <button type="submit" class="btn btn-primary mt-2"> 
                                 Đăng bình luận
                             </button>
                         </form>
@@ -68,7 +57,35 @@
             </div>
         </div>
     </div>
+    <script>
+        document.addEventListener('alpine:init', () => {
+            Alpine.data('progressBar', () => ({
+                currentStatus: '{{ $post->status }}',
+                message: '',
+                init() {
+                    this.currentStatus = '{{ $post->status }}';
+                    this.updateProgressBar();
 
+                    Echo.private('posts.1')
+                        .subscribed(() => {
+                            console.log('Subscribed to posts.1');
+                        })
+                        .listen('TestReverbEvent', (e) => {
+                            console.log('event:', e);
+                        });
+                },
+                updateProgressBar() {
+                    if (this.currentStatus === 0) {
+                        console.log('Status: 0');
+                    } else if (this.currentStatus === 1) {
+                        console.log('Status: 1');
+                    } else if (this.currentStatus === 2) {
+                        console.log('Status: 2');
+                    }
+                }
+            }));
+        });
+    </script>
     <style>
         /* Post Styles */
         .post-title {

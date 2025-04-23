@@ -8,10 +8,13 @@
     <title>@yield('title')</title>
     <link rel="icon" href="/image/ship.png" type="image/x-icon">
     @vite(['resources/css/main.css', 'resources/js/app.js'])
+    <link rel="stylesheet" href="{{ asset('community/styles.css') }}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
-   
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.css" />
+    <script src="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 </head>
 @stack('scripts')
 
@@ -33,7 +36,7 @@
                     <a href="{{ route('lodging') }}" class="nav-link {{ request()->is('lodging') ? 'active' : '' }}">Lưu Trú</a>
                     <a href="{{ route('dining') }}" class="nav-link {{ request()->is('dining') ? 'active' : '' }}">Ăn Uống</a>
                     <a href="#" class="nav-link" id="rankingLink">Bảng xếp hạng</a>
-                    <a href="{{ route('community.index') }}" class="nav-link {{ request()->routeIs('community.*') ? 'active' : '' }}">Cộng đồng</a>
+                    <a href="{{ route('groupss.index') }}" class="nav-link {{ request()->routeIs('groupss.*') ? 'active' : '' }}">Cộng đồng</a>
                 </div>
 
                 <!-- Rankings Modal -->
@@ -348,11 +351,11 @@
             // Create toast element
             const toast = document.createElement('div');
             toast.className = `toast toast-${type}`;
-            
+
             // Create toast content
             const toastContent = document.createElement('div');
             toastContent.className = 'toast-content';
-            
+
             // Add icon based on type
             const icon = document.createElement('i');
             if (type === 'success') {
@@ -365,14 +368,14 @@
                 icon.className = 'fas fa-info-circle';
             }
             toastContent.appendChild(icon);
-            
+
             // Add message
             const messageSpan = document.createElement('span');
             messageSpan.textContent = message;
             toastContent.appendChild(messageSpan);
-            
+
             toast.appendChild(toastContent);
-            
+
             // Add close button
             const closeBtn = document.createElement('button');
             closeBtn.className = 'toast-close';
@@ -382,7 +385,7 @@
                 setTimeout(() => toast.remove(), 300);
             });
             toast.appendChild(closeBtn);
-            
+
             // Add toast to container
             const toastContainer = document.querySelector('.toast-container') || (() => {
                 const container = document.createElement('div');
@@ -390,25 +393,25 @@
                 document.body.appendChild(container);
                 return container;
             })();
-            
+
             toastContainer.appendChild(toast);
-            
+
             // Show toast
             setTimeout(() => toast.classList.add('show'), 100);
-            
+
             // Remove toast after 5 seconds
             const timeoutId = setTimeout(() => {
                 toast.classList.remove('show');
                 setTimeout(() => toast.remove(), 300);
             }, 5000);
-            
+
             // Cancel timeout if close button is clicked
             closeBtn.addEventListener('click', () => {
                 clearTimeout(timeoutId);
             });
         }
 
-       
+
     </script>
 </body>
 

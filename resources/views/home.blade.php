@@ -420,11 +420,11 @@
                         <p class="text-gray-600">Khám phá những món ăn truyền thống và hiện đại</p>
                     </a>
 
-                    <div class="p-6 bg-white rounded-lg shadow-lg feature-card" data-aos="fade-up" data-aos-delay="500">
-                        <i class="fas fa-users text-4xl text-primary mb-4 floating"></i>
+                    <a href="{{ route('groupss.index') }}" class="p-6 bg-white rounded-lg shadow-lg feature-card hover:no-underline" data-aos="fade-up" data-aos-delay="300">
+                        <i class="fas fa-utensils text-4xl text-primary mb-4 floating"></i>
                         <h3 class="text-xl font-bold mb-2 text-primary">Cộng đồng yêu ẩm thực</h3>
                         <p class="text-gray-600">Kết nối với những người cùng đam mê</p>
-                    </div>
+                    </a>
                 </div>
             </div>
         </div>
