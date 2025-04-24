@@ -29,6 +29,10 @@ class User extends Authenticatable implements MustVerifyEmail
         'verification_code',
         'verification_code_expires_at',
         'is_verified',
+        'avatar',
+        'referral_source',
+        'experience_expectation',
+        'phone',
     ];
 
     /**
@@ -64,4 +68,24 @@ class User extends Authenticatable implements MustVerifyEmail
             ->map(fn (string $name) => Str::of($name)->substr(0, 1))
             ->implode('');
     }
+
+    public function getAvatarAttribute($value)
+    {
+        return $value ? asset('storage/' . $value) : asset('images/default-avatar.png');
+    }
+
+    public function trustlists()
+    {
+        return $this->hasMany(Trustlist::class);
+    }
+    public function posts()
+    {
+        return $this->hasMany(Post::class);
+    }
+    public function favorites()
+    {
+        return $this->belongsToMany(Post::class, 'favorites');
+    }
+
+
 }

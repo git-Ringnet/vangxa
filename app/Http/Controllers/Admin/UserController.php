@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use Auth;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 
@@ -75,5 +76,32 @@ class UserController extends Controller
     {
         $user->delete();
         return redirect()->route('users.index')->with('success', 'User deleted successfully.');
+    }
+
+    public function updateInfo(Request $request)
+    {
+
+        $user = Auth::user();
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'phone' => 'required|string|max:255',
+            'referral_source' => 'nullable|string|max:255',
+            'experience_expectation' => 'nullable|string|max:255',
+        ]);
+
+        $user->update([
+            'name' => $request->name,
+            'phone' => $request->phone,
+            'referral_source' => $request->referral_source,
+            'experience_expectation' => $request->experience_expectation,
+        ]);
+
+        return response()->json(['success' => true, 'message' => 'Cám ơn bạn đã cập nhật thông tin.']);
+    }
+    public function show(Request $request)
+    {
+        $id_user = Auth::user()->id;
+        $user = User::with('posts', 'trustlists')->find($id_user);
+        return view('users.profile', compact('user'));
     }
 }

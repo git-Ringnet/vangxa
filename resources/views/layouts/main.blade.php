@@ -205,8 +205,7 @@
                         <div class="dropdown-menu" id="userDropdown">
                             @auth
                                 <div class="dropdown-section">
-                                    <a href="{{ route('settings.profile') }}" class="dropdown-item"><strong>Hồ sơ</strong></a>
-                                    <a href="{{ route('dashboard') }}" class="dropdown-item">Bảng điều khiển</a>
+                                    <a href="{{ route('profile') }}" class="dropdown-item"><strong>Hồ sơ</strong></a>
                                     <a href="{{ route('trustlist') }}" class="dropdown-item">My Trustlist</a>
                                     </div>
                                 <div class="dropdown-divider"></div>

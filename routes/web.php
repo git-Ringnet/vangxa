@@ -1,6 +1,7 @@
 <?php
 
 use App\Events\TestReverbEvent;
+use App\Http\Controllers\Page\TrustlistController;
 use App\Http\Controllers\RolePermissionController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Page\HomeController;
@@ -66,8 +67,6 @@ Route::middleware(['auth'])->group(function () {
 Route::get('/auth/google', [GoogleController::class, 'redirectToGoogle'])->name('google.login');
 Route::get('/auth/google/callback', [GoogleController::class, 'handleGoogleCallback'])->name('google.callback');
 
-Route::get('/auth/tiktok', [TiktokController::class, 'redirectToTiktok'])->name('tiktok.login');
-Route::get('/auth/tiktok/callback', [TiktokController::class, 'handleTiktokCallback'])->name('tiktok.callback');
 
 Route::prefix('admin')->group(function () {
     Route::get('roles-permissions', [RolePermissionController::class, 'index'])->name('roles-permissions.index');
@@ -95,6 +94,12 @@ Route::get('/dining/load-more', [DiningController::class, 'loadMore'])->name('di
 Route::middleware(['auth'])->group(function () {
     Route::get('/trustlist', [TrustlistController::class, 'index'])->name('trustlist');
     Route::post('/trustlist/{id}', [TrustlistController::class, 'toggle'])->name('trustlist.toggle');
+    Route::get('/favorites', [FavoriteController::class, 'index'])->name('favorites');
+    Route::post('/favorites/{id}', [FavoriteController::class, 'toggleFavorite'])->name('favorites.favorite');
+
+    Route::get('/profile', [UserController::class, 'show'])->name('profile');
+
+    Route::post('/register-popup', [UserController::class, 'updateInfo'])->name('register-popup');
 });
 
 // Community routes
@@ -103,7 +108,7 @@ Route::resource('communities', CommunityController::class);
 // Group Routes
 Route::middleware(['auth'])->group(function () {
     Route::resource('groupss', GroupController::class);
-    
+
     // Group Membership Routes
     Route::post('/groups/{group}/join', [GroupController::class, 'join'])->name('groups.join');
     Route::post('/groups/{group}/leave', [GroupController::class, 'leave'])->name('groups.leave');
