@@ -318,5 +318,5 @@
             </div>
         </div>
     </div>
-    <x-community.community-js />
+    <x-community.community-js name="nhom" />
 @endsection

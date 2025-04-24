@@ -105,6 +105,11 @@ class PostController extends Controller
             }
         }
 
+        foreach ($post->images as $image) {
+            // Xóa bản ghi ảnh
+            $image->delete();
+        }
+
         // Xóa bài đăng (cascade sẽ tự động xóa các bản ghi ảnh liên quan)
         $post->delete();
 

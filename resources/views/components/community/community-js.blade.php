@@ -1,3 +1,13 @@
+@vite(['resources/css/main.css', 'resources/js/app.js'])
+<link rel="stylesheet" href="{{ asset('community/styles.css') }}">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.css" />
+<script src="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
+<input type="hidden" id="page" value="{{ $name ?? 0 }}">
 <!-- Image Modal -->
 <div class="modal fade" id="imageModal" tabindex="-1" aria-labelledby="imageModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-lg">
@@ -19,6 +29,7 @@
     </div>
 </div>
 <script>
+    let page = document.getElementById("page").value;
     let currentPostId = null;
     let currentImageIndex = 0;
     let postImages = [];
@@ -152,47 +163,64 @@
             });
         });
 
-        // Handle like button clicks
+        // Add CSRF token to all AJAX requests
+        const csrfToken = '{{ csrf_token() }}';
+
+        // Like functionality
         document.querySelectorAll('.like-btn').forEach(button => {
             button.addEventListener('click', function() {
-                const postId = this.dataset.postId;
-                const isLiked = this.dataset.liked === 'true';
-                const icon = this.querySelector('i');
-                const countSpan = this.querySelector('.like-count');
-                const currentCount = parseInt(countSpan.textContent);
+                if (!this.classList.contains('processing')) {
+                    this.classList.add('processing');
 
-                // Toggle like status
-                fetch(`/posts/${postId}/like`, {
-                        method: isLiked ? 'DELETE' : 'POST',
-                        headers: {
-                            'X-CSRF-TOKEN': document.querySelector(
-                                'meta[name="csrf-token"]').content,
-                            'Accept': 'application/json',
-                            'Content-Type': 'application/json'
-                        }
-                    })
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.success) {
-                            // Update button state
-                            this.dataset.liked = data.is_liked;
-                            if (data.is_liked) {
-                                icon.classList.remove('far');
-                                icon.classList.add('fas', 'text-danger');
+                    const postId = this.dataset.postId;
+                    const isLiked = this.dataset.liked === 'true';
+                    const icon = this.querySelector('.like-icon');
+                    const countSpan = this.querySelector('.like-count');
+                    const currentCount = parseInt(countSpan.textContent);
+
+                    const url = `/posts/${postId}/like`;
+                    const method = isLiked ? 'DELETE' : 'POST';
+
+                    fetch(url, {
+                            method: method,
+                            headers: {
+                                'X-CSRF-TOKEN': csrfToken,
+                                'Content-Type': 'application/json',
+                                'Accept': 'application/json'
+                            }
+                        })
+                        .then(response => {
+                            if (!response.ok) {
+                                throw new Error('Network response was not ok');
+                            }
+                            return response.json();
+                        })
+                        .then(data => {
+                            // Update UI
+                            if (isLiked) {
+                                icon.setAttribute('fill', 'none');
+                                countSpan.textContent = currentCount - 1;
+                                this.dataset.liked = 'false';
                             } else {
-                                icon.classList.remove('fas', 'text-danger');
-                                icon.classList.add('far');
+                                icon.setAttribute('fill', 'white');
+                                countSpan.textContent = currentCount + 1;
+                                this.dataset.liked = 'true';
                             }
 
-                            // Update count
-                            countSpan.textContent = data.count;
-                        } else {
-                            console.error(data.message);
-                        }
-                    })
-                    .catch(error => {
-                        console.error('Error:', error);
-                    });
+                            // Add animation class
+                            icon.classList.add('like-animation');
+                            setTimeout(() => {
+                                icon.classList.remove('like-animation');
+                            }, 300);
+                        })
+                        .catch(error => {
+                            console.error('Error:', error);
+                            showToast('Có lỗi xảy ra khi thực hiện thao tác này', 'error');
+                        })
+                        .finally(() => {
+                            this.classList.remove('processing');
+                        });
+                }
             });
         });
 
@@ -232,117 +260,121 @@
             }
         });
 
-        // Xử lý preview ảnh khi upload
-        const imageInput = document.getElementById('images');
-        const imagePreview = document.getElementById('image-preview');
+        if (page != "chitietbaiviet") {
+            // Xử lý preview ảnh khi upload
+            const imageInput = document.getElementById('images');
+            const imagePreview = document.getElementById('image-preview');
 
-        imageInput.addEventListener('change', function() {
-            imagePreview.innerHTML = '';
+            imageInput.addEventListener('change', function() {
+                imagePreview.innerHTML = '';
 
-            if (this.files) {
-                Array.from(this.files).forEach(file => {
-                    const reader = new FileReader();
-                    reader.onload = function(e) {
-                        const img = document.createElement('img');
-                        img.src = e.target.result;
-                        img.style.width = '100px';
-                        img.style.height = '100px';
-                        img.style.objectFit = 'cover';
-                        img.classList.add('rounded', 'cursor-pointer');
-                        imagePreview.appendChild(img);
-                    }
-                    reader.readAsDataURL(file);
-                });
-            }
-        });
+                if (this.files) {
+                    Array.from(this.files).forEach(file => {
+                        const reader = new FileReader();
+                        reader.onload = function(e) {
+                            const img = document.createElement('img');
+                            img.src = e.target.result;
+                            img.style.width = '100px';
+                            img.style.height = '100px';
+                            img.style.objectFit = 'cover';
+                            img.classList.add('rounded', 'cursor-pointer');
+                            imagePreview.appendChild(img);
+                        }
+                        reader.readAsDataURL(file);
+                    });
+                }
+            });
+        }
     });
 
     document.addEventListener('DOMContentLoaded', function() {
-        let currentPage = 1;
-        let isLoading = false;
-        const postsContainer = document.querySelector('.posts-container');
-        const loadMoreBtn = document.querySelector('.load-more-posts');
+        if (page == "congdong") {
+            let currentPage = 1;
+            let isLoading = false;
+            const postsContainer = document.querySelector('.posts-container');
+            const loadMoreBtn = document.querySelector('.load-more-posts');
 
-        // Show load more button if there are posts
-        if (document.querySelectorAll('.card[data-post-id]').length > 0) {
-            loadMoreBtn.style.display = 'block';
-        }
+            // Show load more button if there are posts
+            if (document.querySelectorAll('.card[data-post-id]').length > 0) {
+                loadMoreBtn.style.display = 'block';
+            }
 
-        // Load more posts
-        loadMoreBtn.addEventListener('click', function() {
-            if (isLoading) return;
-            isLoading = true;
+            // Load more posts
+            loadMoreBtn.addEventListener('click', function() {
+                if (isLoading) return;
+                isLoading = true;
 
-            currentPage++;
-            loadMoreBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Đang tải...';
+                currentPage++;
+                loadMoreBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Đang tải...';
 
-            fetch(`loadmore-posts?page=${currentPage}`, {
-                    headers: {
-                        'Accept': 'application/json',
-                        'X-Requested-With': 'XMLHttpRequest'
-                    }
-                })
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error('Network response was not ok');
-                    }
-                    return response.json();
-                })
-                .then(data => {
-                    if (data.error) {
-                        throw new Error(data.message);
-                    }
+                fetch(`loadmore-posts?page=${currentPage}`, {
+                        headers: {
+                            'Accept': 'application/json',
+                            'X-Requested-With': 'XMLHttpRequest'
+                        }
+                    })
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Network response was not ok');
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        if (data.error) {
+                            throw new Error(data.message);
+                        }
 
-                    data.posts.forEach(post => {
-                        const postElement = createPostElement(post);
-                        postsContainer.insertBefore(postElement, loadMoreBtn.parentElement);
+                        data.posts.forEach(post => {
+                            const postElement = createPostElement(post);
+                            postsContainer.insertBefore(postElement, loadMoreBtn
+                                .parentElement);
+                        });
+
+                        if (!data.hasMore) {
+                            loadMoreBtn.style.display = 'none';
+                        } else {
+                            loadMoreBtn.innerHTML =
+                                '<i class="fas fa-spinner fa-spin me-2"></i>Tải thêm bài viết';
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error loading more posts:', error);
+                        loadMoreBtn.innerHTML =
+                            '<i class="fas fa-exclamation-circle me-2"></i>Lỗi khi tải bài viết';
+                        // Reset button state after 3 seconds
+                        setTimeout(() => {
+                            loadMoreBtn.innerHTML =
+                                '<i class="fas fa-spinner fa-spin me-2"></i>Tải thêm bài viết';
+                        }, 3000);
+                    })
+                    .finally(() => {
+                        isLoading = false;
                     });
+            });
 
-                    if (!data.hasMore) {
-                        loadMoreBtn.style.display = 'none';
-                    } else {
-                        loadMoreBtn.innerHTML =
-                            '<i class="fas fa-spinner fa-spin me-2"></i>Tải thêm bài viết';
-                    }
-                })
-                .catch(error => {
-                    console.error('Error loading more posts:', error);
-                    loadMoreBtn.innerHTML =
-                        '<i class="fas fa-exclamation-circle me-2"></i>Lỗi khi tải bài viết';
-                    // Reset button state after 3 seconds
-                    setTimeout(() => {
-                        loadMoreBtn.innerHTML =
-                            '<i class="fas fa-spinner fa-spin me-2"></i>Tải thêm bài viết';
-                    }, 3000);
-                })
-                .finally(() => {
-                    isLoading = false;
-                });
-        });
+            // Function to create post element
+            function createPostElement(post) {
+                const div = document.createElement('div');
+                div.className = 'card shadow-sm mb-4';
+                div.dataset.postId = post.id;
 
-        // Function to create post element
-        function createPostElement(post) {
-            const div = document.createElement('div');
-            div.className = 'card shadow-sm mb-4';
-            div.dataset.postId = post.id;
-
-            let groupInfo = '';
-            if (post.group) {
-                groupInfo = `
+                let groupInfo = '';
+                if (post.group) {
+                    groupInfo = `
                         <h5 class="mb-0">${post.group.name}</h5>
                         <div class="d-flex align-items-center gap-2">
                             <small>${post.user.name}</small>
                             <small class="d-block text-muted">${post.created_at}</small>
                         </div>
                     `;
-            } else {
-                groupInfo = `
+                } else {
+                    groupInfo = `
                         <h5 class="mb-0">${post.user.name}</h5>
                         <small class="d-block text-muted">${post.created_at}</small>
                     `;
-            }
+                }
 
-            div.innerHTML = `
+                div.innerHTML = `
                     <div class="card-body">
                         <div class="border-bottom pb-2">
                             <div class="d-flex align-items-center mb-3">
@@ -369,7 +401,8 @@
                     </div>
                 `;
 
-            return div;
+                return div;
+            }
         }
 
         const swiper = new Swiper(".mySwiper", {
