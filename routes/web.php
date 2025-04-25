@@ -21,7 +21,6 @@ use App\Http\Controllers\Page\CommunityController;
 use App\Http\Controllers\Page\FavoriteController;
 use App\Http\Controllers\GroupController;
 use App\Http\Controllers\LikeController;
-use App\Http\Controllers\Page\TrustlistController;
 use App\Http\Controllers\ShareController;
 use App\Http\Controllers\FollowerController;
 
