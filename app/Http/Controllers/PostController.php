@@ -105,6 +105,11 @@ class PostController extends Controller
             }
         }
 
+        foreach ($post->images as $image) {
+            // Xóa bản ghi ảnh
+            $image->delete();
+        }
+
         // Xóa bài đăng (cascade sẽ tự động xóa các bản ghi ảnh liên quan)
         $post->delete();
 
@@ -276,7 +281,7 @@ class PostController extends Controller
             $page = $request->get('page', 1);
             $offset = ($page - 1) * $perPage;
 
-            $posts = Post::with(['user', 'group', 'likes'])
+            $posts = Post::with(['user', 'group', 'likes', 'comments'])
                 ->where('type', '3')
                 ->orderBy('created_at', 'desc')
                 ->skip($offset)
@@ -304,6 +309,9 @@ class PostController extends Controller
                         'likes' => [
                             'count' => $post->likes->count(),
                             'is_liked' => $isLiked
+                        ],
+                        'comments' => [
+                            'count' => $post->comments->count(),
                         ]
                     ];
                 }),

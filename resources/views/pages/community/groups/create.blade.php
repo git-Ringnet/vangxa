@@ -59,7 +59,7 @@
                                     </div>
                                 </div>
 
-                                <div class="mb-3">
+                                <div class="mb-3 d-none">
                                     <div class="form-check">
                                         <input type="checkbox" class="form-check-input" id="is_private" name="is_private"
                                             value="1" {{ old('is_private') ? 'checked' : '' }}>

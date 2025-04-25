@@ -206,8 +206,8 @@
                             @auth
                                 <div class="dropdown-section">
                                     <a href="{{ route('profile') }}" class="dropdown-item"><strong>Hồ sơ</strong></a>
-                                    <a href="{{ route('trustlist') }}" class="dropdown-item">My Trustlist</a>
-                                    </div>
+                                    <a href="{{ route('trustlist') }}" class="dropdown-item">Danh sách đã yêu thích</a>
+                                </div>
                                 <div class="dropdown-divider"></div>
                                 <div class="dropdown-section">
                                     <a href="#" class="dropdown-item">Cho thuê chỗ ở qua Vangxa</a>

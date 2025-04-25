@@ -1,17 +1,17 @@
 /* Base Styles */
 :root {
-    --primary-color: #FF385C;
+    --primary-color: #ff385c;
     --text-color: #222222;
     --gray-light: #717171;
-    --border-color: #DDDDDD;
+    --border-color: #dddddd;
 
     /* Dining page specific colors */
-    --dining-primary: #34D399;
-    --dining-secondary: #6EE7B7;
-    --dining-dark: #065F46;
-    --dining-light: #ECFDF5;
-    --dining-accent: #F59E0B;
-    --sky-blue: #008CFF;
+    --dining-primary: #34d399;
+    --dining-secondary: #6ee7b7;
+    --dining-dark: #065f46;
+    --dining-light: #ecfdf5;
+    --dining-accent: #f59e0b;
+    --sky-blue: #008cff;
 }
 .create-post-btn {
     position: fixed;
@@ -20,6 +20,95 @@
     background-color: var(--sky-blue);
     border-radius: 10px;
     border: none;
-    padding: 10px 20px;
     cursor: pointer;
+    padding: 15px 20px;
+    width: 60px;
+    height: 48px;
+}
+
+/* Custom Styles */
+.bg-gradient {
+    background: linear-gradient(45deg, #0d6efd, #6610f2);
+}
+
+.card {
+    border: none;
+    transition: transform 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+}
+
+.post-content {
+    font-size: 1.1rem;
+    line-height: 1.6;
+}
+
+.members-list .d-flex:hover {
+    transform: translateX(5px);
+    transition: transform 0.3s ease;
+}
+
+.btn-link:hover {
+    color: #0d6efd !important;
+}
+
+@media (max-width: 768px) {
+    .display-4 {
+        font-size: 2rem;
+    }
+
+    .d-flex.gap-4 {
+        flex-direction: column;
+        gap: 1rem !important;
+    }
+}
+.cursor-pointer {
+    cursor: pointer;
+}
+.post-images img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+}
+.single-image img {
+    height: 400px;
+}
+.modal-content {
+    background-color: rgba(0, 0, 0, 0.8);
+}
+.btn-close-white {
+    filter: invert(1) grayscale(100%) brightness(200%);
+}
+#prevImage,
+#nextImage {
+    opacity: 0.8;
+}
+#prevImage:hover,
+#nextImage:hover {
+    opacity: 1;
+}
+#modalImage {
+    max-height: 80vh;
+    width: auto;
+    margin: 0 auto;
+    display: block;
+}
+.single-image {
+    max-width: 700px;
+}
+.images-container {
+    max-width: 850px;
+}
+.container-700 {
+    max-width: 700px;
+    display: block;
+    margin: 0 auto;
+}
+.bg-blur {
+    background: rgba(255, 255, 255, 0.1);
+}
+.text-white-blur{
+    color: #CACACA;
 }

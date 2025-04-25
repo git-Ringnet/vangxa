@@ -88,13 +88,23 @@
                     @if ($group->isMember(auth()->user()))
                         <div class="card shadow-sm mb-4">
                             <div class="card-body">
-                                <form action="{{ route('communities.store') }}" method="POST" enctype="multipart/form-data">
+                                <form action="{{ route('communities.store') }}" method="POST"
+                                    enctype="multipart/form-data">
                                     @csrf
                                     <input type="hidden" name="group_id" value="{{ $group->id }}">
                                     <input type="hidden" name="type" value="3">
                                     <input type="hidden" name="user_id" value="{{ Auth::user()->id }}">
                                     <div class="mb-3">
                                         <textarea name="description" rows="3" class="form-control" placeholder="Bạn viết gì đi..."></textarea>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="images" class="form-label">Thêm ảnh</label>
+                                        <input type="file" class="form-control" id="images" name="images[]" multiple
+                                            accept="image/*">
+                                        <div class="form-text">Bạn có thể chọn nhiều ảnh cùng lúc</div>
+                                    </div>
+                                    <div class="mb-3">
+                                        <div id="image-preview" class="d-flex flex-wrap gap-2"></div>
                                     </div>
                                     <div class="d-flex justify-content-between align-items-center">
                                         <button type="submit" class="btn btn-primary">
@@ -121,16 +131,53 @@
                                     <div class="post-content mb-3">
                                         {{ $post->description }}
                                     </div>
+                                    @if ($post->images->count() > 0)
+                                        <div class="post-images mb-3" 
+                                             data-post-id="{{ $post->id }}" 
+                                             data-total-images="{{ $post->images->count() }}"
+                                             data-images='@json($post->images->pluck("image_path"))'>
+                                            @if ($post->images->count() == 1)
+                                                <div class="single-image">
+                                                    <img src="{{ asset($post->images[0]->image_path) }}" 
+                                                         alt="Ảnh bài viết" 
+                                                         class="img-fluid rounded cursor-pointer"
+                                                         onclick="showImage(this.src, {{ $post->id }}, 0)">
+                                                </div>
+                                            @else
+                                                <div class="row g-2">
+                                                    @foreach ($post->images->take(4) as $index => $image)
+                                                        <div class="{{ $post->images->count() == 2 ? 'col-6' : 'col-4' }}">
+                                                            <div class="position-relative">
+                                                                <img src="{{ asset($image->image_path) }}" 
+                                                                     alt="Ảnh bài viết" 
+                                                                     class="img-fluid rounded cursor-pointer"
+                                                                     onclick="showImage(this.src, {{ $post->id }}, {{ $index }})">
+                                                                @if ($index == 3 && $post->images->count() > 4)
+                                                                    <div class="position-absolute top-0 start-0 w-100 h-100 bg-dark bg-opacity-50 rounded d-flex align-items-center justify-content-center cursor-pointer"
+                                                                         onclick="showImage(this.parentElement.querySelector('img').src, {{ $post->id }}, 3)">
+                                                                        <span class="text-white fs-4">+{{ $post->images->count() - 4 }}</span>
+                                                                    </div>
+                                                                @endif
+                                                            </div>
+                                                        </div>
+                                                    @endforeach
+                                                </div>
+                                            @endif
+                                        </div>
+                                    @endif
                                     <div class="d-flex gap-4 text-muted">
-                                        <button class="btn btn-link text-decoration-none p-0 like-btn" 
+                                        @if (Auth::check())
+                                            <button class="btn btn-link text-decoration-none p-0 like-btn"
                                                 data-post-id="{{ $post->id }}"
                                                 data-liked="{{ $post->likes->contains(auth()->id()) ? 'true' : 'false' }}">
-                                            <i class="{{ $post->likes->contains(auth()->id()) ? 'fas' : 'far' }} fa-heart me-1 {{ $post->likes->contains(auth()->id()) ? 'text-danger' : '' }}"></i>
-                                            <span class="like-count">{{ $post->likes->count() }}</span>
-                                        </button>
+                                                <i
+                                                    class="{{ $post->likes->contains(auth()->id()) ? 'fas' : 'far' }} fa-heart me-1 {{ $post->likes->contains(auth()->id()) ? 'text-danger' : '' }}"></i>
+                                                <span class="like-count">{{ $post->likes->count() }}</span>
+                                            </button>
+                                        @endif
                                         @if (!$post->group || ($post->group && $post->group->members->contains(auth()->id())))
                                             <button class="btn btn-link text-decoration-none p-0 comment-toggle"
-                                                    data-post-id="{{ $post->id }}">
+                                                data-post-id="{{ $post->id }}">
                                                 <i class="far fa-comment me-1"></i>
                                                 {{ count($post->comments) }}
                                             </button>
@@ -234,7 +281,7 @@
                             </div>
                             <div>
                                 <span class="text-sm"><b>Ngày tạo:</b></span>
-                                <span>{{ $group->created_at }}</span>
+                                <span>{{ $group->created_at->format('d/m/Y') }}</span>
                             </div>
                             <div>
                                 <span class="text-sm"><b>Nhóm:</b></span>
@@ -271,114 +318,5 @@
             </div>
         </div>
     </div>
-    <style>
-        /* Custom Styles */
-        .bg-gradient {
-            background: linear-gradient(45deg, #0d6efd, #6610f2);
-        }
-
-        .card {
-            border: none;
-            transition: transform 0.3s ease;
-        }
-
-        .card:hover {
-            transform: translateY(-5px);
-        }
-
-        .post-content {
-            font-size: 1.1rem;
-            line-height: 1.6;
-        }
-
-        .members-list .d-flex:hover {
-            transform: translateX(5px);
-            transition: transform 0.3s ease;
-        }
-
-        .btn-link:hover {
-            color: #0d6efd !important;
-        }
-
-        @media (max-width: 768px) {
-            .display-4 {
-                font-size: 2rem;
-            }
-
-            .d-flex.gap-4 {
-                flex-direction: column;
-                gap: 1rem !important;
-            }
-        }
-    </style>
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Toggle comment form (bình luận chính)
-            document.querySelectorAll('.comment-toggle').forEach(button => {
-                button.addEventListener('click', function() {
-                    const postId = this.dataset.postId;
-                    const form = document.getElementById(`comment-form-${postId}`);
-                    form.style.display = form.style.display === 'none' ? 'block' : 'none';
-                    if (form.style.display === 'block') {
-                        form.querySelector('input[name="content"]').focus();
-                    }
-                });
-            });
-
-            // Toggle reply form (phản hồi)
-            document.querySelectorAll('.reply-toggle').forEach(button => {
-                button.addEventListener('click', function() {
-                    const commentId = this.dataset.commentId;
-                    const form = document.getElementById(`reply-form-${commentId}`);
-                    form.style.display = form.style.display === 'none' ? 'block' : 'none';
-                    if (form.style.display === 'block') {
-                        form.querySelector('input[name="content"]').focus();
-                    }
-                });
-            });
-
-            // Handle like button clicks
-            document.querySelectorAll('.like-btn').forEach(button => {
-                button.addEventListener('click', function() {
-                    const postId = this.dataset.postId;
-                    const isLiked = this.dataset.liked === 'true';
-                    const icon = this.querySelector('i');
-                    const countSpan = this.querySelector('.like-count');
-                    const currentCount = parseInt(countSpan.textContent);
-
-                    // Toggle like status
-                    fetch(`/posts/${postId}/like`, {
-                        method: isLiked ? 'DELETE' : 'POST',
-                        headers: {
-                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
-                            'Accept': 'application/json',
-                            'Content-Type': 'application/json'
-                        }
-                    })
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.success) {
-                            // Update button state
-                            this.dataset.liked = data.is_liked;
-                            if (data.is_liked) {
-                                icon.classList.remove('far');
-                                icon.classList.add('fas', 'text-danger');
-                            } else {
-                                icon.classList.remove('fas', 'text-danger');
-                                icon.classList.add('far');
-                            }
-                            
-                            // Update count
-                            countSpan.textContent = data.count;
-                        } else {
-                            console.error(data.message);
-                        }
-                    })
-                    .catch(error => {
-                        console.error('Error:', error);
-                    });
-                });
-            });
-        });
-    </script>
+    <x-community.community-js name="nhom" />
 @endsection
