@@ -30,7 +30,7 @@
                 <!-- Nav tabs -->
                 <ul class="nav nav-tabs mb-4" id="postTabs" role="tablist">
                     <li class="nav-item" role="presentation">
-                        <a class="nav-link {{ !request('type') ? 'active' : '' }}" href="{{ route('posts.index') }}" role="tab">
+                        <a class="nav-link {{ !request('type') ? 'active' : '' }}" href="#" role="tab">
                             Tất cả
                         </a>
                     </li>

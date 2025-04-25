@@ -78,6 +78,14 @@
                     <div class="detail-page__host-info">
                         <h3>Chủ nhà: {{ $post->user->name }}</h3>
                         <p>Đã tham gia từ {{ $post->user->created_at->format('F, Y') }}</p>
+
+                        @auth
+                            @if(Auth::user()->hasRole('Admin') || Auth::user()->id == $post->user_id)
+                                <button class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#addOwnerModal">
+                                    <i class="fas fa-user-plus"></i> Quản lý chủ sở hữu
+                                </button>
+                            @endif
+                        @endauth
                     </div>
                 </div>
 
@@ -385,6 +393,9 @@
     </div>
 </div>
 
+<!-- Include partial view modal chủ sở hữu -->
+@include('partials.owner-modal', ['post' => $post])
+
 <script>
    const images = [
         @foreach ($post->images as $image)
@@ -515,12 +526,12 @@
     window.handleSave = function(button) {
         const isAuthenticated = button.dataset.authenticated === 'true';
         const postId = button.dataset.postId;
-        
+
         if (!isAuthenticated) {
             showToast('Vui lòng đăng nhập để thêm vào yêu thích', 'warning');
             return false;
         }
-        
+
         toggleSave(button, postId);
     };
 
@@ -620,13 +631,13 @@
     function copyShareUrl() {
         const shareUrl = document.getElementById('shareUrl');
         const copyBtn = document.querySelector('.share-copy-btn');
-        
+
         shareUrl.select();
         document.execCommand('copy');
-        
+
         copyBtn.textContent = 'Đã sao chép!';
         copyBtn.classList.add('copied');
-        
+
         setTimeout(() => {
             copyBtn.textContent = 'Sao chép';
             copyBtn.classList.remove('copied');
@@ -687,8 +698,12 @@
         }
     });
 </script>
-@endsection
 
-@push('styles')
+@push('scripts')
+    <script src="{{ asset('js/owner-search.js') }}"></script>
 
+    <script>
+        // JavaScript hiện tại của trang
+    </script>
 @endpush
+@endsection

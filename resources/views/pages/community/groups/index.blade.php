@@ -1,7 +1,7 @@
 {{-- @extends('layouts.main')
 
 @section('content')
-    
+
 @endsection --}}
 <x-community.community-js name="congdong" />
 <x-sidebar-nav></x-sidebar-nav>
@@ -456,7 +456,6 @@
         display: flex;
         transition: transform 0.3s ease;
     }
-
     /* Slide */
     .swiper-slide {
         width: 120px !important;

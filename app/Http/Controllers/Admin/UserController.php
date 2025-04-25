@@ -7,6 +7,8 @@ use App\Models\User;
 use Auth;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
+use Spatie\Permission\Models\Role;
 
 class UserController extends Controller
 {
@@ -23,7 +25,8 @@ class UserController extends Controller
 
     public function create()
     {
-        return view('users.create');
+        $roles = Role::all();
+        return view('users.create', compact('roles'));
     }
 
     public function store(Request $request)
@@ -32,20 +35,25 @@ class UserController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
             'password' => 'required|string|min:8|confirmed',
+            'role' => 'required|exists:roles,name',
         ]);
 
-        User::create([
+        $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
         ]);
 
-        return redirect()->route('users.index')->with('success', 'User created successfully.');
+        // Gán vai trò cho người dùng
+        $user->assignRole($request->role);
+
+        return redirect()->route('users.index')->with('success', 'Tạo người dùng thành công.');
     }
 
     public function edit(User $user)
     {
-        return view('users.edit', compact('user'));
+        $roles = Role::all();
+        return view('users.edit', compact('user', 'roles'));
     }
 
     public function update(Request $request, User $user)
@@ -53,12 +61,16 @@ class UserController extends Controller
         $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users,email,' . $user->id,
+            'role' => 'required|exists:roles,name',
         ]);
 
         $user->update([
             'name' => $request->name,
             'email' => $request->email,
         ]);
+
+        // Cập nhật vai trò
+        $user->syncRoles($request->role);
 
         if ($request->password) {
             $request->validate([
@@ -69,7 +81,7 @@ class UserController extends Controller
             ]);
         }
 
-        return redirect()->route('users.index')->with('success', 'User updated successfully.');
+        return redirect()->route('users.index')->with('success', 'Cập nhật người dùng thành công.');
     }
 
     public function destroy(User $user)
@@ -98,10 +110,88 @@ class UserController extends Controller
 
         return response()->json(['success' => true, 'message' => 'Cám ơn bạn đã cập nhật thông tin.']);
     }
+
+    public function updateAvatar(Request $request)
+    {
+        $user = Auth::user();
+
+        $request->validate([
+            'avatar' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
+        ]);
+
+        // Xóa avatar cũ nếu có
+        if ($user->avatar && Storage::exists('public/' . $user->avatar)) {
+            Storage::delete('public/' . $user->avatar);
+        }
+
+        // Lưu avatar mới
+        $avatarPath = $request->file('avatar')->store('avatars', 'public');
+
+        $user->update([
+            'avatar' => $avatarPath,
+        ]);
+
+        // Trả về phản hồi JSON thay vì redirect
+        return response()->json([
+            'success' => true,
+            'message' => 'Avatar đã được cập nhật thành công',
+            'avatar' => $user->avatar // Trả về đường dẫn tới avatar mới
+        ]);
+    }
+
     public function show(Request $request)
     {
         $id_user = Auth::user()->id;
-        $user = User::with('posts', 'trustlists')->find($id_user);
-        return view('users.profile', compact('user'));
+        $user = User::with('posts', 'trustlists', 'reviews')->find($id_user);
+        $isOwnProfile = true; // Luôn là true vì đây là profile của người dùng hiện tại
+
+        // Đếm số người theo dõi và đang theo dõi
+        $followersCount = $user->followers()->count();
+        $followingCount = $user->following()->count();
+
+        return view('users.profile', compact('user', 'isOwnProfile', 'followersCount', 'followingCount'));
+    }
+
+    /**
+     * Hiển thị profile của người dùng khác bằng ID
+     */
+    public function showUserProfile($id)
+    {
+        $user = User::with('posts', 'trustlists', 'reviews')->findOrFail($id);
+        $isOwnProfile = false;
+        $isFollowing = false;
+
+        // Kiểm tra xem người đang xem có phải chủ profile không
+        if (Auth::check()) {
+            $currentUser = Auth::user();
+            if ($currentUser->id == $user->id) {
+                $isOwnProfile = true;
+            } else {
+                // Kiểm tra xem người dùng hiện tại có đang theo dõi người này không
+                $isFollowing = $currentUser->following()->where('following_id', $user->id)->exists();
+            }
+        }
+
+        // Đếm số người theo dõi và đang theo dõi
+        $followersCount = $user->followers()->count();
+        $followingCount = $user->following()->count();
+
+        return view('users.profile', compact('user', 'isOwnProfile', 'isFollowing', 'followersCount', 'followingCount'));
+    }
+
+    /**
+     * API endpoint để tìm kiếm người dùng
+     */
+    public function search(Request $request)
+    {
+        $query = $request->input('q');
+
+        // Tìm kiếm người dùng theo tên hoặc email
+        $users = User::where('name', 'LIKE', "%{$query}%")
+                    ->orWhere('email', 'LIKE', "%{$query}%")
+                    ->limit(10)
+                    ->get(['id', 'name', 'email', 'avatar']);
+
+        return response()->json($users);
     }
 }

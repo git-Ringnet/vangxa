@@ -15,6 +15,7 @@ return new class extends Migration
             $table->string('avatar')->nullable();
             $table->string('referral_source')->nullable()->after('phone');
             $table->string('experience_expectation')->nullable()->after('referral_source');
+            $table->string('bio')->nullable()->after('experience_expectation');
         });
     }
 

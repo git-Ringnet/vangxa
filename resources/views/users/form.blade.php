@@ -25,6 +25,21 @@
 </div>
 
 <div class="mb-3">
+    <label for="role" class="form-label">Vai trò</label>
+    <select class="form-select @error('role') is-invalid @enderror" id="role" name="role" required>
+        <option value="">-- Chọn vai trò --</option>
+        @foreach($roles as $role)
+            <option value="{{ $role->name }}" {{ (old('role') == $role->name || (isset($user) && $user->hasRole($role->name))) ? 'selected' : '' }}>
+                {{ ucfirst($role->name) }}
+            </option>
+        @endforeach
+    </select>
+    @error('role')
+        <div class="invalid-feedback">{{ $message }}</div>
+    @enderror
+</div>
+
+<div class="mb-3">
     <label for="password" class="form-label">Mật khẩu</label>
     <input type="password" class="form-control @error('password') is-invalid @enderror" id="password" name="password" {{ isset($user) ? '' : 'required' }}>
     @error('password')
@@ -39,14 +54,3 @@
     <label for="password_confirmation" class="form-label">Xác nhận mật khẩu</label>
     <input type="password" class="form-control" id="password_confirmation" name="password_confirmation">
 </div>
-
-{{-- <div class="mb-3">
-    <label for="role" class="form-label">Vai trò</label>
-    <select class="form-select @error('role') is-invalid @enderror" id="role" name="role" required>
-        <option value="user" {{ (old('role', $user->role ?? '') == 'user') ? 'selected' : '' }}>Người dùng</option>
-        <option value="admin" {{ (old('role', $user->role ?? '') == 'admin') ? 'selected' : '' }}>Quản trị viên</option>
-    </select>
-    @error('role')
-        <div class="invalid-feedback">{{ $message }}</div>
-    @enderror
-</div> --}}

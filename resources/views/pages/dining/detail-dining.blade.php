@@ -130,9 +130,25 @@
                     <span class="info-icon"><i class="fas fa-clock"></i></span>
                     <span>Giờ mở cửa: 11:00 - 14:00, 17:30 - 22:00</span>
                 </div>
+
+                <!-- Thêm phần thông tin chủ sở hữu/vendor -->
                 <div class="info-item">
-                    <span class="info-icon"><i class="fas fa-phone"></i></span>
-                    <span>024 3835 2222</span>
+                    <span class="info-icon"><i class="fas fa-user-tie"></i></span>
+                    <span>
+                        Chủ sở hữu/Vendor:
+                        @if(isset($post->owner) && $post->owner)
+                            <a href="{{ route('profile.show', $post->owner->id) }}">{{ $post->owner->name }}</a>
+                        @else
+                            Chưa có thông tin
+                        @endif
+                        @auth
+                            @if(Auth::user()->hasRole('Admin') || Auth::user()->id == $post->user_id)
+                                <button class="btn btn-sm btn-outline-primary ml-2" data-bs-toggle="modal" data-bs-target="#addOwnerModal">
+                                    <i class="fas fa-plus-circle"></i> Thêm/Chỉnh sửa
+                                </button>
+                            @endif
+                        @endauth
+                    </span>
                 </div>
             </div>
 
@@ -287,39 +303,21 @@
     </div>
 
     <!-- Share Modal -->
-    <div class="share-modal" id="shareModal">
-        <div class="share-content">
+    <div class="modal" id="shareModal">
+        <div class="share-modal-content">
             <div class="share-header">
                 <h3>Chia sẻ</h3>
-                <button class="share-close" onclick="closeShareModal()">
-                    <i class="fas fa-times"></i>
-                </button>
+                <button class="close-button" onclick="closeShareModal()">&times;</button>
             </div>
             <div class="share-body">
-                <div class="share-url-container">
-                    <input type="text" class="share-url-input" id="shareUrl" readonly>
-                    <button class="share-copy-btn" onclick="copyShareUrl()">Sao chép</button>
-                </div>
-                <div class="share-social">
+                <div class="social-buttons">
                     <a href="#" class="share-social-btn facebook" onclick="shareToFacebook()">
-                        <i class="fab fa-facebook"></i>
+                        <i class="fab fa-facebook-f"></i>
                         <span>Facebook</span>
                     </a>
                     <a href="#" class="share-social-btn twitter" onclick="shareToTwitter()">
                         <i class="fab fa-twitter"></i>
                         <span>Twitter</span>
-                    </a>
-                    <a href="#" class="share-social-btn telegram" onclick="shareToTelegram()">
-                        <i class="fab fa-telegram"></i>
-                        <span>Telegram</span>
-                    </a>
-                    <a href="#" class="share-social-btn whatsapp" onclick="shareToWhatsApp()">
-                        <i class="fab fa-whatsapp"></i>
-                        <span>WhatsApp</span>
-                    </a>
-                    <a href="#" class="share-social-btn email" onclick="shareToEmail()">
-                        <i class="fas fa-envelope"></i>
-                        <span>Email</span>
                     </a>
                     <a href="#" class="share-social-btn messenger" onclick="shareToMessenger()">
                         <i class="fab fa-facebook-messenger"></i>
@@ -340,6 +338,9 @@
             </div>
         </div>
     </div>
+
+    <!-- Include modal chủ sở hữu từ partial view -->
+    @include('partials.owner-modal', ['post' => $post])
 </div>
 @endsection
 
@@ -468,12 +469,12 @@
         window.handleSave = function(button) {
             const isAuthenticated = button.dataset.authenticated === 'true';
             const postId = button.dataset.postId;
-            
+
             if (!isAuthenticated) {
                 showToast('Vui lòng đăng nhập để thêm vào danh sách tin cậy', 'warning');
                 return false;
             }
-            
+
             toggleSave(button, postId);
         };
 
@@ -573,13 +574,13 @@
     function copyShareUrl() {
         const shareUrl = document.getElementById('shareUrl');
         const copyBtn = document.querySelector('.share-copy-btn');
-        
+
         shareUrl.select();
         document.execCommand('copy');
-        
+
         copyBtn.textContent = 'Đã sao chép!';
         copyBtn.classList.add('copied');
-        
+
         setTimeout(() => {
             copyBtn.textContent = 'Sao chép';
             copyBtn.classList.remove('copied');
@@ -618,7 +619,7 @@
 
     // function shareToMessenger() {
     //     const url = encodeURIComponent(window.location.href);
-    //     window.open(`https://www.facebook.com/dialog/send?link=${url}&app_id=YOUR_APP_ID`, '_blank');
+    //     window.open(`https://www.facebook.com/dialog/send?app_id=YOUR_APP_ID&link=${url}&redirect_uri=${url}`, '_blank');
     // }
 
     // function shareToLine() {
@@ -639,5 +640,21 @@
             closeShareModal();
         }
     });
+
+    // Hàm để xóa chủ sở hữu
+    function removeOwner(e) {
+        e.preventDefault();
+        const selectedOwner = document.getElementById('selectedOwner');
+        selectedOwner.innerHTML = '<div class="text-muted">Chưa có chủ sở hữu được chọn</div>';
+        document.getElementById('ownerIdInput').value = '';
+    }
+
+    // Thêm sự kiện remove-owner nếu đã có chủ sở hữu
+    const removeBtn = document.querySelector('.remove-owner');
+    if (removeBtn) {
+        removeBtn.addEventListener('click', removeOwner);
+    }
 </script>
+<!-- Load owner search JavaScript -->
+<script src="{{ asset('js/owner-search.js') }}"></script>
 @endpush

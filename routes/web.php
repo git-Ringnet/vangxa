@@ -23,6 +23,7 @@ use App\Http\Controllers\GroupController;
 use App\Http\Controllers\LikeController;
 use App\Http\Controllers\Page\TrustlistController;
 use App\Http\Controllers\ShareController;
+use App\Http\Controllers\FollowerController;
 
 Route::get('/test-scheme', function () {
     return request()->getScheme(); // Nó nên trả về 'https'
@@ -85,6 +86,12 @@ Route::get('/dining', [DiningController::class, 'index'])->name('dining');
 Route::get('/dining/detail/{id}', [DiningController::class, 'detail'])->name('dining.detail-dining');
 Route::get('/dining/load-more', [DiningController::class, 'loadMore'])->name('dining.load-more');
 
+// API routes
+Route::get('/api/users/search', [UserController::class, 'search'])->name('api.users.search');
+Route::post('/post/{id}/update-owner', [PostController::class, 'updateOwner'])->name('post.update-owner')->middleware('auth');
+Route::post('/post/{id}/add-owner', [PostController::class, 'addOwner'])->name('post.add-owner')->middleware('auth');
+Route::delete('/post/{postId}/remove-owner/{userId}', [PostController::class, 'removeOwner'])->name('post.remove-owner')->middleware('auth');
+
 // Favorites routes
 // Route::middleware(['auth'])->group(function () {
 //     Route::get('/favorites', [FavoriteController::class, 'index'])->name('favorites');
@@ -98,7 +105,17 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/favorites', [FavoriteController::class, 'index'])->name('favorites');
     Route::post('/favorites/{id}', [FavoriteController::class, 'toggleFavorite'])->name('favorites.favorite');
 
+    // Cập nhật routes profile
     Route::get('/profile', [UserController::class, 'show'])->name('profile');
+    Route::get('/profile/{id}', [UserController::class, 'showUserProfile'])->name('profile.show');
+    Route::post('/update-avatar', [UserController::class, 'updateAvatar'])->name('user.update-avatar');
+
+    // Routes cho tính năng Follow
+    Route::post('/follow/{id}', [FollowerController::class, 'follow'])->name('user.follow');
+    Route::post('/unfollow/{id}', [FollowerController::class, 'unfollow'])->name('user.unfollow');
+    Route::post('/follow-toggle/{id}', [FollowerController::class, 'toggle'])->name('user.follow.toggle');
+    Route::get('/user/{id}/followers', [FollowerController::class, 'followers'])->name('user.followers');
+    Route::get('/user/{id}/following', [FollowerController::class, 'following'])->name('user.following');
 
     Route::post('/register-popup', [UserController::class, 'updateInfo'])->name('register-popup');
 });
