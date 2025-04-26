@@ -56,11 +56,28 @@ class LodgingController extends Controller
 
     public function loadMore(Request $request)
     {
-        $offset = $request->input('offset', 18);
+        $offset = $request->input('offset', 30);
+        $totalPosts = Post::where('type', 1)->count();
+        
+        Log::info('Load more request', [
+            'offset' => $offset,
+            'totalPosts' => $totalPosts
+        ]);
+        
+        // Tính số lượng bài viết còn lại
+        $remainingPosts = $totalPosts - $offset;
+        // Nếu còn ít hơn 30 bài, chỉ lấy số lượng còn lại
+        $takeCount = min(30, $remainingPosts);
+        
+        Log::info('Calculated values', [
+            'remainingPosts' => $remainingPosts,
+            'takeCount' => $takeCount
+        ]);
+        
         $posts = Post::with('images')
             ->where('type', 1) // Type 1 for accommodations
             ->skip($offset)
-            ->take(18)
+            ->take($takeCount)
             ->get();
             
         // Kiểm tra trạng thái yêu thích cho mỗi bài viết
@@ -78,11 +95,20 @@ class LodgingController extends Controller
             }
         }
 
-        $hasMore = Post::where('type', 1)->count() > ($offset + 18);
+        // Kiểm tra xem còn bài viết nào nữa không
+        $hasMore = ($offset + $takeCount) < $totalPosts;
+        
+        Log::info('Response data', [
+            'postsCount' => count($posts),
+            'hasMore' => $hasMore,
+            'nextOffset' => $offset + $takeCount
+        ]);
 
         return response()->json([
-            'html' => view('pages.listings.partials.posts', compact('posts'))->render(),
-            'hasMore' => $hasMore
+            'html' => view('pages.listings.posts', compact('posts'))->render(),
+            'hasMore' => $hasMore,
+            'total' => $totalPosts,
+            'nextOffset' => $offset + $takeCount
         ]);
     }
 }

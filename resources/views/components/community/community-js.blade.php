@@ -227,57 +227,59 @@
             }
 
             // Load more posts
-            loadMoreBtn.addEventListener('click', function() {
-                if (isLoading) return;
-                isLoading = true;
+            if (loadMoreBtn) {
+                loadMoreBtn.addEventListener('click', function() {
+                    if (isLoading) return;
+                    isLoading = true;
 
-                currentPage++;
-                loadMoreBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Đang tải...';
+                    currentPage++;
+                    loadMoreBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Đang tải...';
 
-                fetch(`loadmore-posts?page=${currentPage}`, {
-                        headers: {
-                            'Accept': 'application/json',
-                            'X-Requested-With': 'XMLHttpRequest'
-                        }
-                    })
-                    .then(response => {
-                        if (!response.ok) {
-                            throw new Error('Network response was not ok');
-                        }
-                        return response.json();
-                    })
-                    .then(data => {
-                        if (data.error) {
-                            throw new Error(data.message);
-                        }
+                    fetch(`loadmore-posts?page=${currentPage}`, {
+                            headers: {
+                                'Accept': 'application/json',
+                                'X-Requested-With': 'XMLHttpRequest'
+                            }
+                        })
+                        .then(response => {
+                            if (!response.ok) {
+                                throw new Error('Network response was not ok');
+                            }
+                            return response.json();
+                        })
+                        .then(data => {
+                            if (data.error) {
+                                throw new Error(data.message);
+                            }
 
-                        data.posts.forEach(post => {
-                            const postElement = createPostElement(post);
-                            postsContainer.insertBefore(postElement, loadMoreBtn
-                                .parentElement);
+                            data.posts.forEach(post => {
+                                const postElement = createPostElement(post);
+                                postsContainer.insertBefore(postElement, loadMoreBtn
+                                    .parentElement);
+                            });
+
+                            if (!data.hasMore) {
+                                loadMoreBtn.style.display = 'none';
+                            } else {
+                                loadMoreBtn.innerHTML =
+                                    '<i class="fas fa-spinner fa-spin me-2"></i>Tải thêm bài viết';
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error loading more posts:', error);
+                            loadMoreBtn.innerHTML =
+                                '<i class="fas fa-exclamation-circle me-2"></i>Lỗi khi tải bài viết';
+                            // Reset button state after 3 seconds
+                            setTimeout(() => {
+                                loadMoreBtn.innerHTML =
+                                    '<i class="fas fa-spinner fa-spin me-2"></i>Tải thêm bài viết';
+                            }, 3000);
+                        })
+                        .finally(() => {
+                            isLoading = false;
                         });
-
-                        if (!data.hasMore) {
-                            loadMoreBtn.style.display = 'none';
-                        } else {
-                            loadMoreBtn.innerHTML =
-                                '<i class="fas fa-spinner fa-spin me-2"></i>Tải thêm bài viết';
-                        }
-                    })
-                    .catch(error => {
-                        console.error('Error loading more posts:', error);
-                        loadMoreBtn.innerHTML =
-                            '<i class="fas fa-exclamation-circle me-2"></i>Lỗi khi tải bài viết';
-                        // Reset button state after 3 seconds
-                        setTimeout(() => {
-                            loadMoreBtn.innerHTML =
-                                '<i class="fas fa-spinner fa-spin me-2"></i>Tải thêm bài viết';
-                        }, 3000);
-                    })
-                    .finally(() => {
-                        isLoading = false;
-                    });
-            });
+                });
+            }
 
             // Function to create post element
             function createPostElement(post) {

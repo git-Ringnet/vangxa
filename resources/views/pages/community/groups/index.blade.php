@@ -3,7 +3,7 @@
 @section('content')
     <x-community.community-js name="congdong" />
     <x-sidebar-nav></x-sidebar-nav>
-    <div class="">
+    <div class="main-content">
         <div class="container-700 py-4">
             <div class="row">
                 <div class="swiper-container">
