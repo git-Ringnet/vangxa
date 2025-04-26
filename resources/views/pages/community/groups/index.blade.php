@@ -1,10 +1,5 @@
 @extends('layouts.main')
-@section('head')
-    <meta property="og:title" content="Cộng đồng Ăn Uống - Du Lịch" />
-    <meta property="og:description" content="Khám phá những bài viết hay nhất về ăn uống và du lịch." />
-    <meta property="og:url" content="{{ route('communities.index') }}" />
-    <meta property="og:type" content="website" />
-@endsection
+
 @section('content')
     <x-community.community-js name="congdong" />
     <x-sidebar-nav></x-sidebar-nav>
@@ -247,7 +242,7 @@
                                                     <li>
                                                         <a class="dropdown-item"
                                                             href="https://www.facebook.com/sharer/sharer.php?u={{ urlencode(route('communities.show', $post)) }}&quote={{ urlencode($post->description) }}"
-                                                            target="_blank" rel="noopener noreferrer">
+                                                            target="_blank">
                                                             <i class="fab fa-facebook me-2"></i> Facebook
                                                         </a>
                                                     </li>

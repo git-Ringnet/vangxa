@@ -291,7 +291,7 @@
                                                 <li>
                                                     <a class="dropdown-item"
                                                         href="https://www.facebook.com/sharer/sharer.php?u={{ urlencode(route('communities.show', $post)) }}&quote={{ urlencode($post->description) }}"
-                                                        target="_blank" rel="noopener noreferrer">
+                                                        target="_blank">
                                                         <i class="fab fa-facebook me-2"></i> Facebook
                                                     </a>
                                                 </li>
