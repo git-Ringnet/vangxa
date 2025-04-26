@@ -1,10 +1,5 @@
 @extends('layouts.main')
-@section('head')
-    <meta property="og:title" content="Cộng đồng Ăn Uống - Du Lịch" />
-    <meta property="og:description" content="Khám phá những bài viết hay nhất về ăn uống và du lịch." />
-    <meta property="og:url" content="{{ route('communities.index') }}" />
-    <meta property="og:type" content="website" />
-@endsection
+
 @section('content')
     <x-community.community-js name="congdong" />
     <x-sidebar-nav></x-sidebar-nav>
@@ -79,19 +74,17 @@
                                                             class="rounded-circle" style="width: 30px; height: 30px;">
                                                     </div>
                                                     <div class="">
-                                                        <div class="d-flex align-items-center">
-                                                            <span class="text-white">
-                                                                <b>{{ $post->user->name }}</b>
-                                                            </span>
-                                                            <span class="mx-2">
-                                                                <svg xmlns="http://www.w3.org/2000/svg" width="15"
-                                                                    height="13" viewBox="0 0 15 13" fill="none">
-                                                                    <path fill-rule="evenodd" clip-rule="evenodd"
-                                                                        d="M7.24735 1.4282L5.37135 0.5L4.33115 2.045H2.14925V3.9512L0.248047 4.892L1.33095 6.5L0.248047 8.1077L2.14925 9.0488V10.8203H4.2405L5.37135 12.5L7.24735 11.5718L9.12335 12.5L10.2545 10.82H12.4112V9.017L14.248 8.1077L13.1648 6.5L14.248 4.8923L12.4112 3.9833V2.0453H10.1646L9.12335 0.5L7.24735 1.4282ZM9.8426 4.7957L10.6315 5.4818L6.631 8.9318L4.23875 6.8528L5.02415 6.1754L6.6296 7.5497L9.8426 4.7957Z"
-                                                                        fill="#0095F6" />
-                                                                </svg>
-                                                            </span>
-                                                        </div>
+                                                        <span class="text-white">
+                                                            <b>{{ $post->user->name }}</b>
+                                                        </span>
+                                                        <span>
+                                                            <svg xmlns="http://www.w3.org/2000/svg" width="15"
+                                                                height="13" viewBox="0 0 15 13" fill="none">
+                                                                <path fill-rule="evenodd" clip-rule="evenodd"
+                                                                    d="M7.24735 1.4282L5.37135 0.5L4.33115 2.045H2.14925V3.9512L0.248047 4.892L1.33095 6.5L0.248047 8.1077L2.14925 9.0488V10.8203H4.2405L5.37135 12.5L7.24735 11.5718L9.12335 12.5L10.2545 10.82H12.4112V9.017L14.248 8.1077L13.1648 6.5L14.248 4.8923L12.4112 3.9833V2.0453H10.1646L9.12335 0.5L7.24735 1.4282ZM9.8426 4.7957L10.6315 5.4818L6.631 8.9318L4.23875 6.8528L5.02415 6.1754L6.6296 7.5497L9.8426 4.7957Z"
+                                                                    fill="#0095F6" />
+                                                            </svg>
+                                                        </span>
                                                         <p class="text-white-blur p-0 m-0">
                                                             <small>
                                                                 {{ $post->created_at->diffForHumans() }}
@@ -246,8 +239,8 @@
                                                     </li>
                                                     <li>
                                                         <a class="dropdown-item"
-                                                            href="https://www.facebook.com/sharer/sharer.php?u={{ urlencode(route('communities.show', $post)) }}&quote={{ urlencode($post->description) }}"
-                                                            target="_blank" rel="noopener noreferrer">
+                                                            href="https://www.facebook.com/sharer/sharer.php?u={{ urlencode(route('communities.show', $post)) }}"
+                                                            target="_blank">
                                                             <i class="fab fa-facebook me-2"></i> Facebook
                                                         </a>
                                                     </li>
@@ -256,6 +249,13 @@
                                                             href="https://twitter.com/intent/tweet?url={{ urlencode(route('communities.show', $post)) }}&text={{ urlencode($post->description) }}"
                                                             target="_blank">
                                                             <i class="fab fa-twitter me-2"></i> Twitter
+                                                        </a>
+                                                    </li>
+                                                    <li>
+                                                        <a class="dropdown-item"
+                                                            href="https://www.linkedin.com/shareArticle?mini=true&url={{ urlencode(route('communities.show', $post)) }}&title={{ urlencode($post->description) }}"
+                                                            target="_blank">
+                                                            <i class="fab fa-linkedin me-2"></i> LinkedIn
                                                         </a>
                                                     </li>
                                                 </ul>
@@ -364,20 +364,20 @@
                         @csrf
                         <div class="modal-body">
                             <div class="mb-3">
-                                <textarea name="description" id="postDescription" rows="3" class="form-control"
-                                    placeholder="Bạn viết gì đi..." autocomplete="off"></textarea>
-                                <div class="invalid-feedback" id="descriptionError">Vui lòng nhập nội dung bài viết</div>
+                                <textarea name="description" rows="3" class="form-control" placeholder="Bạn viết gì đi..."
+                                    autocomplete="off"></textarea>
+                                <div class="invalid-feedback" id="descriptionError"></div>
                             </div>
                             <div class="mb-3">
                                 <label for="images" class="form-label">Thêm ảnh</label>
-                                <input type="file" class="form-control" id="postImages" name="images[]" multiple
+                                <input type="file" class="form-control" id="images" name="images[]" multiple
                                     accept="image/*">
                                 <div class="form-text">Bạn có thể chọn nhiều ảnh cùng lúc</div>
                                 <div class="invalid-feedback" id="imagesError"></div>
                             </div>
                             <div class="mb-3">
                                 <label for="group_id" class="form-label">Chọn nhóm</label>
-                                <select name="group_id" class="form-control" id="groupSelect">
+                                <select name="group_id" class="form-control" id="group_id">
                                     <option value="">Chọn nhóm</option>
                                     @foreach ($groups as $group)
                                         @if ($group->members->contains(auth()->id()))
@@ -385,7 +385,7 @@
                                         @endif
                                     @endforeach
                                 </select>
-                                <div class="invalid-feedback" id="groupError">Vui lòng chọn nhóm</div>
+                                <div class="invalid-feedback" id="groupError"></div>
                             </div>
                         </div>
                         <div class="modal-footer">
@@ -869,43 +869,3 @@
         opacity: 0.7;
     }
 </style>
-
-<script>
-    // Validation form tạo bài viết
-    document.addEventListener('DOMContentLoaded', function() {
-        const postForm = document.getElementById('postForm');
-
-        if (postForm) {
-            postForm.addEventListener('submit', function(e) {
-                const description = document.getElementById('postDescription').value.trim();
-                const groupSelect = document.getElementById('groupSelect');
-                const images = document.getElementById('postImages').files;
-                let isValid = true;
-
-                // Reset validation states
-                document.getElementById('postDescription').classList.remove('is-invalid');
-                groupSelect.classList.remove('is-invalid');
-
-                // Kiểm tra đã nhập nội dung hoặc thêm ảnh chưa
-                if (description === '' && images.length === 0) {
-                    document.getElementById('postDescription').classList.add('is-invalid');
-                    document.getElementById('descriptionError').textContent =
-                        'Vui lòng nhập nội dung hoặc thêm ảnh cho bài viết';
-                    isValid = false;
-                }
-
-                // Kiểm tra đã chọn nhóm chưa
-                if (groupSelect.value === '') {
-                    groupSelect.classList.add('is-invalid');
-                    document.getElementById('groupError').textContent = 'Vui lòng chọn nhóm';
-                    isValid = false;
-                }
-
-                if (!isValid) {
-                    e.preventDefault();
-                    return false;
-                }
-            });
-        }
-    });
-</script>
