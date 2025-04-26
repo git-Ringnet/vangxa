@@ -13,7 +13,7 @@ class DiningController extends Controller
 {
     public function index()
     {
-        $posts = Post::where('type', 2)->with('images')->get();
+        $posts = Post::where('type', 2)->with('images')->orderBy('created_at', 'desc')->limit(30)->get();
         $userTrustlist = Trustlist::where('user_id', Auth::id())
             ->pluck('post_id')
             ->toArray();
