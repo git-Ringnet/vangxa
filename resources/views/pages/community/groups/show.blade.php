@@ -130,17 +130,19 @@
                                                     class="rounded-circle" style="width: 30px; height: 30px;">
                                             </div>
                                             <div class="">
-                                                <span>
-                                                    <b class="text-white">{{ $post->user->name }}</b>
-                                                </span>
-                                                <span>
-                                                    <svg xmlns="http://www.w3.org/2000/svg" width="15" height="13"
-                                                        viewBox="0 0 15 13" fill="none">
-                                                        <path fill-rule="evenodd" clip-rule="evenodd"
-                                                            d="M7.24735 1.4282L5.37135 0.5L4.33115 2.045H2.14925V3.9512L0.248047 4.892L1.33095 6.5L0.248047 8.1077L2.14925 9.0488V10.8203H4.2405L5.37135 12.5L7.24735 11.5718L9.12335 12.5L10.2545 10.82H12.4112V9.017L14.248 8.1077L13.1648 6.5L14.248 4.8923L12.4112 3.9833V2.0453H10.1646L9.12335 0.5L7.24735 1.4282ZM9.8426 4.7957L10.6315 5.4818L6.631 8.9318L4.23875 6.8528L5.02415 6.1754L6.6296 7.5497L9.8426 4.7957Z"
-                                                            fill="#0095F6" />
-                                                    </svg>
-                                                </span>
+                                                <div class="d-flex align-items-center">
+                                                    <span class="text-white">
+                                                        <b>{{ $post->user->name }}</b>
+                                                    </span>
+                                                    <span class="mx-2">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" width="15"
+                                                            height="13" viewBox="0 0 15 13" fill="none">
+                                                            <path fill-rule="evenodd" clip-rule="evenodd"
+                                                                d="M7.24735 1.4282L5.37135 0.5L4.33115 2.045H2.14925V3.9512L0.248047 4.892L1.33095 6.5L0.248047 8.1077L2.14925 9.0488V10.8203H4.2405L5.37135 12.5L7.24735 11.5718L9.12335 12.5L10.2545 10.82H12.4112V9.017L14.248 8.1077L13.1648 6.5L14.248 4.8923L12.4112 3.9833V2.0453H10.1646L9.12335 0.5L7.24735 1.4282ZM9.8426 4.7957L10.6315 5.4818L6.631 8.9318L4.23875 6.8528L5.02415 6.1754L6.6296 7.5497L9.8426 4.7957Z"
+                                                                fill="#0095F6" />
+                                                        </svg>
+                                                    </span>
+                                                </div>
                                                 <p class="text-white-blur p-0 m-0">
                                                     <small>{{ $post->created_at->diffForHumans() }}</small>
                                                 </p>
@@ -185,7 +187,8 @@
                                             </div>
                                         @endif
                                     </div>
-                                    <div class="post-content mb-3 text-white description-post cursor-pointer" onclick="window.location.href='{{ route('communities.show', $post) }}'">
+                                    <div class="post-content mb-3 text-white description-post cursor-pointer"
+                                        onclick="window.location.href='{{ route('communities.show', $post) }}'">
                                         {{ $post->description }}
                                     </div>
                                     @if ($post->images->count() > 0)
@@ -237,7 +240,8 @@
                                                                 d="M1.49316 8.36806V8.37826C1.49315 8.93568 1.49313 9.73662 1.84578 10.7287C2.19955 11.724 2.88929 12.8643 4.19656 14.1716C6.21425 16.1893 8.4235 17.8017 9.25996 18.3886C9.70594 18.7014 10.2954 18.7014 10.7413 18.3884C11.5776 17.8014 13.7861 16.1892 15.8037 14.1716C17.1109 12.8643 17.8007 11.724 18.1544 10.7287C18.5071 9.73663 18.5071 8.93568 18.507 8.37826V8.36806C18.507 5.81629 16.7611 3.61111 14.0626 3.61111C12.8017 3.61111 11.826 4.20271 11.1026 4.94974C10.6558 5.41125 10.293 5.94345 10.0001 6.46148C9.70728 5.94345 9.34445 5.41125 8.89758 4.94974C8.17424 4.20271 7.19856 3.61111 5.93761 3.61111C3.23911 3.61111 1.49316 5.81629 1.49316 8.36806Z"
                                                                 stroke="white" stroke-width="1.38889" />
                                                         </svg>
-                                                        <span class="like-count text-white">{{ $post->likes->count() }}</span>
+                                                        <span
+                                                            class="like-count text-white">{{ $post->likes->count() }}</span>
                                                     </div>
                                                 </button>
                                                 @if (!$post->group || ($post->group && $post->group->members->contains(auth()->id())))
@@ -286,8 +290,8 @@
                                                 </li>
                                                 <li>
                                                     <a class="dropdown-item"
-                                                        href="https://www.facebook.com/sharer/sharer.php?u={{ urlencode(route('communities.show', $post)) }}"
-                                                        target="_blank">
+                                                        href="https://www.facebook.com/sharer/sharer.php?u={{ urlencode(route('communities.show', $post)) }}&quote={{ urlencode($post->description) }}"
+                                                        target="_blank" rel="noopener noreferrer">
                                                         <i class="fab fa-facebook me-2"></i> Facebook
                                                     </a>
                                                 </li>
@@ -296,13 +300,6 @@
                                                         href="https://twitter.com/intent/tweet?url={{ urlencode(route('communities.show', $post)) }}&text={{ urlencode($post->description) }}"
                                                         target="_blank">
                                                         <i class="fab fa-twitter me-2"></i> Twitter
-                                                    </a>
-                                                </li>
-                                                <li>
-                                                    <a class="dropdown-item"
-                                                        href="https://www.linkedin.com/shareArticle?mini=true&url={{ urlencode(route('communities.show', $post)) }}&title={{ urlencode($post->description) }}"
-                                                        target="_blank">
-                                                        <i class="fab fa-linkedin me-2"></i> LinkedIn
                                                     </a>
                                                 </li>
                                             </ul>
