@@ -13,7 +13,7 @@ class DiningController extends Controller
 {
     public function index()
     {
-        $posts = Post::where('type', 2)->with('images')->get();
+        $posts = Post::where('type', 2)->with('images')->orderBy('created_at', 'desc')->limit(30)->get();
         $userTrustlist = Trustlist::where('user_id', Auth::id())
             ->pluck('post_id')
             ->toArray();
@@ -58,18 +58,59 @@ class DiningController extends Controller
 
     public function loadMore(Request $request)
     {
-        $offset = $request->input('offset', 18);
+        $offset = $request->input('offset', 30);
+        $totalPosts = Post::where('type', 2)->count();
+        
+        Log::info('Load more request - Dining', [
+            'offset' => $offset,
+            'totalPosts' => $totalPosts
+        ]);
+        
+        // Tính số lượng bài viết còn lại
+        $remainingPosts = $totalPosts - $offset;
+        // Nếu còn ít hơn 30 bài, chỉ lấy số lượng còn lại
+        $takeCount = min(30, $remainingPosts);
+        
+        Log::info('Calculated values - Dining', [
+            'remainingPosts' => $remainingPosts,
+            'takeCount' => $takeCount
+        ]);
+        
         $posts = Post::with('images')
             ->where('type', 2) // Type 2 for dining
             ->skip($offset)
-            ->take(18)
+            ->take($takeCount)
             ->get();
+            
+        // Kiểm tra trạng thái yêu thích cho mỗi bài viết
+        if (Auth::check()) {
+            $userTrustlist = Trustlist::where('user_id', Auth::id())
+                ->pluck('post_id')
+                ->toArray();
+                
+            foreach ($posts as $post) {
+                $post->isSaved = in_array($post->id, $userTrustlist);
+            }
+        } else {
+            foreach ($posts as $post) {
+                $post->isSaved = false;
+            }
+        }
 
-        $hasMore = Post::where('type', 2)->count() > ($offset + 18);
+        // Kiểm tra xem còn bài viết nào nữa không
+        $hasMore = ($offset + $takeCount) < $totalPosts;
+        
+        Log::info('Response data - Dining', [
+            'postsCount' => count($posts),
+            'hasMore' => $hasMore,
+            'nextOffset' => $offset + $takeCount
+        ]);
 
         return response()->json([
             'html' => view('pages.dining.posts', compact('posts'))->render(),
-            'hasMore' => $hasMore
+            'hasMore' => $hasMore,
+            'total' => $totalPosts,
+            'nextOffset' => $offset + $takeCount
         ]);
     }
 }

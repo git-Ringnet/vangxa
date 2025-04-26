@@ -1,12 +1,3 @@
-@vite(['resources/css/main.css', 'resources/js/app.js'])
-<link rel="stylesheet" href="{{ asset('community/styles.css') }}">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet">
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.css" />
-<script src="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.js"></script>
-<script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
-
 <input type="hidden" id="page" value="{{ $name ?? 0 }}">
 <!-- Image Modal -->
 <div class="modal fade" id="imageModal" tabindex="-1" aria-labelledby="imageModalLabel" aria-hidden="true">
@@ -65,11 +56,6 @@
                 return;
             }
 
-            // Xử lý trường hợp ảnh có dấu "+"
-            if (imageIndex === 3 && totalImages > 4) {
-                currentImageIndex = 3;
-            }
-
             // Hiển thị ảnh trong modal
             const modalImage = document.getElementById("modalImage");
             if (!modalImage) {
@@ -112,8 +98,10 @@
         if (currentImageIndex > 0) {
             currentImageIndex--;
             const modalImage = document.getElementById("modalImage");
-            modalImage.src = postImages[currentImageIndex];
-            updateNavigationButtons();
+            if (modalImage) {
+                modalImage.src = postImages[currentImageIndex];
+                updateNavigationButtons();
+            }
         }
     }
 
@@ -121,8 +109,10 @@
         if (currentImageIndex < totalImages - 1) {
             currentImageIndex++;
             const modalImage = document.getElementById("modalImage");
-            modalImage.src = postImages[currentImageIndex];
-            updateNavigationButtons();
+            if (modalImage) {
+                modalImage.src = postImages[currentImageIndex];
+                updateNavigationButtons();
+            }
         }
     }
 
@@ -137,8 +127,7 @@
         if (nextButton) {
             nextButton.addEventListener("click", nextImage);
         }
-    });
-    document.addEventListener('DOMContentLoaded', function() {
+
         // Toggle comment form (bình luận chính)
         document.querySelectorAll('.comment-toggle').forEach(button => {
             button.addEventListener('click', function() {
@@ -223,68 +212,6 @@
                 }
             });
         });
-
-        document.getElementById('prevImage').addEventListener('click', function() {
-            if (currentImageIndex > 0) {
-                currentImageIndex--;
-                const modalImage = document.getElementById('modalImage');
-                modalImage.src = postImages[currentImageIndex];
-
-                // Cập nhật nút điều hướng
-                const prevButton = document.getElementById('prevImage');
-                const nextButton = document.getElementById('nextImage');
-                const postElement = document.querySelector(
-                    `.post-images[data-post-id="${currentPostId}"]`);
-                const totalImages = parseInt(postElement.dataset.totalImages);
-
-                prevButton.style.display = currentImageIndex > 0 ? 'block' : 'none';
-                nextButton.style.display = currentImageIndex < totalImages - 1 ? 'block' : 'none';
-            }
-        });
-
-        document.getElementById('nextImage').addEventListener('click', function() {
-            const postElement = document.querySelector(`.post-images[data-post-id="${currentPostId}"]`);
-            const totalImages = parseInt(postElement.dataset.totalImages);
-
-            if (currentImageIndex < totalImages - 1) {
-                currentImageIndex++;
-                const modalImage = document.getElementById('modalImage');
-                modalImage.src = postImages[currentImageIndex];
-
-                // Cập nhật nút điều hướng
-                const prevButton = document.getElementById('prevImage');
-                const nextButton = document.getElementById('nextImage');
-
-                prevButton.style.display = currentImageIndex > 0 ? 'block' : 'none';
-                nextButton.style.display = currentImageIndex < totalImages - 1 ? 'block' : 'none';
-            }
-        });
-
-        if (page != "chitietbaiviet") {
-            // Xử lý preview ảnh khi upload
-            const imageInput = document.getElementById('images');
-            const imagePreview = document.getElementById('image-preview');
-
-            imageInput.addEventListener('change', function() {
-                imagePreview.innerHTML = '';
-
-                if (this.files) {
-                    Array.from(this.files).forEach(file => {
-                        const reader = new FileReader();
-                        reader.onload = function(e) {
-                            const img = document.createElement('img');
-                            img.src = e.target.result;
-                            img.style.width = '100px';
-                            img.style.height = '100px';
-                            img.style.objectFit = 'cover';
-                            img.classList.add('rounded', 'cursor-pointer');
-                            imagePreview.appendChild(img);
-                        }
-                        reader.readAsDataURL(file);
-                    });
-                }
-            });
-        }
     });
 
     document.addEventListener('DOMContentLoaded', function() {
@@ -300,57 +227,59 @@
             }
 
             // Load more posts
-            loadMoreBtn.addEventListener('click', function() {
-                if (isLoading) return;
-                isLoading = true;
+            if (loadMoreBtn) {
+                loadMoreBtn.addEventListener('click', function() {
+                    if (isLoading) return;
+                    isLoading = true;
 
-                currentPage++;
-                loadMoreBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Đang tải...';
+                    currentPage++;
+                    loadMoreBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Đang tải...';
 
-                fetch(`loadmore-posts?page=${currentPage}`, {
-                        headers: {
-                            'Accept': 'application/json',
-                            'X-Requested-With': 'XMLHttpRequest'
-                        }
-                    })
-                    .then(response => {
-                        if (!response.ok) {
-                            throw new Error('Network response was not ok');
-                        }
-                        return response.json();
-                    })
-                    .then(data => {
-                        if (data.error) {
-                            throw new Error(data.message);
-                        }
+                    fetch(`loadmore-posts?page=${currentPage}`, {
+                            headers: {
+                                'Accept': 'application/json',
+                                'X-Requested-With': 'XMLHttpRequest'
+                            }
+                        })
+                        .then(response => {
+                            if (!response.ok) {
+                                throw new Error('Network response was not ok');
+                            }
+                            return response.json();
+                        })
+                        .then(data => {
+                            if (data.error) {
+                                throw new Error(data.message);
+                            }
 
-                        data.posts.forEach(post => {
-                            const postElement = createPostElement(post);
-                            postsContainer.insertBefore(postElement, loadMoreBtn
-                                .parentElement);
+                            data.posts.forEach(post => {
+                                const postElement = createPostElement(post);
+                                postsContainer.insertBefore(postElement, loadMoreBtn
+                                    .parentElement);
+                            });
+
+                            if (!data.hasMore) {
+                                loadMoreBtn.style.display = 'none';
+                            } else {
+                                loadMoreBtn.innerHTML =
+                                    '<i class="fas fa-spinner fa-spin me-2"></i>Tải thêm bài viết';
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error loading more posts:', error);
+                            loadMoreBtn.innerHTML =
+                                '<i class="fas fa-exclamation-circle me-2"></i>Lỗi khi tải bài viết';
+                            // Reset button state after 3 seconds
+                            setTimeout(() => {
+                                loadMoreBtn.innerHTML =
+                                    '<i class="fas fa-spinner fa-spin me-2"></i>Tải thêm bài viết';
+                            }, 3000);
+                        })
+                        .finally(() => {
+                            isLoading = false;
                         });
-
-                        if (!data.hasMore) {
-                            loadMoreBtn.style.display = 'none';
-                        } else {
-                            loadMoreBtn.innerHTML =
-                                '<i class="fas fa-spinner fa-spin me-2"></i>Tải thêm bài viết';
-                        }
-                    })
-                    .catch(error => {
-                        console.error('Error loading more posts:', error);
-                        loadMoreBtn.innerHTML =
-                            '<i class="fas fa-exclamation-circle me-2"></i>Lỗi khi tải bài viết';
-                        // Reset button state after 3 seconds
-                        setTimeout(() => {
-                            loadMoreBtn.innerHTML =
-                                '<i class="fas fa-spinner fa-spin me-2"></i>Tải thêm bài viết';
-                        }, 3000);
-                    })
-                    .finally(() => {
-                        isLoading = false;
-                    });
-            });
+                });
+            }
 
             // Function to create post element
             function createPostElement(post) {
@@ -441,4 +370,58 @@
             }
         });
     });
+
+    function deleteImage(imageId, button) {
+        if (confirm('Bạn có chắc chắn muốn xóa ảnh này?')) {
+            fetch(`/posts/images/${imageId}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                        'Content-Type': 'application/json'
+                    }
+                })
+                .then(response => {
+                    if (response.ok) {
+                        // Remove the image container
+                        button.closest('.col-4').remove();
+                    } else {
+                        alert('Có lỗi xảy ra khi xóa ảnh');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Có lỗi xảy ra khi xóa ảnh');
+                });
+        }
+    }
+
+    function copyPostLink(postId) {
+        const postUrl = `${window.location.origin}/communities/${postId}`;
+        navigator.clipboard.writeText(postUrl).then(() => {
+            // Show success message
+            const toast = document.createElement('div');
+            toast.className = 'position-fixed bottom-0 end-0 p-3';
+            toast.style.zIndex = '5';
+            toast.innerHTML = `
+                <div class="toast align-items-center text-white bg-success border-0" role="alert" aria-live="assertive" aria-atomic="true">
+                    <div class="d-flex">
+                        <div class="toast-body">
+                            Đã sao chép liên kết vào clipboard
+                        </div>
+                        <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(toast);
+            const toastElement = new bootstrap.Toast(toast.querySelector('.toast'));
+            toastElement.show();
+
+            // Remove toast after it's hidden
+            toast.querySelector('.toast').addEventListener('hidden.bs.toast', () => {
+                toast.remove();
+            });
+        }).catch(err => {
+            console.error('Failed to copy text: ', err);
+        });
+    }
 </script>

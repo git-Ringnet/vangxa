@@ -13,12 +13,7 @@ class CommunityController extends Controller
 {
     public function index()
     {
-        $posts = Post::with('user', 'images')
-            ->where('type', 3) // Type 3 for community
-            ->latest()
-            ->paginate(12);
-
-        return view('pages.community.index', compact('posts'));
+        //
     }
 
     public function create()
@@ -31,11 +26,13 @@ class CommunityController extends Controller
         $request->validate([
             'description' => 'required|string',
             'images.*' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'group_id' => 'required|exists:groups,id',
         ], [
             'description.required' => 'Vui lòng nhập nội dung bài viết',
             'images.*.image' => 'File phải là ảnh',
             'images.*.mimes' => 'Ảnh phải có định dạng jpeg, png, jpg hoặc gif',
             'images.*.max' => 'Ảnh không được lớn hơn 2MB',
+            'group_id.required' => 'Vui lòng chọn nhóm',
         ]);
 
         try {
@@ -44,12 +41,7 @@ class CommunityController extends Controller
             $post->user_id = Auth::id() ?? 1;
             $post->type = 3; // Type 3 for community
             $post->status = 1; // Active
-
-            if ($request->filled('group_id') && $request->group_id != 0) {
-                $group = Group::findOrFail($request->group_id);
-                $post->group_id = $request->group_id;
-            }
-
+            $post->group_id = $request->group_id;
             $post->save();
 
             // Xử lý upload ảnh
@@ -73,7 +65,7 @@ class CommunityController extends Controller
                 $post->group->increment('post_count');
             }
 
-            if ($post->group_id) {
+            if ($request->page == 'nhom') {
                 return redirect()
                     ->route('groupss.show', $post->group_id)
                     ->with('success', 'Bài viết đã được đăng thành công!');
