@@ -25,6 +25,19 @@ class DiningController extends Controller
         return view('pages.dining.dining', compact('posts'));
     }
 
+    public function search(Request $request)
+    {
+        $query = $request->input('search');
+        $posts = Post::where('type', 2)
+            ->where('title', 'like', "%{$query}%")
+            ->with('images')
+            ->get();
+
+        return response()->json([
+            'html' => view('pages.dining.posts', compact('posts'))->render()
+        ]);
+    }
+
     public function detail($id)
     {
         try {

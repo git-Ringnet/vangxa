@@ -163,7 +163,7 @@
 
         <!-- Listings -->
         <section class="listings-section">
-            <div class="listings-grid">
+            <div class="listings-grid" id="post-list">
                 @include('pages.listings.posts', ['posts' => $posts])
             </div>
 
@@ -178,6 +178,20 @@
 @endsection
 
 <script>
+    function searchComponent() {
+            return {
+                query: '',
+                search() {
+                    fetch(`/search/lodging?search=${this.query}`)
+                        .then(res => res.json())
+                        .then(data => {
+                            document.getElementById('post-list').innerHTML = data.html;
+                        })
+                        .catch(err => console.error(err));
+                }
+            }
+        }
+
     document.addEventListener('DOMContentLoaded', function() {
         const container = document.getElementById('categoriesContainer');
         const prevButton = document.getElementById('prevButton');

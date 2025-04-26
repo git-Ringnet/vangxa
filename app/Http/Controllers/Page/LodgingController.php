@@ -25,13 +25,30 @@ class LodgingController extends Controller
         return view('pages.listings.lodging', compact('posts'));
     }
 
+    public function search(Request $request)
+    {
+        $posts = Post::where('type', 1)
+            ->with('images');
+
+        if ($request->has('search')) {
+            $search = $request->input('search');
+            $posts->where('title', 'like', "%{$search}%");
+        }
+
+        $posts = $posts->get();
+
+        return response()->json([
+            'html' => view('pages.listings.posts', compact('posts'))->render()
+        ]);
+    }
+
     public function detail($id)
     {
         try {
             $post = Post::with('images')
                 ->where('type', 1) // Type 1 for accommodations
                 ->findOrFail($id);
-                
+
             // Kiểm tra trạng thái yêu thích
             if (Auth::check()) {
                 $post->isSaved = Trustlist::where('user_id', Auth::id())
@@ -49,7 +66,7 @@ class LodgingController extends Controller
                 'post_id' => $id,
                 'error' => $e->getMessage()
             ]);
-            
+
             return redirect()->route('lodging')->with('error', 'Không tìm thấy bài viết');
         }
     }
@@ -79,13 +96,13 @@ class LodgingController extends Controller
             ->skip($offset)
             ->take($takeCount)
             ->get();
-            
+
         // Kiểm tra trạng thái yêu thích cho mỗi bài viết
         if (Auth::check()) {
             $userTrustlist = Trustlist::where('user_id', Auth::id())
                 ->pluck('post_id')
                 ->toArray();
-                
+
             foreach ($posts as $post) {
                 $post->isSaved = in_array($post->id, $userTrustlist);
             }

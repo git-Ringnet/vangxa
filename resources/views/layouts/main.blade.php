@@ -241,9 +241,15 @@
             <!-- Search Bar -->
             <div class="search-bar">
                 <div class="search-container">
-                    <div class="search-item">
+                    <div x-data="searchComponent()" class="search-item">
                         <div class="search-label">Địa điểm</div>
-                        <input type="text" placeholder="{{ request()->is('dining') ? 'Tìm nhà hàng, món ăn...' : 'Tìm kiếm điểm đến' }}" class="search-input">
+                        <input
+                            type="text"
+                            placeholder="{{ request()->is('dining') ? 'Tìm nhà hàng, món ăn...' : 'Tìm kiếm điểm đến' }}"
+                            class="search-input"
+                            x-model="query"
+                            @input.debounce.500ms="search"
+                        >
                     </div>
 
                     @if(!request()->is('dining'))

@@ -126,7 +126,7 @@
 
         <!-- Listings -->
         <section class="listings-section">
-            <div class="listings-grid">
+            <div class="listings-grid" id="post-list">
                 @include('pages.dining.posts')
             </div>
 
@@ -140,6 +140,19 @@
     </div>
 @endsection
 <script>
+    function searchComponent() {
+            return {
+                query: '',
+                search() {
+                    fetch(`/search/dining?search=${this.query}`)
+                        .then(res => res.json())
+                        .then(data => {
+                            document.getElementById('post-list').innerHTML = data.html;
+                        })
+                        .catch(err => console.error(err));
+                }
+            }
+        }
     // Define carousel navigation functions in global scope
     window.prevImage = function(button) {
         const carousel = button.closest('.image-carousel');

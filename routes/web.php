@@ -34,6 +34,9 @@ Route::get('/test-header', function () {
 // Main routes
 Route::get('/', [MainHomeController::class, 'index'])->name('home');
 Route::get('/lodging', [LodgingController::class, 'index'])->name('lodging');
+Route::get('/search/lodging', [LodgingController::class, 'search'])->name('search.lodging');
+
+Route::get('/search/dining', [DiningController::class, 'search'])->name('search.dining');
 
 Route::get('/detail/{id}', [LodgingController::class, 'detail'])->name('detail');
 Route::get('/load-more', [LodgingController::class, 'loadMore'])->name('load-more');
@@ -68,6 +71,9 @@ Route::middleware(['auth'])->group(function () {
 Route::get('/auth/google', [GoogleController::class, 'redirectToGoogle'])->name('google.login');
 Route::get('/auth/google/callback', [GoogleController::class, 'handleGoogleCallback'])->name('google.callback');
 
+// TikTok Authentication Routes
+Route::get('/auth/tiktok', [App\Http\Controllers\Auth\TiktokController::class, 'redirectToTiktok'])->name('tiktok.login');
+Route::get('/auth/tiktok/callback', [App\Http\Controllers\Auth\TiktokController::class, 'handleTiktokCallback'])->name('tiktok.callback');
 
 Route::prefix('admin')->group(function () {
     Route::get('roles-permissions', [RolePermissionController::class, 'index'])->name('roles-permissions.index');
