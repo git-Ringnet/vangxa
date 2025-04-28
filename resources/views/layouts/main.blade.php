@@ -66,7 +66,7 @@
                                                 {{ $index + 1 }}
                                             @endif
                                         </div>
-                                        <img src="{{ $user->avatar ?? asset('image/anh.jpg') }}" alt="User" class="preview-avatar">
+                                        <img src="{{ $user->avatar ?? asset('image/default/default-group-avatar.jpg') }}" alt="User" class="preview-avatar">
                                         <div class="preview-info">
                                             <h5>{{ $user->name }}</h5>
                                             <div class="preview-stats">

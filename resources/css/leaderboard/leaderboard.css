@@ -183,12 +183,12 @@
 }
 
 .leaderboard-item.top-three {
-    background: linear-gradient(135deg, #f6d365 0%, #fda085 100%);
+    background: linear-gradient(135deg, #cbe00b 0%, #d4ea0c 100%);
     color: white;
 }
 
 .leaderboard-item.rank-1 {
-    background: linear-gradient(135deg, #ffd700 0%, #ffa502 100%);
+    background: linear-gradient(135deg, #ff5000, #f1ff16);
     box-shadow: 0 4px 15px rgba(255, 165, 2, 0.3);
 }
 
@@ -446,7 +446,7 @@
 }
 
 .preview-item.rank-1 {
-    background: linear-gradient(135deg, #ffd700 0%, #ffa502 100%);
+    background: linear-gradient(135deg, #ff5000, #f1ff16);
     box-shadow: 0 4px 15px rgba(255, 165, 2, 0.3);
 }
 

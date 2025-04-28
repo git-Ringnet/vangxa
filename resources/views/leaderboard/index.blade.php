@@ -118,7 +118,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     <div class="rank">
                         ${index < 3 ? '<i class="fas fa-crown"></i>' : (index + 1)}
                     </div>
-                    <img src="${entry.user.avatar || '/image/anh.jpg'}" alt="User" class="user-avatar">
+                    <img src="${entry.user.avatar || '/image/default/default-group-avatar.jpg'}" alt="User" class="user-avatar">
                     <div class="user-info">
                         <h4>${entry.user.name}</h4>
                         <div class="user-stats">
