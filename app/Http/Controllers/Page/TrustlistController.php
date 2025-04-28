@@ -5,15 +5,16 @@ namespace App\Http\Controllers\Page;
 use App\Http\Controllers\Controller;
 use App\Models\Post;
 use App\Models\Trustlist;
+use App\Models\UserInteraction;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-
+use Illuminate\Support\Facades\Log;
 class TrustlistController extends Controller
 {
     public function index(Request $request)
     {
         $type = $request->get('type');
-        $query = Post::whereHas('trustlist', function($q) {
+        $query = Post::whereHas('trustlist', function ($q) {
             $q->where('user_id', Auth::id());
         });
 
@@ -55,6 +56,18 @@ class TrustlistController extends Controller
                 'user_id' => Auth::id(),
                 'post_id' => $id
             ]);
+
+            // Ghi nhận tương tác thêm vào trustlist
+            UserInteraction::create([
+                'user_id' => Auth::id(),
+                'interaction_type' => 'trustlist',
+                'points' => 1,
+                'post_id' => $id
+            ]);
+
+            // Kiểm tra thăng hạng sau khi thêm vào trustlist
+            $tierUpgrade = UserInteraction::checkTierUpgrade(Auth::id());
+
             $message = 'Đã thêm vào danh sách tin cậy';
             $saved = true;
         }
@@ -65,7 +78,8 @@ class TrustlistController extends Controller
             'success' => true,
             'message' => $message,
             'saved' => $saved,
-            'savesCount' => $savesCount
+            'savesCount' => $savesCount,
+            'tier_upgrade' => $tierUpgrade ?? null
         ]);
     }
-} 
+}

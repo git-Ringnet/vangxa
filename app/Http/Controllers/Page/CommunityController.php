@@ -8,6 +8,7 @@ use App\Models\Post;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
+use App\Models\UserInteraction;
 
 class CommunityController extends Controller
 {
@@ -65,6 +66,18 @@ class CommunityController extends Controller
                 $post->group->increment('post_count');
             }
 
+              // Ghi nhận tương tác khi đăng bài
+            if (Auth::check()) {
+                UserInteraction::create([
+                    'user_id' => Auth::id(),
+                    'interaction_type' => 'post',
+                    'points' => 1,
+                    'post_id' => $post->id
+                ]);
+
+                // Kiểm tra thăng hạng sau khi đăng bài
+                $tierUpgrade = UserInteraction::checkTierUpgrade(Auth::id());
+            }
             if ($request->page == 'nhom') {
                 return redirect()
                     ->route('groupss.show', $post->group_id)

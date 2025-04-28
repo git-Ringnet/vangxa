@@ -23,6 +23,7 @@ use App\Http\Controllers\GroupController;
 use App\Http\Controllers\LikeController;
 use App\Http\Controllers\ShareController;
 use App\Http\Controllers\FollowerController;
+use App\Http\Controllers\LeaderboardController;
 
 Route::get('/test-scheme', function () {
     return request()->getScheme(); // Nó nên trả về 'https'
@@ -150,5 +151,10 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/posts/{post}/like', [LikeController::class, 'store'])->name('posts.like');
     Route::delete('/posts/{post}/like', [LikeController::class, 'destroy'])->name('posts.unlike');
 });
+
+Route::get('/leaderboard', [LeaderboardController::class, 'index'])->name('leaderboard');
+Route::post('/interactions', [LeaderboardController::class, 'recordInteraction'])->middleware('auth');
+Route::get('/leaderboard/filter', [LeaderboardController::class, 'getFilteredLeaderboard'])->name('leaderboard.filter');
+Route::get('/check-tier-upgrade', [LeaderboardController::class, 'checkTierUpgrade'])->name('check.tier.upgrade');
 
 require __DIR__ . '/auth.php';
