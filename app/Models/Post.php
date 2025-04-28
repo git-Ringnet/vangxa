@@ -20,11 +20,39 @@ class Post extends Model
         'status',
         'type',
         'group_id',
+        'owner_id', // Vẫn giữ lại để tương thích ngược
     ];
 
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function owner(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'owner_id');
+    }
+
+    /**
+     * Lưu vendor bài đăng
+     */
+    public function owners(): BelongsToMany
+    {
+        return $this->belongsToMany(User::class, 'post_owners', 'post_id', 'user_id')
+            ->withPivot('role')
+            ->withTimestamps();
+    }
+
+    /**
+     * Trả về đường dẫn đến trang chi tiết dựa vào loại bài đăng
+     *
+     * @return string
+     */
+    public function getDetailUrlAttribute(): string
+    {
+        return in_array($this->type, [2, 'dining'])
+            ? route('dining.detail-dining', ['id' => $this->id])
+            : route('detail', ['id' => $this->id]);
     }
 
     public function images(): HasMany

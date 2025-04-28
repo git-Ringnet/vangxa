@@ -1,6 +1,7 @@
 <?php
 
 use App\Events\TestReverbEvent;
+use App\Http\Controllers\Page\TrustlistController;
 use App\Http\Controllers\RolePermissionController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Page\HomeController;
@@ -20,8 +21,8 @@ use App\Http\Controllers\Page\CommunityController;
 use App\Http\Controllers\Page\FavoriteController;
 use App\Http\Controllers\GroupController;
 use App\Http\Controllers\LikeController;
-use App\Http\Controllers\Page\TrustlistController;
 use App\Http\Controllers\ShareController;
+use App\Http\Controllers\FollowerController;
 use App\Http\Controllers\LeaderboardController;
 
 Route::get('/test-scheme', function () {
@@ -34,6 +35,9 @@ Route::get('/test-header', function () {
 // Main routes
 Route::get('/', [MainHomeController::class, 'index'])->name('home');
 Route::get('/lodging', [LodgingController::class, 'index'])->name('lodging');
+Route::get('/search/lodging', [LodgingController::class, 'search'])->name('search.lodging');
+
+Route::get('/search/dining', [DiningController::class, 'search'])->name('search.dining');
 
 Route::get('/detail/{id}', [LodgingController::class, 'detail'])->name('detail');
 Route::get('/load-more', [LodgingController::class, 'loadMore'])->name('load-more');
@@ -68,8 +72,9 @@ Route::middleware(['auth'])->group(function () {
 Route::get('/auth/google', [GoogleController::class, 'redirectToGoogle'])->name('google.login');
 Route::get('/auth/google/callback', [GoogleController::class, 'handleGoogleCallback'])->name('google.callback');
 
-Route::get('/auth/tiktok', [TiktokController::class, 'redirectToTiktok'])->name('tiktok.login');
-Route::get('/auth/tiktok/callback', [TiktokController::class, 'handleTiktokCallback'])->name('tiktok.callback');
+// TikTok Authentication Routes
+Route::get('/auth/tiktok', [App\Http\Controllers\Auth\TiktokController::class, 'redirectToTiktok'])->name('tiktok.login');
+Route::get('/auth/tiktok/callback', [App\Http\Controllers\Auth\TiktokController::class, 'handleTiktokCallback'])->name('tiktok.callback');
 
 Route::prefix('admin')->group(function () {
     Route::get('roles-permissions', [RolePermissionController::class, 'index'])->name('roles-permissions.index');
@@ -87,6 +92,12 @@ Route::get('/dining', [DiningController::class, 'index'])->name('dining');
 Route::get('/dining/detail/{id}', [DiningController::class, 'detail'])->name('dining.detail-dining');
 Route::get('/dining/load-more', [DiningController::class, 'loadMore'])->name('dining.load-more');
 
+// API routes
+Route::get('/api/users/search', [UserController::class, 'search'])->name('api.users.search');
+Route::post('/post/{id}/update-owner', [PostController::class, 'updateOwner'])->name('post.update-owner')->middleware('auth');
+Route::post('/post/{id}/add-owner', [PostController::class, 'addOwner'])->name('post.add-owner')->middleware('auth');
+Route::delete('/post/{postId}/remove-owner/{userId}', [PostController::class, 'removeOwner'])->name('post.remove-owner')->middleware('auth');
+
 // Favorites routes
 // Route::middleware(['auth'])->group(function () {
 //     Route::get('/favorites', [FavoriteController::class, 'index'])->name('favorites');
@@ -97,16 +108,30 @@ Route::get('/dining/load-more', [DiningController::class, 'loadMore'])->name('di
 Route::middleware(['auth'])->group(function () {
     Route::get('/trustlist', [TrustlistController::class, 'index'])->name('trustlist');
     Route::post('/trustlist/{id}', [TrustlistController::class, 'toggle'])->name('trustlist.toggle');
+    Route::get('/favorites', [FavoriteController::class, 'index'])->name('favorites');
+    Route::post('/favorites/{id}', [FavoriteController::class, 'toggleFavorite'])->name('favorites.favorite');
+
+    // Cập nhật routes profile
+    Route::get('/profile', [UserController::class, 'show'])->name('profile');
+    Route::get('/profile/{id}', [UserController::class, 'showUserProfile'])->name('profile.show');
+    Route::post('/update-avatar', [UserController::class, 'updateAvatar'])->name('user.update-avatar');
+
+    // Routes cho tính năng Follow
+    Route::post('/follow/{id}', [FollowerController::class, 'follow'])->name('user.follow');
+    Route::post('/unfollow/{id}', [FollowerController::class, 'unfollow'])->name('user.unfollow');
+    Route::post('/follow-toggle/{id}', [FollowerController::class, 'toggle'])->name('user.follow.toggle');
+    Route::get('/user/{id}/followers', [FollowerController::class, 'followers'])->name('user.followers');
+    Route::get('/user/{id}/following', [FollowerController::class, 'following'])->name('user.following');
+
+    Route::post('/register-popup', [UserController::class, 'updateInfo'])->name('register-popup');
 });
 
 // Community routes
 Route::resource('communities', CommunityController::class);
 
-// Group Routes
-Route::resource('groupss', GroupController::class);
-
 // Group Membership Routes
 Route::middleware(['auth'])->group(function () {
+    Route::resource('groupss', GroupController::class);
     Route::post('/groups/{group}/join', [GroupController::class, 'join'])->name('groups.join');
 });
 Route::post('/groups/{group}/leave', [GroupController::class, 'leave'])->name('groups.leave');

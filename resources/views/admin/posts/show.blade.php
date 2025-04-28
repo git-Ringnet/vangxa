@@ -7,7 +7,7 @@
         <div class="d-flex justify-content-between align-items-center mb-4">
             <h1 class="h3 mb-0 text-gray-800">Chi tiết bài viết</h1>
             <div>
-                <a href="{{ route('posts.index') }}" class="btn btn-secondary">
+                <a href="#" class="btn btn-secondary">
                     <i class="fas fa-arrow-left"></i> Quay lại
                 </a>
                 <a href="{{ route('posts.edit', $post) }}" class="btn btn-warning">

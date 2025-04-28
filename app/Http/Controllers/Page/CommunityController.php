@@ -14,12 +14,7 @@ class CommunityController extends Controller
 {
     public function index()
     {
-        $posts = Post::with('user', 'images')
-            ->where('type', 3) // Type 3 for community
-            ->latest()
-            ->paginate(12);
-
-        return view('pages.community.index', compact('posts'));
+        //
     }
 
     public function create()
@@ -32,11 +27,13 @@ class CommunityController extends Controller
         $request->validate([
             'description' => 'required|string',
             'images.*' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'group_id' => 'required|exists:groups,id',
         ], [
             'description.required' => 'Vui lòng nhập nội dung bài viết',
             'images.*.image' => 'File phải là ảnh',
             'images.*.mimes' => 'Ảnh phải có định dạng jpeg, png, jpg hoặc gif',
             'images.*.max' => 'Ảnh không được lớn hơn 2MB',
+            'group_id.required' => 'Vui lòng chọn nhóm',
         ]);
 
         try {
@@ -45,12 +42,7 @@ class CommunityController extends Controller
             $post->user_id = Auth::id() ?? 1;
             $post->type = 3; // Type 3 for community
             $post->status = 1; // Active
-
-            if ($request->filled('group_id') && $request->group_id != 0) {
-                $group = Group::findOrFail($request->group_id);
-                $post->group_id = $request->group_id;
-            }
-
+            $post->group_id = $request->group_id;
             $post->save();
 
             // Xử lý upload ảnh
@@ -74,7 +66,7 @@ class CommunityController extends Controller
                 $post->group->increment('post_count');
             }
 
-            // Ghi nhận tương tác khi đăng bài
+              // Ghi nhận tương tác khi đăng bài
             if (Auth::check()) {
                 UserInteraction::create([
                     'user_id' => Auth::id(),
@@ -86,8 +78,7 @@ class CommunityController extends Controller
                 // Kiểm tra thăng hạng sau khi đăng bài
                 $tierUpgrade = UserInteraction::checkTierUpgrade(Auth::id());
             }
-
-            if ($post->group_id) {
+            if ($request->page == 'nhom') {
                 return redirect()
                     ->route('groupss.show', $post->group_id)
                     ->with('success', 'Bài viết đã được đăng thành công!');
@@ -141,18 +132,34 @@ class CommunityController extends Controller
             ->findOrFail($id);
 
         $request->validate([
-            'title' => 'required|string|max:255',
             'description' => 'required|string',
+            'images.*' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ], [
-            'title.required' => 'Vui lòng nhập tiêu đề bài viết',
-            'title.max' => 'Tiêu đề không được vượt quá 255 ký tự',
             'description.required' => 'Vui lòng nhập nội dung bài viết',
+            'images.*.image' => 'File phải là ảnh',
+            'images.*.mimes' => 'Ảnh phải có định dạng jpeg, png, jpg hoặc gif',
+            'images.*.max' => 'Ảnh không được lớn hơn 2MB',
         ]);
 
         try {
-            $post->title = $request->title;
             $post->description = $request->description;
             $post->save();
+
+            // Xử lý upload ảnh mới
+            if ($request->hasFile('images')) {
+                foreach ($request->file('images') as $image) {
+                    // Tạo tên file duy nhất
+                    $filename = time() . '_' . $image->getClientOriginalName();
+
+                    // Lưu ảnh vào thư mục public/image/posts
+                    $image->move(public_path('community/posts'), $filename);
+
+                    // Lưu đường dẫn vào database
+                    $post->images()->create([
+                        'image_path' => 'community/posts/' . $filename
+                    ]);
+                }
+            }
 
             return redirect()->route('community.index')
                 ->with('success', 'Bài viết đã được cập nhật thành công!');
@@ -176,12 +183,22 @@ class CommunityController extends Controller
             ->findOrFail($id);
 
         try {
-            // Delete associated images from storage
+            // Delete associated images from storage and database
             foreach ($post->images as $image) {
-                $path = str_replace('storage/', '', $image->image_path);
-                if (file_exists(storage_path('app/public/' . $path))) {
-                    unlink(storage_path('app/public/' . $path));
+                // Xóa file ảnh từ thư mục public
+                if (file_exists(public_path($image->image_path))) {
+                    unlink(public_path($image->image_path));
                 }
+                // Delete the image record from database
+                $image->delete();
+            }
+
+            // Delete all post_images records
+            $post->images()->delete();
+
+            // Nếu bài viết có group_id, thì giảm post_count
+            if ($post->group_id) {
+                $post->group->decrement('post_count');
             }
 
             $post->delete();

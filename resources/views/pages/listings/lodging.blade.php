@@ -2,184 +2,196 @@
 @stack('scripts')
 
 @section('content')
-<div class="container-custom">
-    <!-- Categories -->
-    <section class="categories-section">
-        <div class="categories-wrapper">
-            <button class="categories-nav-button prev" id="prevButton" disabled>
-                <i class="fas fa-chevron-left"></i>
+    <div class="container-custom">
+        <!-- Categories -->
+        <section class="categories-section">
+            <div class="categories-wrapper">
+                <button class="categories-nav-button prev" id="prevButton" disabled>
+                    <i class="fas fa-chevron-left"></i>
+                </button>
+                <div class="categories-container" id="categoriesContainer">
+                    <div class="category-item active">
+                        <div class="category-icon">
+                            <i class="fas fa-home"></i>
+                        </div>
+                        <span class="category-name">Nhà</span>
+                    </div>
+                    <div class="category-item">
+                        <div class="category-icon">
+                            <i class="fas fa-mountain"></i>
+                        </div>
+                        <span class="category-name">Cabin</span>
+                    </div>
+                    <div class="category-item">
+                        <div class="category-icon">
+                            <i class="fas fa-umbrella-beach"></i>
+                        </div>
+                        <span class="category-name">Bãi biển</span>
+                    </div>
+                    <div class="category-item">
+                        <div class="category-icon">
+                            <i class="fas fa-swimming-pool"></i>
+                        </div>
+                        <span class="category-name">Hồ bơi</span>
+                    </div>
+                    <div class="category-item">
+                        <div class="category-icon">
+                            <i class="fas fa-campground"></i>
+                        </div>
+                        <span class="category-name">Cắm trại</span>
+                    </div>
+                    <div class="category-item">
+                        <div class="category-icon">
+                            <i class="fas fa-tree"></i>
+                        </div>
+                        <span class="category-name">Công viên</span>
+                    </div>
+                    <div class="category-item">
+                        <div class="category-icon">
+                            <i class="fas fa-city"></i>
+                        </div>
+                        <span class="category-name">Thành phố</span>
+                    </div>
+                    <div class="category-item">
+                        <div class="category-icon">
+                            <i class="fas fa-water"></i>
+                        </div>
+                        <span class="category-name">Ven hồ</span>
+                    </div>
+                    <div class="category-item">
+                        <div class="category-icon">
+                            <i class="fas fa-skiing"></i>
+                        </div>
+                        <span class="category-name">Trượt tuyết</span>
+                    </div>
+                    <div class="category-item">
+                        <div class="category-icon">
+                            <i class="fas fa-island-tropical"></i>
+                        </div>
+                        <span class="category-name">Đảo</span>
+                    </div>
+                    <div class="category-item">
+                        <div class="category-icon">
+                            <i class="fas fa-water"></i>
+                        </div>
+                        <span class="category-name">Ven hồ</span>
+                    </div>
+                    <div class="category-item">
+                        <div class="category-icon">
+                            <i class="fas fa-skiing"></i>
+                        </div>
+                        <span class="category-name">Trượt tuyết</span>
+                    </div>
+                    <div class="category-item">
+                        <div class="category-icon">
+                            <i class="fas fa-water"></i>
+                        </div>
+                        <span class="category-name">Ven hồ</span>
+                    </div>
+                    <div class="category-item">
+                        <div class="category-icon">
+                            <i class="fas fa-skiing"></i>
+                        </div>
+                        <span class="category-name">Trượt tuyết</span>
+                    </div>
+                    <div class="category-item">
+                        <div class="category-icon">
+                            <i class="fas fa-water"></i>
+                        </div>
+                        <span class="category-name">Ven hồ</span>
+                    </div>
+                    <div class="category-item">
+                        <div class="category-icon">
+                            <i class="fas fa-skiing"></i>
+                        </div>
+                        <span class="category-name">Trượt tuyết</span>
+                    </div>
+                    <div class="category-item">
+                        <div class="category-icon">
+                            <i class="fas fa-water"></i>
+                        </div>
+                        <span class="category-name">Ven hồ</span>
+                    </div>
+                    <div class="category-item">
+                        <div class="category-icon">
+                            <i class="fas fa-skiing"></i>
+                        </div>
+                        <span class="category-name">Trượt tuyết</span>
+                    </div>
+                </div>
+                <button class="categories-nav-button next" id="nextButton">
+                    <i class="fas fa-chevron-right"></i>
+                </button>
+
+            </div>
+            <button class="filter-button" id="filterButton">
+                <i class="fas fa-sliders"></i>
+                <span>Bộ lọc</span>
             </button>
-            <div class="categories-container" id="categoriesContainer">
-                <div class="category-item active">
-                    <div class="category-icon">
-                        <i class="fas fa-home"></i>
-                    </div>
-                    <span class="category-name">Nhà</span>
+        </section>
+
+        <!-- Filter Modal -->
+        <div class="filter-modal" id="filterModal">
+            <div class="filter-content">
+                <div class="filter-header">
+                    <h3>Bộ lọc</h3>
+                    <button class="filter-close" id="filterClose">
+                        <i class="fas fa-times"></i>
+                    </button>
                 </div>
-                <div class="category-item">
-                    <div class="category-icon">
-                        <i class="fas fa-mountain"></i>
+                <div class="filter-section">
+                    <h4>Khoảng giá</h4>
+                    <div class="price-range">
+                        <input type="number" class="price-input" placeholder="Giá tối thiểu">
+                        <input type="number" class="price-input" placeholder="Giá tối đa">
                     </div>
-                    <span class="category-name">Cabin</span>
                 </div>
-                <div class="category-item">
-                    <div class="category-icon">
-                        <i class="fas fa-umbrella-beach"></i>
+                <div class="filter-section">
+                    <h4>Loại chỗ ở</h4>
+                    <div class="checkbox-group">
+                        <label><input type="checkbox"> Nhà nguyên căn</label><br>
+                        <label><input type="checkbox"> Phòng riêng</label><br>
+                        <label><input type="checkbox"> Phòng chung</label>
                     </div>
-                    <span class="category-name">Bãi biển</span>
                 </div>
-                <div class="category-item">
-                    <div class="category-icon">
-                        <i class="fas fa-swimming-pool"></i>
-                    </div>
-                    <span class="category-name">Hồ bơi</span>
-                </div>
-                <div class="category-item">
-                    <div class="category-icon">
-                        <i class="fas fa-campground"></i>
-                    </div>
-                    <span class="category-name">Cắm trại</span>
-                </div>
-                <div class="category-item">
-                    <div class="category-icon">
-                        <i class="fas fa-tree"></i>
-                    </div>
-                    <span class="category-name">Công viên</span>
-                </div>
-                <div class="category-item">
-                    <div class="category-icon">
-                        <i class="fas fa-city"></i>
-                    </div>
-                    <span class="category-name">Thành phố</span>
-                </div>
-                <div class="category-item">
-                    <div class="category-icon">
-                        <i class="fas fa-water"></i>
-                    </div>
-                    <span class="category-name">Ven hồ</span>
-                </div>
-                <div class="category-item">
-                    <div class="category-icon">
-                        <i class="fas fa-skiing"></i>
-                    </div>
-                    <span class="category-name">Trượt tuyết</span>
-                </div>
-                <div class="category-item">
-                    <div class="category-icon">
-                        <i class="fas fa-island-tropical"></i>
-                    </div>
-                    <span class="category-name">Đảo</span>
-                </div>
-                <div class="category-item">
-                    <div class="category-icon">
-                        <i class="fas fa-water"></i>
-                    </div>
-                    <span class="category-name">Ven hồ</span>
-                </div>
-                <div class="category-item">
-                    <div class="category-icon">
-                        <i class="fas fa-skiing"></i>
-                    </div>
-                    <span class="category-name">Trượt tuyết</span>
-                </div>
-                <div class="category-item">
-                    <div class="category-icon">
-                        <i class="fas fa-water"></i>
-                    </div>
-                    <span class="category-name">Ven hồ</span>
-                </div>
-                <div class="category-item">
-                    <div class="category-icon">
-                        <i class="fas fa-skiing"></i>
-                    </div>
-                    <span class="category-name">Trượt tuyết</span>
-                </div>
-                <div class="category-item">
-                    <div class="category-icon">
-                        <i class="fas fa-water"></i>
-                    </div>
-                    <span class="category-name">Ven hồ</span>
-                </div>
-                <div class="category-item">
-                    <div class="category-icon">
-                        <i class="fas fa-skiing"></i>
-                    </div>
-                    <span class="category-name">Trượt tuyết</span>
-                </div>
-                <div class="category-item">
-                    <div class="category-icon">
-                        <i class="fas fa-water"></i>
-                    </div>
-                    <span class="category-name">Ven hồ</span>
-                </div>
-                <div class="category-item">
-                    <div class="category-icon">
-                        <i class="fas fa-skiing"></i>
-                    </div>
-                    <span class="category-name">Trượt tuyết</span>
+                <div class="filter-buttons">
+                    <button class="filter-clear">Xóa tất cả</button>
+                    <button class="filter-apply">Áp dụng</button>
                 </div>
             </div>
-            <button class="categories-nav-button next" id="nextButton">
-                <i class="fas fa-chevron-right"></i>
-            </button>
-
         </div>
-        <button class="filter-button" id="filterButton">
-            <i class="fas fa-sliders"></i>
-            <span>Bộ lọc</span>
-        </button>
-    </section>
 
-    <!-- Filter Modal -->
-    <div class="filter-modal" id="filterModal">
-        <div class="filter-content">
-            <div class="filter-header">
-                <h3>Bộ lọc</h3>
-                <button class="filter-close" id="filterClose">
-                    <i class="fas fa-times"></i>
+        <!-- Listings -->
+        <section class="listings-section">
+            <div class="listings-grid" id="post-list">
+                @include('pages.listings.posts', ['posts' => $posts])
+            </div>
+
+            <div class="load-more">
+                <h4>Tiếp tục khám phá danh mục phòng</h4>
+                <button class="load-more-button" id="loadMoreButton">
+                    Hiển thị thêm
                 </button>
             </div>
-            <div class="filter-section">
-                <h4>Khoảng giá</h4>
-                <div class="price-range">
-                    <input type="number" class="price-input" placeholder="Giá tối thiểu">
-                    <input type="number" class="price-input" placeholder="Giá tối đa">
-                </div>
-            </div>
-            <div class="filter-section">
-                <h4>Loại chỗ ở</h4>
-                <div class="checkbox-group">
-                    <label><input type="checkbox"> Nhà nguyên căn</label><br>
-                    <label><input type="checkbox"> Phòng riêng</label><br>
-                    <label><input type="checkbox"> Phòng chung</label>
-                </div>
-            </div>
-            <div class="filter-buttons">
-                <button class="filter-clear">Xóa tất cả</button>
-                <button class="filter-apply">Áp dụng</button>
-            </div>
-        </div>
+        </section>
     </div>
-
-    <!-- Listings -->
-    <section class="listings-section">
-        <div class="listings-grid">
-            @include('pages.listings.posts', ['posts' => $posts])
-        </div>
-
-        <div class="load-more">
-            <h4>Tiếp tục khám phá danh mục phòng</h4>
-            <button class="load-more-button" id="loadMoreButton">
-                Hiển thị thêm
-            </button>
-        </div>
-    </section>
-</div>
 @endsection
 
-@push('scripts')
 <script>
- 
+    function searchComponent() {
+            return {
+                query: '',
+                search() {
+                    fetch(`/search/lodging?search=${this.query}`)
+                        .then(res => res.json())
+                        .then(data => {
+                            document.getElementById('post-list').innerHTML = data.html;
+                        })
+                        .catch(err => console.error(err));
+                }
+            }
+        }
+
     document.addEventListener('DOMContentLoaded', function() {
         const container = document.getElementById('categoriesContainer');
         const prevButton = document.getElementById('prevButton');
@@ -334,52 +346,54 @@
             });
         });
     }
-    document.addEventListener('DOMContentLoaded', function () {
+    document.addEventListener('DOMContentLoaded', function() {
         const loadMoreButton = document.getElementById('loadMoreButton');
         const listingsGrid = document.querySelector('.listings-grid');
-        let offset = 18;
+        let offset = 30; // Initial offset
         let isLoading = false;
 
-        loadMoreButton.addEventListener('click', function () {
+        loadMoreButton.addEventListener('click', function() {
             if (isLoading) return;
-            
+
             isLoading = true;
             this.classList.add('loading');
-            
+
             fetch(`/load-more?offset=${offset}`, {
-                method: 'GET',
-                headers: {
-                    'Accept': 'application/json',
-                }
-            })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
-                }
-                return response.json();
-            })
-            .then(data => {
-                if (data.html) {
-                    listingsGrid.insertAdjacentHTML('beforeend', data.html);
-                }
-                
-                if (!data.hasMore) {
-                    loadMoreButton.style.display = 'none';
-                }
-                
-                offset += 18;
-                isLoading = false;
-                loadMoreButton.classList.remove('loading');
-                
-                // Reinitialize carousels for new posts
-                initializeCarousels();
-            })
-            .catch(error => {
-                console.error('Error loading more posts:', error);
-                isLoading = false;
-                loadMoreButton.classList.remove('loading');
-            });
+                    method: 'GET',
+                    headers: {
+                        'Accept': 'application/json',
+                    }
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    if (data.html) {
+                        listingsGrid.insertAdjacentHTML('beforeend', data.html);
+                    }
+
+                    // Update offset for next request
+                    offset = data.nextOffset;
+
+                    // Hide button if no more posts
+                    if (!data.hasMore) {
+                        loadMoreButton.style.display = 'none';
+                    }
+
+                    isLoading = false;
+                    loadMoreButton.classList.remove('loading');
+
+                    // Reinitialize carousels for new posts
+                    initializeCarousels();
+                })
+                .catch(error => {
+                    console.error('Error loading more posts:', error);
+                    isLoading = false;
+                    loadMoreButton.classList.remove('loading');
+                });
         });
     });
 </script>
-@endpush

@@ -84,7 +84,12 @@ class GroupController extends Controller
         }]);
 
         $users = User::all();
-        return view('pages.community.groups.show', compact('group', 'users'));
+        $posts = Post::with(['user', 'group', 'likes', 'comments'])
+            ->where('type', 3)
+            ->where('group_id', $group->id)
+            ->orderBy('created_at', 'desc')
+            ->get();
+        return view('pages.community.groups.show', compact('group', 'users', 'posts'));
     }
 
     public function edit(String $id)

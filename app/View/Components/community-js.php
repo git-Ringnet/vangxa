@@ -6,14 +6,15 @@ use Closure;
 use Illuminate\Contracts\View\View;
 use Illuminate\View\Component;
 
-class community-js extends Component
+class communityjs extends Component
 {
+    public $name;
     /**
      * Create a new component instance.
      */
-    public function __construct()
+    public function __construct($name = null)
     {
-        //
+        $this->name = $name;
     }
 
     /**

@@ -6,7 +6,7 @@
     <div class="container-fluid">
         <div class="d-flex justify-content-between align-items-center mb-4">
             <h1 class="h3 mb-0 text-gray-800">Chỉnh sửa bài viết</h1>
-            <a href="{{ route('posts.index') }}" class="btn btn-secondary">
+            <a href="#" class="btn btn-secondary">
                 <i class="fas fa-arrow-left"></i> Quay lại
             </a>
         </div>
@@ -159,7 +159,7 @@
                 if (confirm('Bạn có chắc chắn muốn xóa ảnh này?')) {
                     const imageId = $(this).data('image-id');
                     const imageContainer = $(this).closest('.col-md-3');
-                    
+
                     $.ajax({
                         url: '{{ url('/posts/images') }}/' + imageId,
                         method: 'DELETE',

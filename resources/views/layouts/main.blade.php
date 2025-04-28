@@ -15,6 +15,7 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.css" />
     <script src="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.js"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
 </head>
 @stack('scripts')
 
@@ -104,10 +105,9 @@
                         <div class="dropdown-menu" id="userDropdown">
                             @auth
                                 <div class="dropdown-section">
-                                    <a href="{{ route('settings.profile') }}" class="dropdown-item"><strong>Hồ sơ</strong></a>
-                                    <a href="{{ route('dashboard') }}" class="dropdown-item">Bảng điều khiển</a>
-                                    <sgd href="{{ route('trustlist') }}" class="dropdown-item">Danh sách đáng tin cậy</sgd>
-                                    </div>
+                                    <a href="{{ route('profile') }}" class="dropdown-item"><strong>Hồ sơ</strong></a>
+                                    <a href="{{ route('trustlist') }}" class="dropdown-item">Danh sách đáng tin cậy</a>
+                                </div>
                                 <div class="dropdown-divider"></div>
                                 <div class="dropdown-section">
                                     <a href="#" class="dropdown-item">Cho thuê chỗ ở qua Vangxa</a>
@@ -141,9 +141,15 @@
             <!-- Search Bar -->
             <div class="search-bar">
                 <div class="search-container">
-                    <div class="search-item">
+                    <div x-data="searchComponent()" class="search-item">
                         <div class="search-label">Địa điểm</div>
-                        <input type="text" placeholder="{{ request()->is('dining') ? 'Tìm nhà hàng, món ăn...' : 'Tìm kiếm điểm đến' }}" class="search-input">
+                        <input
+                            type="text"
+                            placeholder="{{ request()->is('dining') ? 'Tìm nhà hàng, món ăn...' : 'Tìm kiếm điểm đến' }}"
+                            class="search-input"
+                            x-model="query"
+                            @input.debounce.500ms="search"
+                        >
                     </div>
 
                     @if(!request()->is('dining'))
@@ -185,6 +191,8 @@
     @include('components.footer')
 
     @stack('scripts')
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
     <script>
         // Rankings Modal Control
@@ -355,6 +363,19 @@
             });
         });
     </script>
+
+    @auth
+        @if(!auth()->user()->phone)
+            <x-register-popup />
+
+            <script>
+                document.addEventListener('DOMContentLoaded', function() {
+                    window.dispatchEvent(new CustomEvent('open-register-popup'));
+                });
+            </script>
+        @endif
+    @endauth
+
 </body>
 
 </html>

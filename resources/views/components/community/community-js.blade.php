@@ -1,3 +1,4 @@
+<input type="hidden" id="page" value="{{ $name ?? 0 }}">
 <!-- Image Modal -->
 <div class="modal fade" id="imageModal" tabindex="-1" aria-labelledby="imageModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-lg">
@@ -19,6 +20,7 @@
     </div>
 </div>
 <script>
+    let page = document.getElementById("page").value;
     let currentPostId = null;
     let currentImageIndex = 0;
     let postImages = [];
@@ -52,11 +54,6 @@
             if (!postImages || postImages.length === 0) {
                 console.error(`Failed to parse images for post ID ${postId}`);
                 return;
-            }
-
-            // Xử lý trường hợp ảnh có dấu "+"
-            if (imageIndex === 3 && totalImages > 4) {
-                currentImageIndex = 3;
             }
 
             // Hiển thị ảnh trong modal
@@ -101,8 +98,10 @@
         if (currentImageIndex > 0) {
             currentImageIndex--;
             const modalImage = document.getElementById("modalImage");
-            modalImage.src = postImages[currentImageIndex];
-            updateNavigationButtons();
+            if (modalImage) {
+                modalImage.src = postImages[currentImageIndex];
+                updateNavigationButtons();
+            }
         }
     }
 
@@ -110,8 +109,10 @@
         if (currentImageIndex < totalImages - 1) {
             currentImageIndex++;
             const modalImage = document.getElementById("modalImage");
-            modalImage.src = postImages[currentImageIndex];
-            updateNavigationButtons();
+            if (modalImage) {
+                modalImage.src = postImages[currentImageIndex];
+                updateNavigationButtons();
+            }
         }
     }
 
@@ -126,8 +127,7 @@
         if (nextButton) {
             nextButton.addEventListener("click", nextImage);
         }
-    });
-    document.addEventListener('DOMContentLoaded', function() {
+
         // Toggle comment form (bình luận chính)
         document.querySelectorAll('.comment-toggle').forEach(button => {
             button.addEventListener('click', function() {
@@ -152,197 +152,158 @@
             });
         });
 
-        // Handle like button clicks
+        // Add CSRF token to all AJAX requests
+        const csrfToken = '{{ csrf_token() }}';
+
+        // Like functionality
         document.querySelectorAll('.like-btn').forEach(button => {
             button.addEventListener('click', function() {
-                const postId = this.dataset.postId;
-                const isLiked = this.dataset.liked === 'true';
-                const icon = this.querySelector('i');
-                const countSpan = this.querySelector('.like-count');
-                const currentCount = parseInt(countSpan.textContent);
+                if (!this.classList.contains('processing')) {
+                    this.classList.add('processing');
 
-                // Toggle like status
-                fetch(`/posts/${postId}/like`, {
-                        method: isLiked ? 'DELETE' : 'POST',
-                        headers: {
-                            'X-CSRF-TOKEN': document.querySelector(
-                                'meta[name="csrf-token"]').content,
-                            'Accept': 'application/json',
-                            'Content-Type': 'application/json'
-                        }
-                    })
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.success) {
-                            // Update button state
-                            this.dataset.liked = data.is_liked;
-                            if (data.is_liked) {
-                                icon.classList.remove('far');
-                                icon.classList.add('fas', 'text-danger');
+                    const postId = this.dataset.postId;
+                    const isLiked = this.dataset.liked === 'true';
+                    const icon = this.querySelector('.like-icon');
+                    const countSpan = this.querySelector('.like-count');
+                    const currentCount = parseInt(countSpan.textContent);
+
+                    const url = `/posts/${postId}/like`;
+                    const method = isLiked ? 'DELETE' : 'POST';
+
+                    fetch(url, {
+                            method: method,
+                            headers: {
+                                'X-CSRF-TOKEN': csrfToken,
+                                'Content-Type': 'application/json',
+                                'Accept': 'application/json'
+                            }
+                        })
+                        .then(response => {
+                            if (!response.ok) {
+                                throw new Error('Network response was not ok');
+                            }
+                            return response.json();
+                        })
+                        .then(data => {
+                            // Update UI
+                            if (isLiked) {
+                                icon.setAttribute('fill', 'none');
+                                countSpan.textContent = currentCount - 1;
+                                this.dataset.liked = 'false';
                             } else {
-                                icon.classList.remove('fas', 'text-danger');
-                                icon.classList.add('far');
+                                icon.setAttribute('fill', 'white');
+                                countSpan.textContent = currentCount + 1;
+                                this.dataset.liked = 'true';
                             }
 
-                            // Update count
-                            countSpan.textContent = data.count;
-                        } else {
-                            console.error(data.message);
-                        }
-                    })
-                    .catch(error => {
-                        console.error('Error:', error);
-                    });
+                            // Add animation class
+                            icon.classList.add('like-animation');
+                            setTimeout(() => {
+                                icon.classList.remove('like-animation');
+                            }, 300);
+                        })
+                        .catch(error => {
+                            console.error('Error:', error);
+                            showToast('Có lỗi xảy ra khi thực hiện thao tác này', 'error');
+                        })
+                        .finally(() => {
+                            this.classList.remove('processing');
+                        });
+                }
             });
-        });
-
-        document.getElementById('prevImage').addEventListener('click', function() {
-            if (currentImageIndex > 0) {
-                currentImageIndex--;
-                const modalImage = document.getElementById('modalImage');
-                modalImage.src = postImages[currentImageIndex];
-
-                // Cập nhật nút điều hướng
-                const prevButton = document.getElementById('prevImage');
-                const nextButton = document.getElementById('nextImage');
-                const postElement = document.querySelector(
-                    `.post-images[data-post-id="${currentPostId}"]`);
-                const totalImages = parseInt(postElement.dataset.totalImages);
-
-                prevButton.style.display = currentImageIndex > 0 ? 'block' : 'none';
-                nextButton.style.display = currentImageIndex < totalImages - 1 ? 'block' : 'none';
-            }
-        });
-
-        document.getElementById('nextImage').addEventListener('click', function() {
-            const postElement = document.querySelector(`.post-images[data-post-id="${currentPostId}"]`);
-            const totalImages = parseInt(postElement.dataset.totalImages);
-
-            if (currentImageIndex < totalImages - 1) {
-                currentImageIndex++;
-                const modalImage = document.getElementById('modalImage');
-                modalImage.src = postImages[currentImageIndex];
-
-                // Cập nhật nút điều hướng
-                const prevButton = document.getElementById('prevImage');
-                const nextButton = document.getElementById('nextImage');
-
-                prevButton.style.display = currentImageIndex > 0 ? 'block' : 'none';
-                nextButton.style.display = currentImageIndex < totalImages - 1 ? 'block' : 'none';
-            }
-        });
-
-        // Xử lý preview ảnh khi upload
-        const imageInput = document.getElementById('images');
-        const imagePreview = document.getElementById('image-preview');
-
-        imageInput.addEventListener('change', function() {
-            imagePreview.innerHTML = '';
-
-            if (this.files) {
-                Array.from(this.files).forEach(file => {
-                    const reader = new FileReader();
-                    reader.onload = function(e) {
-                        const img = document.createElement('img');
-                        img.src = e.target.result;
-                        img.style.width = '100px';
-                        img.style.height = '100px';
-                        img.style.objectFit = 'cover';
-                        img.classList.add('rounded', 'cursor-pointer');
-                        imagePreview.appendChild(img);
-                    }
-                    reader.readAsDataURL(file);
-                });
-            }
         });
     });
 
     document.addEventListener('DOMContentLoaded', function() {
-        let currentPage = 1;
-        let isLoading = false;
-        const postsContainer = document.querySelector('.posts-container');
-        const loadMoreBtn = document.querySelector('.load-more-posts');
+        if (page == "congdong") {
+            let currentPage = 1;
+            let isLoading = false;
+            const postsContainer = document.querySelector('.posts-container');
+            const loadMoreBtn = document.querySelector('.load-more-posts');
 
-        // Show load more button if there are posts
-        if (document.querySelectorAll('.card[data-post-id]').length > 0) {
-            loadMoreBtn.style.display = 'block';
-        }
+            // Show load more button if there are posts
+            if (document.querySelectorAll('.card[data-post-id]').length > 0) {
+                loadMoreBtn.style.display = 'block';
+            }
 
-        // Load more posts
-        loadMoreBtn.addEventListener('click', function() {
-            if (isLoading) return;
-            isLoading = true;
+            // Load more posts
+            if (loadMoreBtn) {
+                loadMoreBtn.addEventListener('click', function() {
+                    if (isLoading) return;
+                    isLoading = true;
 
-            currentPage++;
-            loadMoreBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Đang tải...';
+                    currentPage++;
+                    loadMoreBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Đang tải...';
 
-            fetch(`loadmore-posts?page=${currentPage}`, {
-                    headers: {
-                        'Accept': 'application/json',
-                        'X-Requested-With': 'XMLHttpRequest'
-                    }
-                })
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error('Network response was not ok');
-                    }
-                    return response.json();
-                })
-                .then(data => {
-                    if (data.error) {
-                        throw new Error(data.message);
-                    }
+                    fetch(`loadmore-posts?page=${currentPage}`, {
+                            headers: {
+                                'Accept': 'application/json',
+                                'X-Requested-With': 'XMLHttpRequest'
+                            }
+                        })
+                        .then(response => {
+                            if (!response.ok) {
+                                throw new Error('Network response was not ok');
+                            }
+                            return response.json();
+                        })
+                        .then(data => {
+                            if (data.error) {
+                                throw new Error(data.message);
+                            }
 
-                    data.posts.forEach(post => {
-                        const postElement = createPostElement(post);
-                        postsContainer.insertBefore(postElement, loadMoreBtn.parentElement);
-                    });
+                            data.posts.forEach(post => {
+                                const postElement = createPostElement(post);
+                                postsContainer.insertBefore(postElement, loadMoreBtn
+                                    .parentElement);
+                            });
 
-                    if (!data.hasMore) {
-                        loadMoreBtn.style.display = 'none';
-                    } else {
-                        loadMoreBtn.innerHTML =
-                            '<i class="fas fa-spinner fa-spin me-2"></i>Tải thêm bài viết';
-                    }
-                })
-                .catch(error => {
-                    console.error('Error loading more posts:', error);
-                    loadMoreBtn.innerHTML =
-                        '<i class="fas fa-exclamation-circle me-2"></i>Lỗi khi tải bài viết';
-                    // Reset button state after 3 seconds
-                    setTimeout(() => {
-                        loadMoreBtn.innerHTML =
-                            '<i class="fas fa-spinner fa-spin me-2"></i>Tải thêm bài viết';
-                    }, 3000);
-                })
-                .finally(() => {
-                    isLoading = false;
+                            if (!data.hasMore) {
+                                loadMoreBtn.style.display = 'none';
+                            } else {
+                                loadMoreBtn.innerHTML =
+                                    '<i class="fas fa-spinner fa-spin me-2"></i>Tải thêm bài viết';
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error loading more posts:', error);
+                            loadMoreBtn.innerHTML =
+                                '<i class="fas fa-exclamation-circle me-2"></i>Lỗi khi tải bài viết';
+                            // Reset button state after 3 seconds
+                            setTimeout(() => {
+                                loadMoreBtn.innerHTML =
+                                    '<i class="fas fa-spinner fa-spin me-2"></i>Tải thêm bài viết';
+                            }, 3000);
+                        })
+                        .finally(() => {
+                            isLoading = false;
+                        });
                 });
-        });
+            }
 
-        // Function to create post element
-        function createPostElement(post) {
-            const div = document.createElement('div');
-            div.className = 'card shadow-sm mb-4';
-            div.dataset.postId = post.id;
+            // Function to create post element
+            function createPostElement(post) {
+                const div = document.createElement('div');
+                div.className = 'card shadow-sm mb-4';
+                div.dataset.postId = post.id;
 
-            let groupInfo = '';
-            if (post.group) {
-                groupInfo = `
+                let groupInfo = '';
+                if (post.group) {
+                    groupInfo = `
                         <h5 class="mb-0">${post.group.name}</h5>
                         <div class="d-flex align-items-center gap-2">
                             <small>${post.user.name}</small>
                             <small class="d-block text-muted">${post.created_at}</small>
                         </div>
                     `;
-            } else {
-                groupInfo = `
+                } else {
+                    groupInfo = `
                         <h5 class="mb-0">${post.user.name}</h5>
                         <small class="d-block text-muted">${post.created_at}</small>
                     `;
-            }
+                }
 
-            div.innerHTML = `
+                div.innerHTML = `
                     <div class="card-body">
                         <div class="border-bottom pb-2">
                             <div class="d-flex align-items-center mb-3">
@@ -369,7 +330,8 @@
                     </div>
                 `;
 
-            return div;
+                return div;
+            }
         }
 
         const swiper = new Swiper(".mySwiper", {
@@ -408,4 +370,58 @@
             }
         });
     });
+
+    function deleteImage(imageId, button) {
+        if (confirm('Bạn có chắc chắn muốn xóa ảnh này?')) {
+            fetch(`/posts/images/${imageId}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                        'Content-Type': 'application/json'
+                    }
+                })
+                .then(response => {
+                    if (response.ok) {
+                        // Remove the image container
+                        button.closest('.col-4').remove();
+                    } else {
+                        alert('Có lỗi xảy ra khi xóa ảnh');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Có lỗi xảy ra khi xóa ảnh');
+                });
+        }
+    }
+
+    function copyPostLink(postId) {
+        const postUrl = `${window.location.origin}/communities/${postId}`;
+        navigator.clipboard.writeText(postUrl).then(() => {
+            // Show success message
+            const toast = document.createElement('div');
+            toast.className = 'position-fixed bottom-0 end-0 p-3';
+            toast.style.zIndex = '5';
+            toast.innerHTML = `
+                <div class="toast align-items-center text-white bg-success border-0" role="alert" aria-live="assertive" aria-atomic="true">
+                    <div class="d-flex">
+                        <div class="toast-body">
+                            Đã sao chép liên kết vào clipboard
+                        </div>
+                        <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(toast);
+            const toastElement = new bootstrap.Toast(toast.querySelector('.toast'));
+            toastElement.show();
+
+            // Remove toast after it's hidden
+            toast.querySelector('.toast').addEventListener('hidden.bs.toast', () => {
+                toast.remove();
+            });
+        }).catch(err => {
+            console.error('Failed to copy text: ', err);
+        });
+    }
 </script>

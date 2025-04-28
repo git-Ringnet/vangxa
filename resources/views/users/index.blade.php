@@ -36,7 +36,7 @@
                                         <td>{{ $user->name }}</td>
                                         <td>{{ $user->email }}</td>
                                         <td>
-                                            {{ $user->roles->first()->name }}
+                                            {{ $user->roles->first()->name ?? '' }}
                                         </td>
                                         <td>{{ $user->created_at->format('d/m/Y H:i') }}</td>
                                         <td>

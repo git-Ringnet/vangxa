@@ -37,7 +37,7 @@
                     </a>
                 </li>
                 <li class="{{ request()->routeIs('posts.*') ? 'active' : '' }}">
-                    <a href="{{ route('posts.index') }}">
+                    <a href="#">
                         <i class="fas fa-newspaper"></i>
                         <span>Quản lý bài viết</span>
                     </a>

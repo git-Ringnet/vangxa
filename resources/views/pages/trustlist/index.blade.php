@@ -82,11 +82,12 @@
 </div>
 
 <style>
-   
+
 </style>
 @endsection
 
 @push('scripts')
+<script src="{{ asset('js/carousel.js') }}"></script>
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         initializeCarousels();
@@ -173,67 +174,6 @@
             });
     }
 
-    function prevImage(button) {
-        const carousel = button.closest('.image-carousel');
-        const images = carousel.querySelector('.carousel-images');
-        const dots = carousel.querySelectorAll('.dot');
-        let currentIndex = parseInt(images.dataset.currentIndex || 0);
-        if (currentIndex > 0) {
-            currentIndex--;
-            updateCarousel(images, dots, currentIndex);
-        }
-    }
-
-    function nextImage(button) {
-        const carousel = button.closest('.image-carousel');
-        const images = carousel.querySelector('.carousel-images');
-        const dots = carousel.querySelectorAll('.dot');
-        let currentIndex = parseInt(images.dataset.currentIndex || 0);
-        const maxIndex = images.children.length - 1;
-        if (currentIndex < maxIndex) {
-            currentIndex++;
-            updateCarousel(images, dots, currentIndex);
-        }
-    }
-
-    function updateCarousel(images, dots, index) {
-        images.dataset.currentIndex = index;
-        const percentage = (index * (100 / images.children.length));
-        images.style.transform = `translateX(-${percentage}%)`;
-        dots.forEach((dot, i) => {
-            dot.classList.toggle('active', i === index);
-        });
-    }
-
-    document.addEventListener('DOMContentLoaded', function() {
-        initializeCarousels();
-    });
-
-    function initializeCarousels() {
-        document.querySelectorAll('.image-carousel').forEach(carousel => {
-            const dots = carousel.querySelectorAll('.dot');
-            const images = carousel.querySelector('.carousel-images');
-            const imageCount = images.children.length;
-            images.style.width = `${imageCount * 100}%`;
-            Array.from(images.children).forEach(img => {
-                img.style.width = `${100 / imageCount}%`;
-            });
-            images.dataset.currentIndex = 0;
-            dots.forEach((dot, index) => {
-                dot.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    updateCarousel(images, dots, index);
-                });
-            });
-            const navButtons = carousel.querySelectorAll('.carousel-nav');
-            navButtons.forEach(btn => {
-                btn.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                });
-            });
-        });
-    }
+    // Carousel functions are now in external carousel.js file
 </script>
-@endpush 
+@endpush

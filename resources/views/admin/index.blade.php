@@ -76,7 +76,7 @@
                 <div class="card shadow mb-4">
                     <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
                         <h6 class="m-0 font-weight-bold text-primary">Bài viết gần đây</h6>
-                        <a href="{{ route('posts.index') }}" class="btn btn-sm btn-primary">Xem tất cả</a>
+                        <a href="#" class="btn btn-sm btn-primary">Xem tất cả</a>
               </div>
               <div class="card-body">
                         <div class="table-responsive">

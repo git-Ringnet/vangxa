@@ -13,6 +13,7 @@
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <meta name="tiktok-developers-site-verification" content="r0ug6n3kjldVqb9sas9mDrRPZL4SKgOx">
     <style>
         :root {
             --primary-color: #4a90e2;
@@ -381,7 +382,7 @@
             -webkit-text-fill-color: transparent;
             animation: textGradient 3s ease infinite;
         }
-       
+
     </style>
 </head>
 
