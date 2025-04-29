@@ -34,46 +34,51 @@ class GroupController extends Controller
 
     public function store(Request $request)
     {
-        $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'description' => 'nullable|string|max:1000',
-            'is_private' => 'boolean',
-            'cover_image' => 'nullable|image|max:2048',
-            'avatar' => 'nullable|image|max:1024'
-        ]);
+        if (Auth::check()) {
+            $validated = $request->validate([
+                'name' => 'required|string|max:255',
+                'description' => 'nullable|string|max:1000',
+                'is_private' => 'boolean',
+                'cover_image' => 'nullable|image|max:2048',
+                'avatar' => 'nullable|image|max:1024'
+            ]);
 
-        $group = new Group($validated);
-        $group->user_id = Auth::id();
+            $group = new Group($validated);
+            $group->user_id = Auth::id();
 
-        if ($request->hasFile('cover_image')) {
-            $image = $request->file('cover_image');
-            $filename = time() . '_' . $image->getClientOriginalName();
+            if ($request->hasFile('cover_image')) {
+                $image = $request->file('cover_image');
+                $filename = time() . '_' . $image->getClientOriginalName();
 
-            // Lưu vào thư mục public/groups/covers
-            $destinationPath = public_path('groups/covers');
-            $image->move($destinationPath, $filename);
+                // Lưu vào thư mục public/groups/covers
+                $destinationPath = public_path('groups/covers');
+                $image->move($destinationPath, $filename);
 
-            $group->cover_image = 'groups/covers/' . $filename; // lưu path vào DB
+                $group->cover_image = 'groups/covers/' . $filename; // lưu path vào DB
+            }
+
+            if ($request->hasFile('avatar')) {
+                $image = $request->file('avatar');
+                $filename = time() . '_' . $image->getClientOriginalName();
+
+                $destinationPath = public_path('groups/avatars');
+                $image->move($destinationPath, $filename);
+
+                $group->avatar = 'groups/avatars/' . $filename;
+            }
+
+            $group->save();
+
+            // Add creator as admin
+            $group->members()->attach(Auth::id(), ['role' => 'admin']);
+            $group->increment('member_count');
+
+            return redirect()->route('groupss.show', $group)
+                ->with('success', 'Tạo nhóm thành công!');
+        } else {
+            return redirect()->route('login')
+                ->with('error', 'Vui lòng đăng nhập để tạo nhóm!');
         }
-
-        if ($request->hasFile('avatar')) {
-            $image = $request->file('avatar');
-            $filename = time() . '_' . $image->getClientOriginalName();
-
-            $destinationPath = public_path('groups/avatars');
-            $image->move($destinationPath, $filename);
-
-            $group->avatar = 'groups/avatars/' . $filename;
-        }
-
-        $group->save();
-
-        // Add creator as admin
-        $group->members()->attach(Auth::id(), ['role' => 'admin']);
-        $group->increment('member_count');
-
-        return redirect()->route('groupss.show', $group)
-            ->with('success', 'Tạo nhóm thành công!');
     }
 
     public function show(String $id)

@@ -139,8 +139,8 @@ Route::middleware(['auth'])->group(function () {
 Route::resource('communities', CommunityController::class);
 
 // Group Membership Routes
+Route::resource('groupss', GroupController::class);
 Route::middleware(['auth'])->group(function () {
-    Route::resource('groupss', GroupController::class);
     Route::post('/groups/{group}/join', [GroupController::class, 'join'])->name('groups.join');
 });
 Route::post('/groups/{group}/leave', [GroupController::class, 'leave'])->name('groups.leave');
