@@ -69,7 +69,7 @@
                                     @endif
                                 </div>
 
-                                <div class="mb-3 form-check">
+                                <div class="mb-3 form-check d-none">
                                     <input type="checkbox" class="form-check-input" id="is_private" name="is_private"
                                         value="1" {{ old('is_private', $group->is_private) ? 'checked' : '' }}>
                                     <label class="form-check-label" for="is_private">Nhóm riêng tư</label>

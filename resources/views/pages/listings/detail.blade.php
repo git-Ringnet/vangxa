@@ -97,7 +97,7 @@
                                 <div class="form-group my-3">
                                     <input type="hidden" name="post_id" value="{{ $post->id }}">
                                     <input type="hidden" name="type" value="{{ $post->type }}">
-                                    <label>Đánh giá món ăn <span class="text-danger">*</span></label>
+                                    <label>Đánh giá chất lượng</label>
                                     <div class="rating">
                                         <input type="radio" name="food_rating" value="5" id="food-5"
                                             {{ old('food_rating') == 5 ? 'checked' : '' }}><label for="food-5"><i
@@ -119,7 +119,7 @@
                                 </div>
 
                                 <div class="form-group my-3">
-                                    <label>Mức độ hài lòng <span class="text-danger">*</span></label>
+                                    <label>Mức độ hài lòng</label>
                                     <div class="satisfaction-icons">
                                         <input type="radio" name="satisfaction_level" value="5" id="satisfaction-5"
                                             {{ old('satisfaction_level') == 5 ? 'checked' : '' }}>
@@ -145,7 +145,7 @@
                                 </div>
 
                                 <div class="form-group my-3">
-                                    <label for="comment">Nhận xét của bạn <span class="text-danger">*</span></label>
+                                    <label for="comment">Nhận xét của bạn</label>
                                     <textarea name="comment" id="comment" rows="4" class="form-control"
                                         placeholder="Chia sẻ trải nghiệm của bạn...">{{ old('comment') }}</textarea>
                                     <div class="error-message" id="commentError"></div>
@@ -564,7 +564,7 @@
 
     @push('scripts')
         <script src="{{ asset('js/owner-search.js') }}"></script>
-
+        <script src="{{asset('js/reviews.js')}}"></script>
         <script>
             // JavaScript hiện tại của trang
         </script>

@@ -19,6 +19,7 @@
         </div>
     </div>
 </div>
+<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
 <script>
     let page = document.getElementById("page").value;
     let currentPostId = null;
@@ -204,7 +205,7 @@
                         })
                         .catch(error => {
                             console.error('Error:', error);
-                            showToast('Có lỗi xảy ra khi thực hiện thao tác này', 'error');
+                            alert('Có lỗi xảy ra khi thực hiện thao tác này', 'error');
                         })
                         .finally(() => {
                             this.classList.remove('processing');
@@ -398,30 +399,317 @@
     function copyPostLink(postId) {
         const postUrl = `${window.location.origin}/communities/${postId}`;
         navigator.clipboard.writeText(postUrl).then(() => {
-            // Show success message
-            const toast = document.createElement('div');
-            toast.className = 'position-fixed bottom-0 end-0 p-3';
-            toast.style.zIndex = '5';
-            toast.innerHTML = `
-                <div class="toast align-items-center text-white bg-success border-0" role="alert" aria-live="assertive" aria-atomic="true">
-                    <div class="d-flex">
-                        <div class="toast-body">
-                            Đã sao chép liên kết vào clipboard
-                        </div>
-                        <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
-                    </div>
-                </div>
-            `;
-            document.body.appendChild(toast);
-            const toastElement = new bootstrap.Toast(toast.querySelector('.toast'));
-            toastElement.show();
-
-            // Remove toast after it's hidden
-            toast.querySelector('.toast').addEventListener('hidden.bs.toast', () => {
-                toast.remove();
-            });
+            alert('Đã sao chép liên kết vào clipboard');
         }).catch(err => {
             console.error('Failed to copy text: ', err);
+        });
+    }
+
+    function sharePostAsImage(el, postId) {
+        const postCard = el.closest('[data-post-id]');
+        if (!postCard) {
+            alert('Không tìm thấy bài viết để chụp ảnh!');
+            return;
+        }
+
+        // Clone node và điều chỉnh style
+        const clone = postCard.cloneNode(true);
+        adjustPostCardForCapture(clone);
+
+        // Ẩn clone khỏi màn hình thật, nhưng vẫn render được
+        clone.style.position = 'fixed';
+        clone.style.left = '-99999px';
+        clone.style.top = '0';
+        clone.style.zIndex = '-1';
+        clone.style.width = postCard.offsetWidth + 'px';
+        document.body.appendChild(clone);
+
+        // Ẩn dropdown khi chụp (trên giao diện thật)
+        const dropdownMenu = el.closest('.dropdown-menu');
+        if (dropdownMenu) dropdownMenu.style.display = 'none';
+
+        html2canvas(clone, {
+            backgroundColor: null,
+            useCORS: true,
+            scale: 2
+        }).then(canvas => {
+            canvas.toBlob(blob => {
+                if (navigator.clipboard && window.ClipboardItem) {
+                    const item = new ClipboardItem({
+                        'image/png': blob
+                    });
+                    navigator.clipboard.write([item]).then(() => {
+                        alert(
+                            'Đã sao chép ảnh vào clipboard! Bạn có thể dán (Ctrl+V) vào Facebook, Zalo, Messenger...'
+                        );
+                    }, () => {
+                        alert('Không thể sao chép ảnh. Trình duyệt của bạn không hỗ trợ.');
+                    });
+                } else {
+                    alert('Trình duyệt của bạn không hỗ trợ sao chép ảnh vào clipboard.');
+                }
+            });
+        }).finally(() => {
+            // Hiện lại dropdown thật
+            if (dropdownMenu) setTimeout(() => {
+                dropdownMenu.style.display = '';
+            }, 300);
+            // Xóa clone khỏi DOM
+            document.body.removeChild(clone);
+        });
+    }
+
+    async function sharePost(postId, type = 'link') {
+        const postUrl = `${window.location.origin}/communities/${postId}`;
+        const title = 'Chia sẻ từ Vangxa';
+        const text = 'Xem bài viết này trên Vangxa';
+
+        // Nếu là chia sẻ dạng hình
+        if (type === 'image') {
+            const postCard = document.querySelector(`[data-post-id="${postId}"]`);
+            if (!postCard) {
+                alert('Không tìm thấy bài viết để chia sẻ!');
+                return;
+            }
+
+            try {
+                const clone = postCard.cloneNode(true);
+                adjustPostCardForCapture(clone);
+
+                // Ẩn clone khỏi màn hình thật, nhưng vẫn render được
+                clone.style.position = 'fixed';
+                clone.style.left = '-99999px';
+                clone.style.top = '0';
+                clone.style.zIndex = '-1';
+                clone.style.width = postCard.offsetWidth + 'px';
+                document.body.appendChild(clone);
+
+                const canvas = await html2canvas(clone, {
+                    backgroundColor: null,
+                    useCORS: true,
+                    scale: 2
+                });
+
+                // Chuyển canvas thành blob
+                const blob = await new Promise(resolve => canvas.toBlob(resolve, 'image/png'));
+                const file = new File([blob], `vangxa_post_${postId}.png`, {
+                    type: 'image/png'
+                });
+
+                // Xóa clone khỏi DOM
+                document.body.removeChild(clone);
+
+                // Kiểm tra hỗ trợ Web Share API với files
+                if (navigator.canShare && navigator.canShare({
+                        files: [file]
+                    })) {
+                    await navigator.share({
+                        files: [file],
+                        title: title,
+                        text: text,
+                        url: postUrl
+                    });
+                } else {
+                    // Fallback nếu không hỗ trợ chia sẻ file
+                    await navigator.share({
+                        title: title,
+                        text: text,
+                        url: postUrl
+                    });
+                }
+            } catch (error) {
+                console.error('Error sharing:', error);
+                if (error.name === 'AbortError') {
+                    // Người dùng hủy chia sẻ
+                    return;
+                }
+                alert('Không thể chia sẻ bài viết. Vui lòng thử lại sau.');
+            }
+        } else {
+            // Chia sẻ link thông thường
+            try {
+                await navigator.share({
+                    title: title,
+                    text: text,
+                    url: postUrl
+                });
+            } catch (error) {
+                console.error('Error sharing:', error);
+                if (error.name === 'AbortError') {
+                    // Người dùng hủy chia sẻ
+                    return;
+                }
+                // Fallback to copy link if sharing fails
+                copyPostLink(postId);
+            }
+        }
+    }
+
+    function adjustPostCardForCapture(clone) {
+        // Ẩn tất cả dropdown menu trong bản clone
+        const allDropdowns = clone.querySelectorAll('.dropdown-menu');
+        allDropdowns.forEach(menu => menu.style.display = 'none');
+
+        // Đảm bảo background-image là inline style tuyệt đối cho bản clone
+        const cloneBg = clone.classList.contains('post-card-bg') ? clone : clone.querySelector('.post-card-bg');
+        if (cloneBg) {
+            cloneBg.style.backgroundImage = "url('" + window.location.origin + "/image/default/Window.png')";
+            cloneBg.style.backgroundSize = "cover";
+            cloneBg.style.backgroundPosition = "center";
+            cloneBg.style.padding = '12px'; // Giảm padding tổng thể
+        }
+
+        // Điều chỉnh header và user info
+        const userInfo = clone.querySelector('.d-flex.align-items-center.mb-3');
+        if (userInfo) {
+            userInfo.style.marginBottom = '4px !important'; // Giảm margin bottom
+            userInfo.style.paddingBottom = '0';
+            // Điều chỉnh avatar nếu có
+            const avatar = userInfo.querySelector('img');
+            if (avatar) {
+                avatar.style.width = '32px';
+                avatar.style.height = '32px';
+            }
+        }
+
+        // Điều chỉnh description
+        const desc = clone.querySelector('.description-post');
+        if (desc) {
+            desc.classList.remove('description-post');
+            desc.style.display = 'block';
+            desc.style.webkitLineClamp = '';
+            desc.style.overflow = 'visible';
+            desc.style['-webkit-box-orient'] = '';
+            desc.style['-webkit-line-clamp'] = '';
+            desc.style.maxHeight = 'none';
+            desc.style.height = 'auto';
+            desc.style.whiteSpace = 'pre-line';
+            desc.style.marginBottom = '8px';
+            desc.style.marginTop = '0';
+            desc.style.fontSize = '14px';
+            desc.style.lineHeight = '1.4';
+            desc.style.padding = '0';
+        }
+
+        // Điều chỉnh khoảng cách của images
+        const images = clone.querySelector('.post-images');
+        if (images) {
+            images.style.margin = '0';
+            images.style.marginBottom = '8px';
+        }
+
+        // Căn chỉnh phần tương tác (like, comment, share)
+        const interactionContainer = clone.querySelector('.d-flex.justify-content-between');
+        if (interactionContainer) {
+            interactionContainer.style.display = 'flex';
+            interactionContainer.style.alignItems = 'center';
+            interactionContainer.style.justifyContent = 'space-between';
+            interactionContainer.style.marginTop = '4px';
+
+            // Container bên trái (like và comment)
+            const leftContainer = interactionContainer.querySelector('.d-flex.gap-4');
+            if (leftContainer) {
+                leftContainer.style.display = 'flex';
+                leftContainer.style.alignItems = 'center';
+                leftContainer.style.gap = '20px';
+
+                // Điều chỉnh các nút like và comment
+                const buttons = leftContainer.querySelectorAll('button');
+                buttons.forEach(btn => {
+                    btn.style.cssText = `
+                        display: inline-flex !important;
+                        align-items: center !important;
+                        gap: 4px !important;
+                        padding: 0 !important;
+                        margin: 0 !important;
+                        height: 20px !important;
+                    `;
+
+                    // Điều chỉnh icon
+                    const icon = btn.querySelector('svg, i');
+                    if (icon) {
+                        icon.style.cssText = `
+                            width: 20px !important;
+                            height: 20px !important;
+                            vertical-align: middle !important;
+                            margin: 0 !important;
+                            display: inline-block !important;
+                        `;
+                    }
+
+                    // Điều chỉnh số liệu
+                    const count = btn.querySelector('.like-count, span');
+                    if (count) {
+                        count.style.cssText = `
+                            font-size: 14px !important;
+                            line-height: 20px !important;
+                            height: 20px !important;
+                            margin: 0 !important;
+                            padding: 0 !important;
+                            display: inline-flex !important;
+                            align-items: center !important;
+                        `;
+                    }
+                });
+            }
+
+            // Điều chỉnh nút share bên phải
+            const shareButton = interactionContainer.querySelector('button:last-child');
+            if (shareButton) {
+                shareButton.style.cssText = `
+                    display: inline-flex !important;
+                    align-items: center !important;
+                    gap: 4px !important;
+                    padding: 0 !important;
+                    margin: 0 !important;
+                    height: 20px !important;
+                `;
+            }
+        }
+
+        return clone;
+    }
+
+    function downloadPostAsImage(el, postId) {
+        const postCard = el.closest('[data-post-id]');
+        if (!postCard) {
+            alert('Không tìm thấy bài viết để tải ảnh!');
+            return;
+        }
+
+        // Clone node và điều chỉnh style
+        const clone = postCard.cloneNode(true);
+        adjustPostCardForCapture(clone);
+
+        // Ẩn clone khỏi màn hình thật, nhưng vẫn render được
+        clone.style.position = 'fixed';
+        clone.style.left = '-99999px';
+        clone.style.top = '0';
+        clone.style.zIndex = '-1';
+        clone.style.width = postCard.offsetWidth + 'px';
+        document.body.appendChild(clone);
+
+        // Ẩn dropdown khi chụp (trên giao diện thật)
+        const dropdownMenu = el.closest('.dropdown-menu');
+        if (dropdownMenu) dropdownMenu.style.display = 'none';
+
+        html2canvas(clone, {
+            backgroundColor: null,
+            useCORS: true,
+            scale: 2
+        }).then(canvas => {
+            // Tạo link tải xuống
+            const link = document.createElement('a');
+            link.download = `post_${postId}_${new Date().getTime()}.png`;
+            link.href = canvas.toDataURL('image/png');
+            link.click();
+        }).finally(() => {
+            // Hiện lại dropdown thật
+            if (dropdownMenu) setTimeout(() => {
+                dropdownMenu.style.display = '';
+            }, 300);
+            // Xóa clone khỏi DOM
+            document.body.removeChild(clone);
         });
     }
 </script>
