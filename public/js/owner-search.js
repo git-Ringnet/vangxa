@@ -1,8 +1,3 @@
-/**
- * Quản lý chức năng tìm kiếm và quản lý chủ sở hữu với Alpine.js
- * 
- * @returns {Object} Các thuộc tính và phương thức cho Alpine.js data
- */
 function ownerSearchData() {
     return {
         searchTerm: '',
@@ -17,7 +12,7 @@ function ownerSearchData() {
             'Quản lý',
             'Nhân viên'
         ],
-        
+
         /**
          * Khởi tạo dữ liệu từ giá trị hiện tại
          */
@@ -43,11 +38,11 @@ function ownerSearchData() {
                 this.errorMessage = 'Vui lòng nhập từ khóa tìm kiếm';
                 return;
             }
-            
+
             this.isLoading = true;
             this.errorMessage = '';
             this.searchResults = [];
-            
+
             fetch(`/api/users/search?q=${encodeURIComponent(this.searchTerm)}`)
                 .then(response => {
                     if (!response.ok) {
@@ -57,10 +52,10 @@ function ownerSearchData() {
                 })
                 .then(data => {
                     // Lọc bỏ những người dùng đã được thêm vào danh sách chủ sở hữu
-                    this.searchResults = data.filter(user => 
+                    this.searchResults = data.filter(user =>
                         !this.selectedOwners.some(owner => owner.id === user.id)
                     );
-                    
+
                     this.isLoading = false;
                     if (this.searchResults.length === 0) {
                         this.errorMessage = 'Không tìm thấy kết quả nào hoặc người dùng đã được thêm';
@@ -72,10 +67,10 @@ function ownerSearchData() {
                     this.errorMessage = 'Đã xảy ra lỗi khi tìm kiếm';
                 });
         },
-        
+
         /**
          * Thêm người dùng vào danh sách chủ sở hữu
-         * 
+         *
          * @param {Object} user Thông tin người dùng cần thêm
          */
         selectUser(user) {
@@ -84,28 +79,28 @@ function ownerSearchData() {
                 ...user,
                 role: this.currentOwnerRole
             };
-            
+
             // Thêm vào danh sách
             this.selectedOwners.push(userWithRole);
-            
+
             // Cập nhật danh sách chủ sở hữu trong input hidden
             this.updateOwnersList();
-            
+
             // Xóa khỏi kết quả tìm kiếm và reset ô tìm kiếm
             this.searchResults = this.searchResults.filter(u => u.id !== user.id);
             this.searchTerm = '';
         },
-        
+
         /**
          * Xóa chủ sở hữu khỏi danh sách
-         * 
+         *
          * @param {number} ownerId ID của chủ sở hữu cần xóa
          */
         removeOwner(ownerId) {
             this.selectedOwners = this.selectedOwners.filter(owner => owner.id !== ownerId);
             this.updateOwnersList();
         },
-        
+
         /**
          * Cập nhật danh sách chủ sở hữu vào input hidden
          */
@@ -115,10 +110,10 @@ function ownerSearchData() {
                 ownersInput.value = JSON.stringify(this.selectedOwners);
             }
         },
-        
+
         /**
          * Thay đổi vai trò của chủ sở hữu
-         * 
+         *
          * @param {number} ownerId ID của chủ sở hữu
          * @param {string} newRole Vai trò mới
          */
@@ -129,10 +124,10 @@ function ownerSearchData() {
                 this.updateOwnersList();
             }
         },
-        
+
         /**
          * Xử lý phím Enter trong ô tìm kiếm
-         * 
+         *
          * @param {KeyboardEvent} event Sự kiện bàn phím
          */
         handleKeyDown(event) {

@@ -15,7 +15,7 @@
 
     <div class="flex items-center justify-center min-h-screen px-4">
         <!-- Overlay -->
-        <div class="fixed inset-0 bg-black" style="opacity: 0.7; z-index: 9999;" @click="isOpen = false"></div>
+        <div class="fixed inset-0 bg-black" style="opacity: 0.7; z-index: 9999;"></div>
         <!-- Popup content -->
         <div class="relative bg-white rounded-lg w-full max-w-md p-8" style="z-index: 10000;">
             <div class="popup-header">
@@ -117,9 +117,11 @@
                 .then(data => {
                     console.log('Thành công:', data);
                     this.isOpen = false;
+                    showToast('Xác nhận thành công', 'success');
                 })
                 .catch(error => {
                     console.error('Lỗi:', error);
+                    showToast('Có lỗi xảy ra khi thực hiện thao tác này', 'error');
                 });
             }
         }))

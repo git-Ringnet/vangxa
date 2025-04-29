@@ -9,16 +9,16 @@
             <div class="modal-body" x-data="ownerSearchData()">
                 <form id="ownerForm" action="{{ route('post.update-owner', $post->id) }}" method="POST">
                     @csrf
-                    
+
                     <!-- Danh sách chủ sở hữu hiện tại -->
                     <div class="mb-4">
                         <h6 class="fw-bold mb-3">Danh sách chủ sở hữu/vendor</h6>
-                        
+
                         <div class="owner-list border rounded p-3 mb-3" style="max-height: 200px; overflow-y: auto;">
                             <template x-if="selectedOwners.length === 0">
                                 <div class="text-muted text-center py-3">Chưa có chủ sở hữu nào được thêm</div>
                             </template>
-                            
+
                             <div class="table-responsive" x-show="selectedOwners.length > 0">
                                 <table class="table table-sm">
                                     <thead>
@@ -33,7 +33,7 @@
                                         <template x-for="(owner, index) in selectedOwners" :key="owner.id">
                                             <tr>
                                                 <td>
-                                                    <img :src="owner.avatar" class="rounded-circle" width="40" height="40" 
+                                                    <img :src="owner.avatar" class="rounded-circle" width="40" height="40"
                                                          onerror="this.onerror=null; this.src='{{ asset('image/default/default-group-avatar.jpg') }}';">
                                                 </td>
                                                 <td>
@@ -41,8 +41,8 @@
                                                     <small class="text-muted" x-text="owner.email"></small>
                                                 </td>
                                                 <td>
-                                                    <select class="form-select form-select-sm" 
-                                                            x-model="owner.role" 
+                                                    <select class="form-select form-select-sm"
+                                                            x-model="owner.role"
                                                             @change="changeOwnerRole(owner.id, $event.target.value)">
                                                         <template x-for="role in ownerRoles" :key="role">
                                                             <option :value="role" x-text="role"></option>
@@ -50,7 +50,7 @@
                                                     </select>
                                                 </td>
                                                 <td>
-                                                    <button type="button" class="btn btn-sm btn-outline-danger" 
+                                                    <button type="button" class="btn btn-sm btn-outline-danger"
                                                             @click="removeOwner(owner.id)"
                                                             title="Xóa chủ sở hữu">
                                                         <i class="fas fa-times"></i>
@@ -63,11 +63,11 @@
                             </div>
                         </div>
                     </div>
-                    
+
                     <!-- Thêm chủ sở hữu mới -->
                     <div class="mb-4">
                         <h6 class="fw-bold mb-3">Thêm chủ sở hữu mới</h6>
-                        
+
                         <div class="mb-3">
                             <label for="currentOwnerRole" class="form-label">Vai trò khi thêm</label>
                             <select class="form-select" id="currentOwnerRole" x-model="currentOwnerRole">
@@ -76,7 +76,7 @@
                                 </template>
                             </select>
                         </div>
-                        
+
                         <div class="row mb-3">
                             <div class="col">
                                 <label for="ownerSearch" class="form-label">Tìm kiếm người dùng</label>
@@ -95,7 +95,7 @@
                                 </div>
                             </div>
                         </div>
-                        
+
                         <!-- Kết quả tìm kiếm -->
                         <div class="mb-3">
                             <div class="list-group search-results-container" style="max-height: 250px; overflow-y: auto;">
@@ -103,14 +103,14 @@
                                 <div class="text-center p-3" x-show="isLoading">
                                     <i class="fas fa-spinner fa-spin"></i> Đang tìm kiếm...
                                 </div>
-                                
+
                                 <!-- Error message -->
                                 <div class="text-center p-3 text-danger" x-show="errorMessage" x-text="errorMessage"></div>
-                                
+
                                 <!-- Search results -->
                                 <template x-for="user in searchResults" :key="user.id">
                                     <a href="#" class="list-group-item list-group-item-action d-flex align-items-center" @click.prevent="selectUser(user)">
-                                        <img :src="user.avatar" class="rounded-circle me-2" width="40" height="40" 
+                                        <img :src="user.avatar" class="rounded-circle me-2" width="40" height="40"
                                              onerror="this.onerror=null; this.src='{{ asset('image/default/default-group-avatar.jpg') }}';">
                                         <div>
                                             <div x-text="user.name"></div>
@@ -124,16 +124,16 @@
                             </div>
                         </div>
                     </div>
-                    
+
                     <!-- Hidden inputs -->
                     <input type="hidden" name="owners_list" id="ownersListInput" value="[]">
-                    
+
                     <!-- Để tương thích với hệ thống cũ - chỉ lưu owner chính -->
-                    <input type="hidden" name="owner_id" id="ownerIdInput" 
-                        x-bind:value="selectedOwners.length > 0 ? 
+                    <input type="hidden" name="owner_id" id="ownerIdInput"
+                        x-bind:value="selectedOwners.length > 0 ?
                             (selectedOwners.find(o => o.role === 'Chủ sở hữu chính')?.id || selectedOwners[0].id) : ''"
                     >
-                    
+
                     <!-- Init hidden data -->
                     <input type="hidden" id="existingOwnersData" value="{{ isset($post->owners) ? $post->owners->map(function($owner) {
                         return [
@@ -144,7 +144,7 @@
                             'role' => $owner->pivot->role ?? 'Chủ sở hữu chính'
                         ];
                     })->toJson() : '[]' }}">
-                    
+
                     <div class="text-end mt-4">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
                         <button type="submit" class="btn btn-primary">Lưu thay đổi</button>

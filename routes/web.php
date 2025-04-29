@@ -1,6 +1,7 @@
 <?php
 
 use App\Events\TestReverbEvent;
+use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\Page\TrustlistController;
 use App\Http\Controllers\RolePermissionController;
 use Illuminate\Support\Facades\Route;
@@ -124,6 +125,14 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/user/{id}/following', [FollowerController::class, 'following'])->name('user.following');
 
     Route::post('/register-popup', [UserController::class, 'updateInfo'])->name('register-popup');
+
+    Route::get('/notifications', [NotificationController::class, 'fetch'])->name('notifications.fetch');
+    Route::post('/notifications/read', [NotificationController::class, 'markAsRead'])->name('notifications.read');
+    Route::post('/notifications/read-all', [NotificationController::class, 'markAllAsRead'])->name('notifications.read-all');
+    Route::get('/notifications/count', function () {
+        $count = Auth::user()->unreadNotifications->count();
+        return response()->json(['count' => $count]);
+    });
 });
 
 // Community routes
