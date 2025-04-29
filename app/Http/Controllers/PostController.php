@@ -39,10 +39,13 @@ class PostController extends Controller
             'images.*' => 'image|mimes:jpeg,png,jpg,gif|max:2048'
         ]);
 
+        // Convert link TikTok thành iframe
+        $description = $this->convertTikTokLinksToIframe($request->description);
+
         $post = Post::create([
             'title' => $request->title,
             'address' => $request->address,
-            'description' => $request->description,
+            'description' => $description,
             'user_id' => Auth::id() ?? 1,
             'status' => '1',
             'type' => $request->type,
@@ -67,7 +70,16 @@ class PostController extends Controller
             ->with('success', 'Bài đăng đã được tạo thành công!');
     }
 
+    private function convertTikTokLinksToIframe($content)
+    {
+        $pattern = '/https?:\/\/(www\.)?tiktok\.com\/@[^\/]+\/video\/(\d+)/i';
 
+        return preg_replace_callback($pattern, function ($matches) {
+            $videoId = $matches[2];
+
+            return '<iframe src="https://www.tiktok.com/embed/' . $videoId . '" width="325" height="600" frameborder="0" allowfullscreen></iframe>';
+        }, $content);
+    }
 
     public function destroy(Post $post)
     {
@@ -184,11 +196,14 @@ class PostController extends Controller
         // Lưu nội dung mô tả cũ để so sánh
         $oldDescription = $post->description;
 
+        // Xử lý nhúng TikTok trong mô tả mới
+        $processedDescription = $this->convertTikTokLinksToIframe($request->description);
+
         // Cập nhật thông tin cơ bản
         $post->update([
             'title' => $request->title,
             'address' => $request->address,
-            'description' => $request->description,
+            'description' => $processedDescription,
             'status' => 1,
             'type' => $request->type,
         ]);
@@ -215,7 +230,7 @@ class PostController extends Controller
             $oldImages = $oldMatches[1] ?? [];
 
             // Tìm tất cả ảnh mới trong nội dung
-            preg_match_all('/<img[^>]+src="([^">]+)"/', $request->description, $newMatches);
+            preg_match_all('/<img[^>]+src="([^">]+)"/', $processedDescription, $newMatches);
             $newImages = $newMatches[1] ?? [];
 
             // Chuẩn hóa đường dẫn ảnh để so sánh
@@ -332,7 +347,7 @@ class PostController extends Controller
     public function updateOwner(Request $request, $id)
     {
         $post = Post::findOrFail($id);
-        
+
         // Kiểm tra quyền: chỉ admin hoặc người tạo bài đăng mới có quyền cập nhật
         if (!Auth::user()->hasRole('Admin') && Auth::id() != $post->user_id) {
             return response()->json([
@@ -340,20 +355,20 @@ class PostController extends Controller
                 'message' => 'Bạn không có quyền thực hiện hành động này'
             ], 403);
         }
-        
+
         // Xử lý danh sách chủ sở hữu mới
         if ($request->filled('owners_list')) {
             try {
                 $ownersList = json_decode($request->owners_list, true);
-                
+
                 // Xóa tất cả quan hệ cũ
                 $post->owners()->detach();
-                
+
                 // Thêm các chủ sở hữu mới
                 foreach ($ownersList as $owner) {
                     $post->owners()->attach($owner['id'], ['role' => $owner['role']]);
                 }
-                
+
                 // Cập nhật owner_id chính (hệ thống cũ)
                 if (!empty($ownersList)) {
                     // Ưu tiên chủ sở hữu chính, nếu không có thì lấy người đầu tiên
@@ -361,7 +376,7 @@ class PostController extends Controller
                     if (!$primaryOwner) {
                         $primaryOwner = $ownersList[0];
                     }
-                    
+
                     $post->update(['owner_id' => $primaryOwner['id']]);
                     $message = 'Đã cập nhật danh sách chủ sở hữu thành công';
                 } else {
@@ -374,27 +389,27 @@ class PostController extends Controller
                     'message' => 'Lỗi khi xử lý dữ liệu: ' . $e->getMessage()
                 ], 400);
             }
-        } 
+        }
         // Xử lý theo cách cũ nếu không có danh sách
         else if ($request->filled('owner_id')) {
             // Cập nhật trường owner_id (phương pháp cũ)
             $post->update(['owner_id' => $request->owner_id]);
-            
+
             // Xóa tất cả owner cũ và thêm owner mới với vai trò chủ sở hữu chính
             $post->owners()->detach();
             $post->owners()->attach($request->owner_id, ['role' => 'Chủ sở hữu chính']);
-            
+
             $message = 'Đã cập nhật chủ sở hữu thành công';
         } else {
             // Xóa owner_id (phương pháp cũ)
             $post->update(['owner_id' => null]);
-            
+
             // Xóa tất cả owner trong bảng trung gian
             $post->owners()->detach();
-            
+
             $message = 'Đã xóa thông tin chủ sở hữu';
         }
-        
+
         if ($request->ajax() || $request->wantsJson()) {
             return response()->json([
                 'success' => true,
@@ -404,7 +419,7 @@ class PostController extends Controller
                     'name' => $post->owner->name,
                     'avatar' => $post->owner->avatar
                 ] : null,
-                'owners' => $post->owners->map(function($owner) {
+                'owners' => $post->owners->map(function ($owner) {
                     return [
                         'id' => $owner->id,
                         'name' => $owner->name,
@@ -414,17 +429,17 @@ class PostController extends Controller
                 })
             ]);
         }
-        
+
         return redirect()->back()->with('success', $message);
     }
-    
+
     /**
      * Thêm chủ sở hữu mới cho bài đăng
      */
     public function addOwner(Request $request, $id)
     {
         $post = Post::findOrFail($id);
-        
+
         // Kiểm tra quyền: chỉ admin hoặc người tạo bài đăng mới có quyền cập nhật
         if (!Auth::user()->hasRole('Admin') && Auth::id() != $post->user_id) {
             return response()->json([
@@ -432,15 +447,15 @@ class PostController extends Controller
                 'message' => 'Bạn không có quyền thực hiện hành động này'
             ], 403);
         }
-        
+
         $request->validate([
             'user_id' => 'required|exists:users,id',
             'role' => 'required|string|max:100'
         ]);
-        
+
         // Kiểm tra xem user đã là owner chưa
         $existingOwner = $post->owners()->where('user_id', $request->user_id)->first();
-        
+
         if ($existingOwner) {
             // Cập nhật vai trò nếu đã tồn tại
             $post->owners()->updateExistingPivot($request->user_id, ['role' => $request->role]);
@@ -450,12 +465,12 @@ class PostController extends Controller
             $post->owners()->attach($request->user_id, ['role' => $request->role]);
             $message = 'Đã thêm chủ sở hữu mới thành công';
         }
-        
+
         if ($request->ajax() || $request->wantsJson()) {
             return response()->json([
                 'success' => true,
                 'message' => $message,
-                'owners' => $post->owners()->with('roles')->get()->map(function($owner) {
+                'owners' => $post->owners()->with('roles')->get()->map(function ($owner) {
                     return [
                         'id' => $owner->id,
                         'name' => $owner->name,
@@ -465,17 +480,17 @@ class PostController extends Controller
                 })
             ]);
         }
-        
+
         return redirect()->back()->with('success', $message);
     }
-    
+
     /**
      * Xóa chủ sở hữu khỏi bài đăng
      */
     public function removeOwner(Request $request, $postId, $userId)
     {
         $post = Post::findOrFail($postId);
-        
+
         // Kiểm tra quyền: chỉ admin hoặc người tạo bài đăng mới có quyền cập nhật
         if (!Auth::user()->hasRole('Admin') && Auth::id() != $post->user_id) {
             return response()->json([
@@ -483,20 +498,20 @@ class PostController extends Controller
                 'message' => 'Bạn không có quyền thực hiện hành động này'
             ], 403);
         }
-        
+
         // Xóa owner khỏi bài đăng
         $post->owners()->detach($userId);
-        
+
         // Nếu đây là owner chính (trong trường owner_id), cũng xóa nó
         if ($post->owner_id == $userId) {
             $post->update(['owner_id' => null]);
         }
-        
+
         if ($request->ajax() || $request->wantsJson()) {
             return response()->json([
                 'success' => true,
                 'message' => 'Đã xóa chủ sở hữu khỏi bài đăng',
-                'owners' => $post->owners()->with('roles')->get()->map(function($owner) {
+                'owners' => $post->owners()->with('roles')->get()->map(function ($owner) {
                     return [
                         'id' => $owner->id,
                         'name' => $owner->name,
@@ -506,7 +521,7 @@ class PostController extends Controller
                 })
             ]);
         }
-        
+
         return redirect()->back()->with('success', 'Đã xóa chủ sở hữu khỏi bài đăng');
     }
 }

@@ -42,10 +42,10 @@
     <div class="listing-content">
         <div class="listing-header">
             <h3 class="listing-title">{{ $post->title }}</h3>
-            <div class="listing-rating">
+            {{-- <div class="listing-rating">
                 <i class="fas fa-star"></i>
                 <span>4.96</span>
-            </div>
+            </div> --}}
         </div>
         <!-- <p class="listing-location">{{ $post->address }}</p> -->
         <!-- <p class="listing-dates">22-27 tháng 5</p>

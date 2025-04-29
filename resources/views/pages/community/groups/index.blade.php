@@ -56,7 +56,8 @@
                                 @php
                                     $hasViewablePosts = true;
                                 @endphp
-                                <div class="p-4 rounded-5 border shadow-sm mb-4 bg-blur" data-post-id="{{ $post->id }}">
+                                <div class="p-4 rounded-5 border shadow-sm mb-4 bg-blur post-card-bg"
+                                    data-post-id="{{ $post->id }}">
                                     <div class="card-body">
                                         @if ($post->group)
                                             <a href="{{ route('groupss.show', $post->group) }}"
@@ -236,21 +237,31 @@
                                                     <li>
                                                         <a class="dropdown-item" href="#"
                                                             onclick="copyPostLink({{ $post->id }})">
-                                                            <i class="fas fa-link me-2"></i> Sao chép liên kết
+                                                            <i class="fas fa-link me-2"></i> Sao chép đường dẫn
                                                         </a>
                                                     </li>
                                                     <li>
-                                                        <a class="dropdown-item"
-                                                            href="https://www.facebook.com/sharer/sharer.php?u={{ urlencode(route('communities.show', $post)) }}&quote={{ urlencode($post->description) }}"
-                                                            target="_blank">
-                                                            <i class="fab fa-facebook me-2"></i> Facebook
+                                                        <a class="dropdown-item" href="#"
+                                                            onclick="sharePostAsImage(this, {{ $post->id }})">
+                                                            <i class="fas fa-image me-2"></i> Sao chép dạng hình
                                                         </a>
                                                     </li>
                                                     <li>
-                                                        <a class="dropdown-item"
-                                                            href="https://twitter.com/intent/tweet?url={{ urlencode(route('communities.show', $post)) }}&text={{ urlencode($post->description) }}"
-                                                            target="_blank">
-                                                            <i class="fab fa-twitter me-2"></i> Twitter
+                                                        <a class="dropdown-item" href="#"
+                                                            onclick="downloadPostAsImage(this, {{ $post->id }})">
+                                                            <i class="fa-solid fa-download me-2"></i> Tải về dạng hình
+                                                        </a>
+                                                    </li>
+                                                    <li>
+                                                        <a class="dropdown-item" href="#" 
+                                                            onclick="sharePost({{ $post->id }}, 'link')">
+                                                            <i class="fa-solid fa-share me-2"></i> Chia sẻ đường dẫn qua...
+                                                        </a>
+                                                    </li>
+                                                    <li>
+                                                        <a class="dropdown-item" href="#"
+                                                            onclick="sharePost({{ $post->id }}, 'image')">
+                                                            <i class="fa-solid fa-share-nodes me-2"></i> Chia sẻ dạng hình qua...
                                                         </a>
                                                     </li>
                                                 </ul>
@@ -457,6 +468,12 @@
         background-size: cover;
         background-position: center;
         background-repeat: no-repeat;
+    }
+
+    .post-card-bg {
+        background-image: url('{{ asset('image/default/Window.png') }}');
+        background-size: cover;
+        background-position: center;
     }
 
     /* Container cha bao quanh .swiper */

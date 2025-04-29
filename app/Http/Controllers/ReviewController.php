@@ -12,19 +12,16 @@ class ReviewController extends Controller
     public function store(Request $request, Post $post)
     {
         $request->validate([
-            'food_rating' => 'required|integer|min:1|max:5',
-            'satisfaction_level' => 'required|integer|min:1|max:5',
-            'comment' => 'required|string|min:10|max:1000'
+            'food_rating' => 'integer|min:1|max:5',
+            'satisfaction_level' => 'integer|min:1|max:5',
+            'comment' => 'string|min:10|max:1000'
         ], [
-            'food_rating.required' => 'Vui lòng chọn đánh giá sao cho món ăn',
             'food_rating.integer' => 'Đánh giá sao không hợp lệ',
             'food_rating.min' => 'Đánh giá sao phải từ 1-5',
             'food_rating.max' => 'Đánh giá sao phải từ 1-5',
-            'satisfaction_level.required' => 'Vui lòng chọn mức độ hài lòng',
             'satisfaction_level.integer' => 'Mức độ hài lòng không hợp lệ',
             'satisfaction_level.min' => 'Mức độ hài lòng phải từ 1-5',
             'satisfaction_level.max' => 'Mức độ hài lòng phải từ 1-5',
-            'comment.required' => 'Vui lòng viết nhận xét của bạn',
             'comment.min' => 'Nhận xét phải có ít nhất 10 ký tự',
             'comment.max' => 'Nhận xét không được vượt quá 1000 ký tự'
         ]);

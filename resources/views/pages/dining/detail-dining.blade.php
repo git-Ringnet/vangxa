@@ -191,7 +191,7 @@
                                 <div class="form-group my-3">
                                     <input type="hidden" name="post_id" value="{{ $post->id }}">
                                     <input type="hidden" name="type" value="{{ $post->type }}">
-                                    <label>Đánh giá món ăn <span class="text-danger">*</span></label>
+                                    <label>Đánh giá chất lượng</label>
                                     <div class="rating">
                                         <input type="radio" name="food_rating" value="5" id="food-5"
                                             {{ old('food_rating') == 5 ? 'checked' : '' }}><label for="food-5"><i
@@ -213,7 +213,7 @@
                                 </div>
 
                                 <div class="form-group my-3">
-                                    <label>Mức độ hài lòng <span class="text-danger">*</span></label>
+                                    <label>Mức độ hài lòng</label>
                                     <div class="satisfaction-icons">
                                         <input type="radio" name="satisfaction_level" value="5" id="satisfaction-5"
                                             {{ old('satisfaction_level') == 5 ? 'checked' : '' }}>
@@ -239,11 +239,13 @@
                                 </div>
 
                                 <div class="form-group my-3">
-                                    <label for="comment">Nhận xét của bạn <span class="text-danger">*</span></label>
+                                    <label for="comment">Nhận xét của bạn</label>
                                     <textarea name="comment" id="comment" rows="4" class="form-control"
                                         placeholder="Chia sẻ trải nghiệm của bạn...">{{ old('comment') }}</textarea>
                                     <div class="error-message" id="commentError"></div>
                                 </div>
+
+                                <div class="error-message" id="generalError"></div>
 
                                 <button type="submit" class="submit-review-green">Gửi đánh giá</button>
                             </form>
@@ -411,67 +413,6 @@
                     } else if (e.key === 'Escape') {
                         previewModal.hide();
                     }
-                }
-            });
-
-
-            // Client-side validation
-            const form = document.getElementById('reviewForm');
-            const foodRatingError = document.getElementById('foodRatingError');
-            const satisfactionLevelError = document.getElementById('satisfactionLevelError');
-            const commentError = document.getElementById('commentError');
-
-            form.addEventListener('submit', function(e) {
-                let isValid = true;
-
-                // Reset error messages
-                foodRatingError.textContent = '';
-                satisfactionLevelError.textContent = '';
-                commentError.textContent = '';
-
-                // Kiểm tra đánh giá sao
-                const foodRating = document.querySelector('input[name="food_rating"]:checked');
-                if (!foodRating) {
-                    foodRatingError.textContent = 'Vui lòng chọn đánh giá sao cho món ăn';
-                    isValid = false;
-                } else {
-                    const ratingValue = parseInt(foodRating.value);
-                    if (isNaN(ratingValue) || ratingValue < 1 || ratingValue > 5) {
-                        foodRatingError.textContent = 'Đánh giá sao phải từ 1-5';
-                        isValid = false;
-                    }
-                }
-
-                // Kiểm tra mức độ hài lòng
-                const satisfactionLevel = document.querySelector(
-                    'input[name="satisfaction_level"]:checked');
-                if (!satisfactionLevel) {
-                    satisfactionLevelError.textContent = 'Vui lòng chọn mức độ hài lòng';
-                    isValid = false;
-                } else {
-                    const satisfactionValue = parseInt(satisfactionLevel.value);
-                    if (isNaN(satisfactionValue) || satisfactionValue < 1 || satisfactionValue > 5) {
-                        satisfactionLevelError.textContent = 'Mức độ hài lòng phải từ 1-5';
-                        isValid = false;
-                    }
-                }
-
-                // Kiểm tra nhận xét
-                const comment = document.getElementById('comment').value.trim();
-                if (!comment) {
-                    commentError.textContent = 'Vui lòng viết nhận xét của bạn';
-                    isValid = false;
-                } else if (comment.length < 10) {
-                    commentError.textContent = 'Nhận xét phải có ít nhất 10 ký tự';
-                    isValid = false;
-                } else if (comment.length > 1000) {
-                    commentError.textContent = 'Nhận xét không được vượt quá 1000 ký tự';
-                    isValid = false;
-                }
-
-                // Nếu có lỗi, ngăn form submit
-                if (!isValid) {
-                    e.preventDefault();
                 }
             });
 
@@ -667,5 +608,6 @@
         }
     </script>
     <!-- Load owner search JavaScript -->
-    <script src="{{ asset('js/owner-search.js') }}"></script>
+    {{-- <script src="{{ asset('js/owner-search.js') }}"></script> --}}
+    <script src="{{asset('js/reviews.js')}}"></script>
 @endpush
