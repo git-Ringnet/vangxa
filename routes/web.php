@@ -82,6 +82,8 @@ Route::prefix('admin')->group(function () {
     Route::put('roles/{id}', [RolePermissionController::class, 'updateRole'])->name('roles.update');
     Route::delete('roles/{id}', [RolePermissionController::class, 'destroyRole'])->name('roles.destroy');
     Route::post('permissions', [RolePermissionController::class, 'storePermission'])->name('permissions.store');
+    
+
     Route::delete('permissions/{id}', [RolePermissionController::class, 'destroyPermission'])->name('permissions.destroy');
 
     Route::resource('users', UserController::class);
@@ -156,5 +158,9 @@ Route::get('/leaderboard', [LeaderboardController::class, 'index'])->name('leade
 Route::post('/interactions', [LeaderboardController::class, 'recordInteraction'])->middleware('auth');
 Route::get('/leaderboard/filter', [LeaderboardController::class, 'getFilteredLeaderboard'])->name('leaderboard.filter');
 Route::get('/check-tier-upgrade', [LeaderboardController::class, 'checkTierUpgrade'])->name('check.tier.upgrade');
+
+// Analytics routes
+Route::get('/analytics/user-activity', [\App\Http\Controllers\Admin\AnalyticsController::class, 'userActivity'])->name('analytics.user-activity');
+Route::post('/analytics/record-activity', [\App\Http\Controllers\Admin\AnalyticsController::class, 'recordActivity'])->name('analytics.record-activity');
 
 require __DIR__ . '/auth.php';

@@ -48,6 +48,12 @@
                         <span>Quản lý người dùng</span>
                     </a>
                 </li>
+                <li class="{{ request()->routeIs('analytics.user-activity') ? 'active' : '' }}">
+                    <a href="{{ route('analytics.user-activity') }}">
+                        <i class="fas fa-chart-line"></i>
+                        <span>Thống kê DAU/WAU</span>
+                    </a>
+                </li>
                 <li>
                     <a href="{{ route('roles-permissions.index') }}">
                         <i class="fas fa-cog"></i>
