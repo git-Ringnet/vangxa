@@ -150,4 +150,119 @@ class AnalyticsController extends Controller
         
         return response()->json(['success' => false], 401);
     }
+    
+    /**
+     * Hiển thị thống kê Save-to-Trustlist rate
+     */
+    public function trustlistRate()
+    {
+        // Lấy ngày hiện tại
+        $today = Carbon::now()->startOfDay();
+        
+        // Thu thập dữ liệu thống kê
+        $dailyStats = $this->getDailyTrustlistStats($today);
+        $generalStats = $this->getGeneralTrustlistStats();
+        $weeklyStats = $this->getWeeklyTrustlistStats($today);
+        
+        // Kết hợp dữ liệu và trả về view
+        return view('admin.analytics.trustlist_rate', array_merge(
+            $dailyStats,
+            $generalStats,
+            $weeklyStats
+        ));
+    }
+    
+    /**
+     * Lấy thống kê Trustlist hàng ngày trong 30 ngày qua
+     * 
+     * @param Carbon $today Ngày hiện tại
+     * @return array Dữ liệu thống kê hàng ngày
+     */
+    private function getDailyTrustlistStats(Carbon $today)
+    {
+        $trustlistRates = [];
+        $viewCounts = [];
+        $trustlistCounts = [];
+        $labels = [];
+        
+        // Lấy dữ liệu cho 30 ngày qua
+        for ($i = 29; $i >= 0; $i--) {
+            $date = $today->copy()->subDays($i);
+            $nextDate = $date->copy()->addDay();
+            $labels[] = $date->format('d/m');
+            
+            // Số lượng người dùng active
+            $activeUsers = User::whereDate('last_activity_at', $date)->count();
+            
+            // Số lượng lần lưu vào trustlist
+            $trustlistAdded = DB::table('trustlist')
+                ->whereDate('created_at', '>=', $date)
+                ->whereDate('created_at', '<', $nextDate)
+                ->count();
+            
+            // Tính tỷ lệ save-to-trustlist
+            $rate = $activeUsers > 0 ? round(($trustlistAdded / $activeUsers) * 100, 2) : 0;
+            
+            $trustlistRates[] = $rate;
+            $viewCounts[] = $activeUsers;
+            $trustlistCounts[] = $trustlistAdded;
+        }
+        
+        return compact('labels', 'trustlistRates', 'viewCounts', 'trustlistCounts');
+    }
+    
+    /**
+     * Lấy thống kê chung về Trustlist
+     * 
+     * @return array Dữ liệu thống kê chung
+     */
+    private function getGeneralTrustlistStats()
+    {
+        // Số liệu cơ bản
+        $totalTrustlists = DB::table('trustlist')->count();
+        $usersWithTrustlist = DB::table('trustlist')->select('user_id')->distinct()->count();
+        $totalUsers = User::count();
+        
+        // Tính tỷ lệ người dùng sử dụng trustlist
+        $userAdoptionRate = $totalUsers > 0 ? round(($usersWithTrustlist / $totalUsers) * 100, 2) : 0;
+        
+        // Tính trung bình số mục/người dùng
+        $userTrustlistCounts = DB::table('trustlist')
+            ->select(DB::raw('user_id, count(*) as count'))
+            ->groupBy('user_id')
+            ->get();
+        
+        $totalItems = $userTrustlistCounts->sum('count');
+        $userCount = $userTrustlistCounts->count();
+        $avgTrustlistsPerUser = $userCount > 0 ? round($totalItems / $userCount, 2) : 0;
+        
+        return compact(
+            'totalTrustlists', 
+            'usersWithTrustlist', 
+            'totalUsers', 
+            'userAdoptionRate', 
+            'avgTrustlistsPerUser'
+        );
+    }
+    
+    /**
+     * Lấy thống kê Trustlist trong 7 ngày gần nhất
+     * 
+     * @param Carbon $today Ngày hiện tại
+     * @return array Dữ liệu thống kê tuần
+     */
+    private function getWeeklyTrustlistStats(Carbon $today)
+    {
+        $last7DaysDate = $today->copy()->subDays(7);
+        
+        $trustlistLast7Days = DB::table('trustlist')
+            ->where('created_at', '>=', $last7DaysDate)
+            ->count();
+        
+        $activeUsersLast7Days = User::where('last_activity_at', '>=', $last7DaysDate)->count();
+        $last7DaysRate = $activeUsersLast7Days > 0 ? 
+            round(($trustlistLast7Days / $activeUsersLast7Days) * 100, 2) : 0;
+        
+        return compact('trustlistLast7Days', 'activeUsersLast7Days', 'last7DaysRate');
+    }
 }

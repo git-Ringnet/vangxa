@@ -11,8 +11,13 @@
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-    <!-- Custom CSS -->
-    <link rel="stylesheet" href="{{ asset('admin/styles.css') }}">
+    <!-- Custom fonts for this template-->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
+
+    <!-- Custom styles for this template-->
+    <link href="{{ asset('admin/styles.css') }}" rel="stylesheet">
+    <link href="{{ asset('admin/dropdown.css') }}" rel="stylesheet">
     @stack('styles')
 </head>
 
@@ -48,11 +53,24 @@
                         <span>Quản lý người dùng</span>
                     </a>
                 </li>
-                <li class="{{ request()->routeIs('analytics.user-activity') ? 'active' : '' }}">
-                    <a href="{{ route('analytics.user-activity') }}">
+                <!-- Dropdown menu cho thống kê -->
+                <li class="{{ request()->routeIs('analytics.*') ? 'active' : '' }}">
+                    <a href="#analyticsSubmenu" data-toggle="collapse" aria-expanded="{{ request()->routeIs('analytics.*') ? 'true' : 'false' }}" class="dropdown-toggle">
                         <i class="fas fa-chart-line"></i>
-                        <span>Thống kê DAU/WAU</span>
+                        <span>Thống kê dữ liệu</span>
                     </a>
+                    <ul class="collapse list-unstyled {{ request()->routeIs('analytics.*') ? 'show' : '' }}" id="analyticsSubmenu">
+                        <li class="{{ request()->routeIs('analytics.user-activity') ? 'active' : '' }}">
+                            <a href="{{ route('analytics.user-activity') }}" class="pl-4">
+                                <i class="fas fa-users mr-2"></i>Thống kê DAU/WAU
+                            </a>
+                        </li>
+                        <li class="{{ request()->routeIs('analytics.trustlist-rate') ? 'active' : '' }}">
+                            <a href="{{ route('analytics.trustlist-rate') }}" class="pl-4">
+                                <i class="fas fa-bookmark mr-2"></i>Tỷ lệ Save-to-Trustlist
+                            </a>
+                        </li>
+                    </ul>
                 </li>
                 <li>
                     <a href="{{ route('roles-permissions.index') }}">
@@ -137,6 +155,33 @@
         referrerpolicy="origin"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="{{ asset('admin/scripts.js') }}"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            // Toggle sidebar
+            $('#sidebarCollapse').on('click', function () {
+                $('#sidebar').toggleClass('active');
+            });
+            
+            // Toggle dropdown menu với hiệu ứng mượt mà
+            $('.dropdown-toggle').on('click', function(e) {
+                e.preventDefault();
+                const target = $(this).attr('href');
+                
+                // Đóng các menu khác nếu đang mở
+                if (!$(target).hasClass('show')) {
+                    $('.collapse.show').not(target).removeClass('show');
+                    $('.dropdown-toggle[aria-expanded="true"]').not(this).attr('aria-expanded', 'false');
+                }
+                
+                // Toggle menu hiện tại
+                $(target).toggleClass('show');
+                const isExpanded = $(target).hasClass('show');
+                $(this).attr('aria-expanded', isExpanded ? 'true' : 'false');
+            });
+        });
+    </script>
     <script>
         $(document).ready(function() {
             // Khởi tạo TinyMCE

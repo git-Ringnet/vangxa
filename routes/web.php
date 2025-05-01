@@ -170,6 +170,7 @@ Route::get('/check-tier-upgrade', [LeaderboardController::class, 'checkTierUpgra
 
 // Analytics routes
 Route::get('/analytics/user-activity', [\App\Http\Controllers\Admin\AnalyticsController::class, 'userActivity'])->name('analytics.user-activity');
+Route::get('/analytics/trustlist-rate', [\App\Http\Controllers\Admin\AnalyticsController::class, 'trustlistRate'])->name('analytics.trustlist-rate');
 Route::post('/analytics/record-activity', [\App\Http\Controllers\Admin\AnalyticsController::class, 'recordActivity'])->name('analytics.record-activity');
 
 require __DIR__ . '/auth.php';

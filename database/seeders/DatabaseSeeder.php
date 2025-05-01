@@ -32,7 +32,7 @@ class DatabaseSeeder extends Seeder
             TierSeeder::class,
             Notification::class,
             UserActivitySeeder::class,
-
+            TrustlistSeeder::class,
         ]);
     }
 }
