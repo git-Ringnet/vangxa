@@ -154,6 +154,40 @@
                 </div>
             </div> --}}
 
+                <!-- Thông tin người bán/chủ sở hữu -->
+                <div class="vendor-profile mb-4">
+                    <h2 class="mb-3">Thông tin chủ sở hữu</h2>
+                    <div class="vendor-card d-flex align-items-center p-3" style="background-color: #f8f9fa; border-radius: 10px;">
+                        @php
+                            // Lấy người bán/chủ sở hữu
+                            $vendor = $post->user;
+                            // Nếu bài đăng có owner_id riêng
+                            if ($post->owner_id) {
+                                $vendor = \App\Models\User::find($post->owner_id);
+                            }
+                        @endphp
+                        
+                        <a href="{{ route('profile.show', ['id' => $vendor->id]) }}" class="vendor-avatar me-3">
+                            <img src="{{ $vendor->avatar ? asset($vendor->avatar) : asset('images/default-avatar.png') }}" 
+                                alt="{{ $vendor->name }}" 
+                                style="width: 70px; height: 70px; border-radius: 50%; object-fit: cover;">
+                        </a>
+                        <div class="vendor-info">
+                            <h5 class="mb-1">
+                                <a href="{{ route('profile.show', ['id' => $vendor->id]) }}" class="text-decoration-none">
+                                    {{ $vendor->name }}
+                                </a>
+                            </h5>
+                            <p class="text-muted mb-2"><small>Thành viên từ {{ $vendor->created_at->format('d/m/Y') }}</small></p>
+                            <!-- <div>
+                                <a href="{{ route('profile.show', ['id' => $vendor->id]) }}" class="btn btn-sm btn-outline-primary">
+                                    <i class="fas fa-user me-1"></i> Xem hồ sơ
+                                </a>
+                            </div> -->
+                        </div>
+                    </div>
+                </div>
+                
                 <!-- Description -->
                 <div class="detail-description">
                     <h2>Giới thiệu</h2>

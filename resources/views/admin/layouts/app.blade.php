@@ -70,6 +70,21 @@
                                 <i class="fas fa-bookmark mr-2"></i>Tỷ lệ Save-to-Trustlist
                             </a>
                         </li>
+                        <li class="{{ request()->routeIs('analytics.story-post-rate') ? 'active' : '' }}">
+                            <a href="{{ route('analytics.story-post-rate') }}" class="pl-4">
+                                <i class="fas fa-utensils mr-2"></i>Tỷ lệ vendor đăng dịch vụ
+                            </a>
+                        </li>
+                        <li class="{{ request()->routeIs('analytics.vendor-profile-views') ? 'active' : '' }}">
+                            <a href="{{ route('analytics.vendor-profile-views') }}" class="pl-4">
+                                <i class="fas fa-store mr-2"></i>Xem hồ sơ người bán
+                            </a>
+                        </li>
+                        <li class="{{ request()->routeIs('analytics.community-post-rate') ? 'active' : '' }}">
+                            <a href="{{ route('analytics.community-post-rate') }}" class="pl-4">
+                                <i class="fas fa-users mr-2"></i>Tỷ lệ đăng bài cộng đồng
+                            </a>
+                        </li>
                     </ul>
                 </li>
                 <li>
