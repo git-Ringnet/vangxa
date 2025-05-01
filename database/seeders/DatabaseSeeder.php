@@ -30,7 +30,9 @@ class DatabaseSeeder extends Seeder
             RolePermissionSeeder::class,
             UserSeeder::class,
             TierSeeder::class,
+            Notification::class,
             UserActivitySeeder::class,
+
         ]);
     }
 }

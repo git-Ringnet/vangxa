@@ -48,7 +48,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     /**
      * Cập nhật giao diện nút follow/unfollow
-     * 
+     *
      * @param {HTMLElement} button Nút follow/unfollow
      * @param {boolean} isFollowing Trạng thái theo dõi
      */
@@ -72,7 +72,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     /**
      * Hiển thị thông báo
-     * 
+     *
      * @param {string} message Nội dung thông báo
      * @param {string} type Loại thông báo ('success' hoặc 'error')
      */

@@ -1,3 +1,4 @@
+import './bootstrap';
 document.addEventListener("DOMContentLoaded", function () {
     const button = document.querySelector('.menu-button');
     const dropdown = document.getElementById('userDropdown');

@@ -316,7 +316,7 @@
                                 ${post.description}
                             </div>
                             <div class="d-flex gap-4 text-muted">
-                                <button class="btn btn-link text-decoration-none p-0 like-btn" 
+                                <button class="btn btn-link text-decoration-none p-0 like-btn"
                                         data-post-id="${post.id}"
                                         data-liked="${post.likes.is_liked}">
                                     <i class="${post.likes.is_liked ? 'fas' : 'far'} fa-heart me-1 ${post.likes.is_liked ? 'text-danger' : ''}"></i>

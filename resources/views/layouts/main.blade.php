@@ -25,19 +25,24 @@
         <div class="container-custom">
             <div class="navbar-content">
                 <!-- Logo -->
-                <a href="/" class="navbar-brand" style="display: flex; align-items: center; text-decoration: none;">
+                <a href="/" class="navbar-brand"
+                    style="display: flex; align-items: center; text-decoration: none;">
                     <img src="/image/ship.png" alt="Logo" width="50" height="52" />
-                    <span style="margin-left: 8px; font-size: 26px;     font-weight: bold; color: #008cff; font-family: Verdana, sans-serif;">
+                    <span
+                        style="margin-left: 8px; font-size: 26px;     font-weight: bold; color: #008cff; font-family: Verdana, sans-serif;">
                         Vangxa
                     </span>
                 </a>
 
                 <!-- Navigation Links -->
                 <div class="nav-links">
-                    <a href="{{ route('lodging') }}" class="nav-link {{ request()->is('lodging') ? 'active' : '' }}">Lưu Trú</a>
-                    <a href="{{ route('dining') }}" class="nav-link {{ request()->is('dining') ? 'active' : '' }}">Ăn Uống</a>
+                    <a href="{{ route('lodging') }}" class="nav-link {{ request()->is('lodging') ? 'active' : '' }}">Lưu
+                        Trú</a>
+                    <a href="{{ route('dining') }}" class="nav-link {{ request()->is('dining') ? 'active' : '' }}">Ăn
+                        Uống</a>
                     <a href="#" class="nav-link" id="rankingLink">Bảng xếp hạng</a>
-                    <a href="{{ route('groupss.index') }}" class="nav-link {{ request()->routeIs('groupss.*') ? 'active' : '' }}">Cộng đồng</a>
+                    <a href="{{ route('groupss.index') }}"
+                        class="nav-link {{ request()->routeIs('groupss.*') ? 'active' : '' }}">Cộng đồng</a>
                 </div>
 
                 <!-- Rankings Modal -->
@@ -97,6 +102,9 @@
                     <button class="globe-button">
                         <i class="fas fa-globe"></i>
                     </button>
+                    <div class="settings-notifi pr-4">
+                        <x-notifications :notifications="auth()->user()->notifications ?? []" />
+                    </div>
                     <div class="user-menu">
                         <button class="menu-button">
                             <i class="fas fa-bars"></i>
@@ -141,39 +149,35 @@
             <!-- Search Bar -->
             <div class="search-bar">
                 <div class="search-container">
-                    <div x-data="searchComponent()" class="search-item">
+                    {{-- <div x-data="searchComponent()" class="search-item">
                         <div class="search-label">Địa điểm</div>
-                        <input
-                            type="text"
+                        <input type="text"
                             placeholder="{{ request()->is('dining') ? 'Tìm nhà hàng, món ăn...' : 'Tìm kiếm điểm đến' }}"
-                            class="search-input"
-                            x-model="query"
-                            @input.debounce.500ms="search"
-                        >
-                    </div>
+                            class="search-input" x-model="query" @input.debounce.500ms="search">
+                    </div> --}}
 
-                    @if(!request()->is('dining'))
-                    <div class="search-divider"></div>
-                    <div class="search-item">
-                        <div class="search-label">Nhận phòng</div>
-                        <div class="search-input">Thêm ngày</div>
-                    </div>
-                    <div class="search-divider"></div>
-                    <div class="search-item">
-                        <div class="search-label">Trả phòng</div>
-                        <div class="search-input">Thêm ngày</div>
-                    </div>
-                    <div class="search-divider"></div>
-                    <div class="search-item">
-                        <div class="search-label">Khách</div>
-                        <div class="search-input">Thêm khách</div>
-                    </div>
+                    @if (!request()->is('dining'))
+                        <div class="search-divider"></div>
+                        <div class="search-item">
+                            <div class="search-label">Nhận phòng</div>
+                            <div class="search-input">Thêm ngày</div>
+                        </div>
+                        <div class="search-divider"></div>
+                        <div class="search-item">
+                            <div class="search-label">Trả phòng</div>
+                            <div class="search-input">Thêm ngày</div>
+                        </div>
+                        <div class="search-divider"></div>
+                        <div class="search-item">
+                            <div class="search-label">Khách</div>
+                            <div class="search-input">Thêm khách</div>
+                        </div>
                     @else
-                    <div class="search-divider"></div>
-                    <div class="search-item">
-                        <div class="search-label">Món ăn</div>
-                        <div class="search-input">Loại món</div>
-                    </div>
+                        <div class="search-divider"></div>
+                        <div class="search-item">
+                            <div class="search-label">Món ăn</div>
+                            <div class="search-input">Loại món</div>
+                        </div>
                     @endif
 
                     <button class="search-button">
@@ -305,7 +309,7 @@
         window.fetch = async function(...args) {
             const response = await originalFetch(...args);
             const clone = response.clone();
-            
+
             try {
                 const data = await clone.json();
                 if (data.tier_upgrade && data.tier_upgrade.upgraded) {
@@ -314,7 +318,7 @@
             } catch (e) {
                 console.error('Error parsing JSON:', e);
             }
-            
+
             return response;
         };
 
@@ -365,7 +369,7 @@
     </script>
 
     @auth
-        @if(!auth()->user()->phone)
+        @if (!auth()->user()->phone)
             <x-register-popup />
 
             <script>

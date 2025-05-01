@@ -18,7 +18,7 @@ export default defineConfig({
             refresh: [`resources/views/**/*`],
         }),
         tailwindcss(),
-        mkcert(),
+        // mkcert(),
     ],
    	server: {
   https: true,
