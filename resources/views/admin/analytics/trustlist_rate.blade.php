@@ -91,6 +91,68 @@
         </div>
     </div>
 
+    <!-- Bộ lọc thời gian -->
+    <div class="row mb-4">
+        <div class="col-xl-12">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                    <h6 class="m-0 font-weight-bold text-primary">Bộ lọc thời gian</h6>
+                    <form action="{{ route('admin.analytics.trustlist_rate') }}" method="GET" class="d-flex">
+                        <select name="time_filter" class="form-control mr-2">
+                            <option value="all" {{ $timeFilter == 'all' ? 'selected' : '' }}>Tất cả thời gian</option>
+                            <option value="day" {{ $timeFilter == 'day' ? 'selected' : '' }}>Hôm nay</option>
+                            <option value="week" {{ $timeFilter == 'week' ? 'selected' : '' }}>Tuần này</option>
+                            <option value="month" {{ $timeFilter == 'month' ? 'selected' : '' }}>Tháng này</option>
+                            <option value="year" {{ $timeFilter == 'year' ? 'selected' : '' }}>Năm này</option>
+                        </select>
+                        <button type="submit" class="btn btn-primary">Áp dụng</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Top 10 bài viết có lượt trustlist cao nhất -->
+    <div class="row mb-4">
+        <div class="col-xl-12">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                    <h6 class="m-0 font-weight-bold text-primary">Top 10 bài viết có lượt trustlist cao nhất</h6>
+                    <small class="text-muted">({{ $timeFilter == 'all' ? 'Tất cả thời gian' : 
+                        ($timeFilter == 'day' ? 'Hôm nay' : 
+                        ($timeFilter == 'week' ? 'Tuần này' : 
+                        ($timeFilter == 'month' ? 'Tháng này' : 'Năm này'))) }})</small>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>STT</th>
+                                    <th>Tiêu đề bài viết</th>
+                                    <th>Số lượng trustlist</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach($topTrustlistedPosts as $index => $post)
+                                <tr>
+                                    <td>{{ $index + 1 }}</td>
+                                    <td>
+                                        <a href="{{ $post->url }}" target="_blank" class="text-decoration-none">
+                                            {{ $post->title }}
+                                        </a>
+                                    </td>
+                                    <td>{{ $post->trustlist_count }}</td>
+                                </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Biểu đồ so sánh -->
     <div class="row">
         <div class="col-xl-12 col-lg-12">

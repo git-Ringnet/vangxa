@@ -88,6 +88,8 @@ Route::prefix('admin')->group(function () {
     Route::delete('permissions/{id}', [RolePermissionController::class, 'destroyPermission'])->name('permissions.destroy');
 
     Route::resource('users', UserController::class);
+    Route::get('/analytics/trustlist-rate', [\App\Http\Controllers\Admin\AnalyticsController::class, 'trustlistRate'])->name('admin.analytics.trustlist_rate');
+    Route::get('/analytics/vendor-profile-views', [\App\Http\Controllers\Admin\AnalyticsController::class, 'vendorProfileViews'])->name('admin.analytics.vendor_profile_views');
 })->middleware(['auth', 'role:Admin']);
 
 // Dining routes
