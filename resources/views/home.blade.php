@@ -4,6 +4,26 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>VANGXA – Khám phá Việt Nam qua ẩm thực và du lịch</title>
+  <meta name="description" content="Đặt tour du lịch Việt Nam, khám phá ẩm thực địa phương. Cộng đồng chia sẻ kinh nghiệm du lịch và ẩm thực Việt Nam. Đặt khách sạn, nhà nghỉ, homestay với giá tốt nhất." />
+  <meta name="keywords" content="du lịch Việt Nam, ẩm thực Việt Nam, đặt tour du lịch, đặt khách sạn, nhà nghỉ, homestay, kinh nghiệm du lịch, ẩm thực địa phương, cộng đồng du lịch, khám phá Việt Nam" />
+  <meta name="robots" content="index, follow" />
+  <meta name="author" content="VANGXA" />
+  <meta name="language" content="vi" />
+  <meta name="copyright" content="VANGXA 2025" />
+  
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://vangxa.vn" />
+  <meta property="og:title" content="VANGXA – Khám phá Việt Nam qua ẩm thực và du lịch" />
+  <meta property="og:description" content="Đặt tour du lịch Việt Nam, khám phá ẩm thực địa phương. Cộng đồng chia sẻ kinh nghiệm du lịch và ẩm thực Việt Nam. Đặt khách sạn, nhà nghỉ, homestay với giá tốt nhất." />
+  <meta property="og:image" content="https://vangxa.vn/image/og-image.jpg" />
+  
+  <!-- Twitter -->
+  <meta property="twitter:card" content="summary_large_image" />
+  <meta property="twitter:url" content="https://vangxa.vn" />
+  <meta property="twitter:title" content="VANGXA – Khám phá Việt Nam qua ẩm thực và du lịch" />
+  <meta property="twitter:description" content="Đặt tour du lịch Việt Nam, khám phá ẩm thực địa phương. Cộng đồng chia sẻ kinh nghiệm du lịch và ẩm thực Việt Nam. Đặt khách sạn, nhà nghỉ, homestay với giá tốt nhất." />
+  <meta property="twitter:image" content="https://vangxa.vn/image/og-image.jpg" />
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
@@ -839,7 +859,7 @@
         <div class="about-image" style="background-image: url('https://images.unsplash.com/photo-1516321497487-e288fb19713f')"></div>
         <div class="about-text">
           <h2>Khám phá Việt Nam</h2>
-          <p>Trải nghiệm văn hóa Việt Nam qua ẩm thực và du lịch</p>
+          <p>Trải nghiệm văn hóa Việt Nam thông qua ẩm thực và tour du lịch</p>
           <p>VANGXA là cầu nối giúp bạn khám phá những điểm đến đẹp nhất Việt Nam, thưởng thức tinh hoa ẩm thực bản địa và chia sẻ những câu chuyện độc đáo về văn hóa Việt Nam.</p>
           <a href="#features" class="cta-button">Khám phá ngay</a>
         </div>
@@ -853,17 +873,17 @@
         <a href="{{ route('lodging') }}" class="feature-card">
           <div class="feature-icon" style="background-image: url('https://images.unsplash.com/photo-1516321497487-e288fb19713f')"></div>
           <h3>Điểm Đến</h3>
-          <p>Khám phá các điểm đến và trải nghiệm lưu trú độc đáo tại Việt Nam</p>
+          <p>Đặt tour và khám phá các điểm đến du lịch độc đáo tại Việt Nam</p>
         </a>
         <a href="{{ route('dining') }}" class="feature-card">
           <div class="feature-icon" style="background-image: url('https://images.unsplash.com/photo-1516321497487-e288fb19713f')"></div>
           <h3>Ẩm Thực</h3>
-          <p>Khám phá tinh hoa ẩm thực Việt Nam qua những món ăn đặc sắc và câu chuyện văn hóa</p>
+          <p>Khám phá tinh hoa ẩm thực Việt Nam và đặt tour thưởng thức ẩm thực địa phương</p>
         </a>
         <a href="{{ route('groupss.index') }}" class="feature-card">
           <div class="feature-icon" style="background-image: url('https://images.unsplash.com/photo-1516321497487-e288fb19713f')"></div>
           <h3>Cộng Đồng</h3>
-          <p>Kết nối với cộng đồng yêu thích du lịch và ẩm thực Việt Nam</p>
+          <p>Kết nối với cộng đồng chia sẻ kinh nghiệm du lịch và ẩm thực Việt Nam</p>
         </a>
       </div>
       <a href="#story" class="cta-button block text-center">Hiểu thêm về chúng tôi</a>
