@@ -117,7 +117,7 @@
                                                         <span><b>{{ $post->group->name }}</b></span>
                                                     @endif
                                                     <span class="text-gray-500 text-sm">
-                                                        {{ $post->created_at->diffForHumans() }}
+                                                        {{ $post->created_at ? $post->created_at->diffForHumans() : 'Không xác định' }}
                                                     </span>
                                                 </div>
                                             </div>

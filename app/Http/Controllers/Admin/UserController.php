@@ -171,7 +171,13 @@ class UserController extends Controller
             } else {
                 // Kiểm tra xem người dùng hiện tại có đang theo dõi người này không
                 $isFollowing = $currentUser->following()->where('following_id', $user->id)->exists();
+                
+                // Ghi lại lượt xem profile nếu không phải chủ profile
+                $this->recordProfileView($currentUser->id, $user->id);
             }
+        } else {
+            // Ghi lại lượt xem cho khách (không đăng nhập)
+            $this->recordProfileView(null, $user->id);
         }
 
         // Đếm số người theo dõi và đang theo dõi
@@ -179,6 +185,33 @@ class UserController extends Controller
         $followingCount = $user->following()->count();
 
         return view('users.profile', compact('user', 'isOwnProfile', 'isFollowing', 'followersCount', 'followingCount'));
+    }
+    
+    /**
+     * Ghi lại lượt xem profile của người bán
+     * 
+     * @param int|null $viewerId ID người xem (null nếu là khách)
+     * @param int $vendorId ID người bán được xem
+     * @return void
+     */
+    private function recordProfileView($viewerId, $vendorId)
+    {
+        // Phân loại vai trò của người dùng được xem
+        $vendor = User::find($vendorId);
+        
+        // Chỉ ghi lại nếu người được xem là vendor/business hoặc đã tạo ít nhất 1 bài viết
+        $isVendor = $vendor->hasRole('vendor') || $vendor->hasRole('business');
+        $hasPosts = $vendor->posts()->exists();
+        
+        if ($isVendor || $hasPosts) {
+            // Tạo bản ghi mới
+            \App\Models\ProfileView::create([
+                'user_id' => $viewerId,
+                'vendor_id' => $vendorId,
+                'ip_address' => request()->ip(),
+                'user_agent' => request()->userAgent()
+            ]);
+        }
     }
 
     /**

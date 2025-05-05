@@ -36,6 +36,7 @@ class User extends Authenticatable implements MustVerifyEmail
         'phone',
         'tiktok_id',
         'tiktok_token',
+        'last_activity_at',
     ];
 
     /**

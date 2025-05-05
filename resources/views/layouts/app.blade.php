@@ -309,6 +309,11 @@
             }
         });
     </script>
+    <!-- check dữ liệu người dùng oki Activity Tracker Script -->
+    <script>
+        document.body.dataset.auth = "{{ Auth::check() ? 'true' : 'false' }}";
+    </script>
+    @vite(['resources/js/activity-tracker.js'])
 </body>
 
 </html>

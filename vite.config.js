@@ -12,7 +12,8 @@ export default defineConfig({
                 'resources/css/app.css',
                 'resources/css/main.css',
                 'resources/css/leaderboard/leaderboard.css',
-                'resources/js/app.js'
+                'resources/js/app.js',
+                'resources/js/activity-tracker.js'
             ],
             refresh: [`resources/views/**/*`],
         }),
