@@ -32,7 +32,11 @@ class DatabaseSeeder extends Seeder
             TierSeeder::class,
             Notification::class,
             UserActivitySeeder::class,
-            TrustlistSeeder::class,
+            // Sử dụng PostEngagementSeeder thay vì TrustlistSeeder riêng lẻ
+            // vì PostEngagementSeeder đã bao gồm TrustlistSeeder
+            PostEngagementSeeder::class,
+            // Seeder cho các nhóm cộng đồng Vangxa và tương tác
+            CommunitySeeder::class,
         ]);
     }
 }
