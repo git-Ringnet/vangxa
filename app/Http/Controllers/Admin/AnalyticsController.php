@@ -477,6 +477,438 @@ class AnalyticsController extends Controller
     }
 
     /**
+     * Trang thống kê bài viết có tương tác (reviews/trustlist)
+     * 
+     * @return \Illuminate\Contracts\View\View
+     */
+    public function postsWithEngagements(Request $request)
+    {
+        // Lấy ngày hiện tại
+        $today = Carbon::now()->startOfDay();
+        
+        // Xử lý bộ lọc thời gian
+        $timeFilter = $request->input('time_filter', 'all'); // Mặc định là 'all'
+        
+        // Thu thập dữ liệu thống kê
+        $dailyStats = $this->getDailyPostsEngagementStats($today);
+        $generalStats = $this->getGeneralPostsEngagementStats();
+        $weeklyStats = $this->getWeeklyPostsEngagementStats($today);
+        $topPosts = $this->getTopEngagementPosts($timeFilter);
+        
+        // Kết hợp dữ liệu và trả về view
+        return view('admin.analytics.posts_with_engagements', array_merge(
+            $dailyStats,
+            $generalStats,
+            $weeklyStats,
+            [
+                'topEngagementPosts' => $topPosts,
+                'timeFilter' => $timeFilter
+            ]
+        ));
+    }
+    /**
+     * Lấy top 10 bài viết có lượng tương tác cao nhất (tổng của reviews + trustlist)
+     * 
+     * @param string $timeFilter Bộ lọc thời gian: 'day', 'week', 'month', 'year', 'all'
+     * @return array Dữ liệu top 10 bài viết
+     */
+    private function getTopEngagementPosts($timeFilter = 'all')
+    {
+        // Bộ lọc thời gian
+        $now = Carbon::now();
+        $dateFilter = null;
+        
+        switch ($timeFilter) {
+            case 'day':
+                $dateFilter = $now->copy()->startOfDay();
+                break;
+            case 'week':
+                $dateFilter = $now->copy()->startOfWeek();
+                break;
+            case 'month':
+                $dateFilter = $now->copy()->startOfMonth();
+                break;
+            case 'year':
+                $dateFilter = $now->copy()->startOfYear();
+                break;
+        }
+        
+        // Query sử dụng Eloquent với withCount để đếm các mối quan hệ
+        $query = \App\Models\Post::with('user')
+            ->withCount(['reviews' => function($query) use ($dateFilter) {
+                if ($dateFilter) {
+                    $query->where('posts.created_at', '>=', $dateFilter);
+                }
+            }])
+            ->withCount(['trustlist' => function($query) use ($dateFilter) {
+                if ($dateFilter) {
+                    $query->where('posts.created_at', '>=', $dateFilter);
+                }
+            }]);
+
+        // Lọc bởi thời gian tạo của bài viết nếu cần
+        if ($dateFilter && $timeFilter != 'all') {
+            $query->where('posts.created_at', '>=', $dateFilter);
+        }
+
+        // Lọc chỉ các bài viết có ít nhất một loại tương tác (reviews hoặc trustlist)
+        $topPosts = $query->get()
+            ->filter(function($post) {
+                return $post->reviews_count > 0 || $post->trustlist_count > 0;
+            })
+            ->map(function($post) {
+                // Thêm trường tổng tương tác
+                $post->total_engagement = $post->reviews_count + $post->trustlist_count;
+                $post->url = route('posts.show', ['post' => $post->id]);
+                return $post;
+            })
+            ->sortByDesc('total_engagement')
+            ->take(10)
+            ->map(function($post) {
+                return [
+                    'id' => $post->id,
+                    'title' => $post->title,
+                    'type' => $post->type,
+                    'created_at' => $post->created_at,
+                    'author_name' => $post->user->name ?? 'Không xác định',
+                    'review_count' => $post->reviews_count,
+                    'trustlist_count' => $post->trustlist_count,
+                    'total_engagement' => $post->total_engagement,
+                    'url' => $post->url
+                ];
+            })
+            ->values()
+            ->toArray();
+            
+        return $topPosts;
+    }
+
+    /**
+     * Lấy thống kê bài viết có tương tác (reviews/trustlist) hàng ngày trong 30 ngày qua
+     * 
+     * @param Carbon $today Ngày hiện tại
+     * @return array Dữ liệu thống kê hàng ngày
+     */
+    private function getDailyPostsEngagementStats(Carbon $today)
+    {
+        $engagementRates = [];
+        $postCounts = [];
+        $engagedPostCounts = [];
+        $labels = [];
+
+        // Lấy dữ liệu cho 30 ngày qua
+        for ($i = 29; $i >= 0; $i--) {
+            $date = $today->copy()->subDays($i);
+            $nextDate = $date->copy()->addDay();
+            $labels[] = $date->format('d/m');
+
+            // Số lượng bài đăng trong ngày
+            $postsToday = \App\Models\Post::whereDate('created_at', '>=', $date)
+                ->whereDate('created_at', '<', $nextDate)
+                ->count();
+
+            // Đếm bài viết có tương tác trong ngày
+            $postsWithEngagement = \App\Models\Post::whereDate('created_at', '>=', $date)
+                ->whereDate('created_at', '<', $nextDate)
+                ->where(function($query) use ($date, $nextDate) {
+                    $query->whereHas('reviews', function($q) use ($date, $nextDate) {
+                        $q->whereDate('created_at', '>=', $date)
+                          ->whereDate('created_at', '<', $nextDate);
+                    })
+                    ->orWhereHas('trustlist', function($q) use ($date, $nextDate) {
+                        $q->whereDate('created_at', '>=', $date)
+                          ->whereDate('created_at', '<', $nextDate);
+                    });
+                })
+                ->count();
+
+            // Tính tỷ lệ bài viết có tương tác
+            $rate = $postsToday > 0 ? round(($postsWithEngagement / $postsToday) * 100, 2) : 0;
+
+            $engagementRates[] = $rate;
+            $postCounts[] = $postsToday;
+            $engagedPostCounts[] = $postsWithEngagement;
+        }
+
+        return compact('labels', 'engagementRates', 'postCounts', 'engagedPostCounts');
+    }
+
+    /**
+     * Lấy thống kê chung về bài viết có tương tác (reviews/trustlist)
+     * 
+     * @return array Dữ liệu thống kê chung
+     */
+    private function getGeneralPostsEngagementStats()
+    {
+        // Tổng số bài viết
+        $totalPosts = \App\Models\Post::count();
+            
+        // Số bài viết có ít nhất một review
+        $postsWithReviews = \App\Models\Post::whereHas('reviews')->count();
+            
+        // Số bài viết có ít nhất một trustlist
+        $postsWithTrustlist = \App\Models\Post::whereHas('trustlist')->count();
+            
+        // Số bài viết có cả review và trustlist
+        $postsWithBoth = \App\Models\Post::whereHas('reviews')
+            ->whereHas('trustlist')
+            ->count();
+            
+        // Số bài viết có ít nhất một loại tương tác (review hoặc trustlist)
+        $postsWithAny = \App\Models\Post::where(function ($query) {
+                $query->whereHas('reviews')
+                      ->orWhereHas('trustlist');
+            })
+            ->count();
+            
+        // Tính toán các tỷ lệ
+        $reviewRate = $totalPosts > 0 ? round(($postsWithReviews / $totalPosts) * 100, 2) : 0;
+        $trustlistRate = $totalPosts > 0 ? round(($postsWithTrustlist / $totalPosts) * 100, 2) : 0;
+        $bothRate = $totalPosts > 0 ? round(($postsWithBoth / $totalPosts) * 100, 2) : 0;
+        $anyEngagementRate = $totalPosts > 0 ? round(($postsWithAny / $totalPosts) * 100, 2) : 0;
+
+        return compact(
+            'totalPosts',
+            'postsWithReviews',
+            'postsWithTrustlist',
+            'postsWithBoth',
+            'postsWithAny',
+            'reviewRate',
+            'trustlistRate',
+            'bothRate',
+            'anyEngagementRate'
+        );
+    }
+
+    /**
+     * Lấy thống kê bài viết có tương tác (reviews/trustlist) trong 7 ngày gần nhất
+     * 
+     * @param Carbon $today Ngày hiện tại
+     * @return array Dữ liệu thống kê tuần
+     */
+    private function getWeeklyPostsEngagementStats(Carbon $today)
+    {
+        $last7DaysDate = $today->copy()->subDays(7);
+
+        // Số bài viết trong 7 ngày qua
+        $postsLast7Days = \App\Models\Post::where('created_at', '>=', $last7DaysDate)
+            ->count();
+
+        // Số bài viết có tương tác trong 7 ngày qua
+        $engagedPostsLast7Days = \App\Models\Post::where('created_at', '>=', $last7DaysDate)
+            ->where(function ($query) use ($last7DaysDate) {
+                $query->whereHas('reviews', function($q) use ($last7DaysDate) {
+                        $q->where('created_at', '>=', $last7DaysDate);
+                    })
+                    ->orWhereHas('trustlist', function($q) use ($last7DaysDate) {
+                        $q->where('created_at', '>=', $last7DaysDate);
+                    });
+            })
+            ->count();
+
+        // Tính tỷ lệ bài viết có tương tác trong 7 ngày
+        $last7DaysRate = $postsLast7Days > 0 ?
+            round(($engagedPostsLast7Days / $postsLast7Days) * 100, 2) : 0;
+
+        return compact('postsLast7Days', 'engagedPostsLast7Days', 'last7DaysRate');
+    }
+
+    /**
+     * Trang thống kê bài viết cộng đồng có tương tác (likes/comments)
+     * 
+     * @return \Illuminate\Contracts\View\View
+     */
+    public function communityPostsWithReactions(Request $request)
+    {
+        // Xử lý bộ lọc thời gian
+        $timeFilter = $request->input('time_filter', 'all'); // Mặc định là 'all'
+        
+        // Thu thập dữ liệu thống kê (đã loại bỏ thống kê hàng ngày cho biểu đồ)
+        $today = Carbon::now()->startOfDay();
+        $generalStats = $this->getGeneralCommunityPostsStats();
+        $weeklyStats = $this->getWeeklyCommunityPostsStats($today);
+        $topPosts = $this->getTopCommunityPosts($timeFilter);
+        
+        // Kết hợp dữ liệu và trả về view
+        return view('admin.analytics.community_posts_with_reactions', array_merge(
+            $generalStats,
+            $weeklyStats,
+            [
+                'topEngagementPosts' => $topPosts,
+                'timeFilter' => $timeFilter
+            ]
+        ));
+    }
+
+    // Phương thức getDailyCommunityPostsStats đã được loại bỏ vì không còn cần thiết sau khi bỏ biểu đồ
+
+    /**
+     * Lấy thống kê chung về bài viết cộng đồng có tương tác (likes/comments)
+     * 
+     * @return array Dữ liệu thống kê chung
+     */
+    private function getGeneralCommunityPostsStats()
+    {
+        // Tổng số bài viết trong nhóm
+        $totalPosts = \App\Models\Post::whereNotNull('group_id')->count();
+            
+        // Số bài viết có ít nhất một comment
+        $postsWithComments = \App\Models\Post::whereNotNull('group_id')
+            ->whereHas('comments')
+            ->count();
+            
+        // Số bài viết có ít nhất một like
+        $postsWithLikes = \App\Models\Post::whereNotNull('group_id')
+            ->whereHas('likes')
+            ->count();
+            
+        // Số bài viết có cả comment và like
+        $postsWithBoth = \App\Models\Post::whereNotNull('group_id')
+            ->whereHas('comments')
+            ->whereHas('likes')
+            ->count();
+            
+        // Số bài viết có ít nhất một loại tương tác (comment hoặc like)
+        $postsWithAny = \App\Models\Post::whereNotNull('group_id')
+            ->where(function ($query) {
+                $query->whereHas('comments')
+                      ->orWhereHas('likes');
+            })
+            ->count();
+            
+        // Tính toán các tỷ lệ
+        $commentRate = $totalPosts > 0 ? round(($postsWithComments / $totalPosts) * 100, 2) : 0;
+        $likeRate = $totalPosts > 0 ? round(($postsWithLikes / $totalPosts) * 100, 2) : 0;
+        $bothRate = $totalPosts > 0 ? round(($postsWithBoth / $totalPosts) * 100, 2) : 0;
+        $anyEngagementRate = $totalPosts > 0 ? round(($postsWithAny / $totalPosts) * 100, 2) : 0;
+
+        return compact(
+            'totalPosts',
+            'postsWithComments',
+            'postsWithLikes',
+            'postsWithBoth',
+            'postsWithAny',
+            'commentRate',
+            'likeRate',
+            'bothRate',
+            'anyEngagementRate'
+        );
+    }
+
+    /**
+     * Lấy thống kê bài viết cộng đồng có tương tác (likes/comments) trong 7 ngày gần nhất
+     * 
+     * @param Carbon $today Ngày hiện tại
+     * @return array Dữ liệu thống kê tuần
+     */
+    private function getWeeklyCommunityPostsStats(Carbon $today)
+    {
+        $last7DaysDate = $today->copy()->subDays(7);
+
+        // Số bài viết trong nhóm trong 7 ngày qua
+        $postsLast7Days = \App\Models\Post::where('posts.created_at', '>=', $last7DaysDate)
+            ->whereNotNull('group_id')
+            ->count();
+
+        // Số bài viết có tương tác trong 7 ngày qua
+        $engagedPostsLast7Days = \App\Models\Post::where('posts.created_at', '>=', $last7DaysDate)
+            ->whereNotNull('group_id')
+            ->where(function ($query) use ($last7DaysDate) {
+                $query->whereHas('comments', function($q) use ($last7DaysDate) {
+                        $q->where('comments.created_at', '>=', $last7DaysDate);
+                    })
+                    ->orWhereHas('likes', function($q) use ($last7DaysDate) {
+                        $q->whereDate('likes.created_at', '>=', $last7DaysDate);
+                    });
+            })
+            ->count();
+
+        // Tính tỷ lệ bài viết có tương tác trong 7 ngày
+        $last7DaysRate = $postsLast7Days > 0 ?
+            round(($engagedPostsLast7Days / $postsLast7Days) * 100, 2) : 0;
+
+        return compact('postsLast7Days', 'engagedPostsLast7Days', 'last7DaysRate');
+    }
+
+    /**
+     * Lấy top 10 bài viết cộng đồng có lượng tương tác cao nhất (tổng của comments + likes)
+     * 
+     * @param string $timeFilter Bộ lọc thời gian: 'day', 'week', 'month', 'year', 'all'
+     * @return array Dữ liệu top 10 bài viết
+     */
+    private function getTopCommunityPosts($timeFilter = 'all')
+    {
+        // Bộ lọc thời gian
+        $now = Carbon::now();
+        $dateFilter = null;
+        
+        switch ($timeFilter) {
+            case 'day':
+                $dateFilter = $now->copy()->startOfDay();
+                break;
+            case 'week':
+                $dateFilter = $now->copy()->startOfWeek();
+                break;
+            case 'month':
+                $dateFilter = $now->copy()->startOfMonth();
+                break;
+            case 'year':
+                $dateFilter = $now->copy()->startOfYear();
+                break;
+        }
+        
+        // Query sử dụng Eloquent với withCount để đếm các mối quan hệ
+        $query = \App\Models\Post::with(['user', 'group'])
+            ->whereNotNull('group_id')
+            ->withCount(['comments' => function($query) use ($dateFilter) {
+                if ($dateFilter) {
+                    $query->where('comments.created_at', '>=', $dateFilter);
+                }
+            }])
+            ->withCount(['likes' => function($query) use ($dateFilter) {
+                if ($dateFilter) {
+                    $query->whereDate('likes.created_at', '>=', $dateFilter);
+                }
+            }]);
+
+        // Lọc bởi thời gian tạo của bài viết nếu cần
+        if ($dateFilter && $timeFilter != 'all') {
+            $query->where('posts.created_at', '>=', $dateFilter);
+        }
+
+        // Lọc chỉ các bài viết có ít nhất một loại tương tác (comment hoặc like)
+        $topPosts = $query->get()
+            ->filter(function($post) {
+                return $post->comments_count > 0 || $post->likes_count > 0;
+            })
+            ->map(function($post) {
+                // Thêm trường tổng tương tác
+                $post->total_engagement = $post->comments_count + $post->likes_count;
+                $post->url = route('posts.show', ['post' => $post->id]);
+                return $post;
+            })
+            ->sortByDesc('total_engagement')
+            ->take(10)
+            ->map(function($post) {
+                return [
+                    'id' => $post->id,
+                    'title' => $post->title,
+                    'group_name' => $post->group->name ?? 'Không xác định',
+                    'created_at' => $post->created_at,
+                    'author_name' => $post->user->name ?? 'Không xác định',
+                    'comment_count' => $post->comments_count,
+                    'like_count' => $post->likes_count,
+                    'total_engagement' => $post->total_engagement,
+                    'url' => $post->url
+                ];
+            })
+            ->values()
+            ->toArray();
+            
+        return $topPosts;
+    }
+    
+    /**
      * Hiển thị thống kê tỷ lệ xem hồ sơ người bán
      */
     public function vendorProfileViews(Request $request)
@@ -559,7 +991,8 @@ class AnalyticsController extends Controller
                 // Tạo đường dẫn đến profile của vendor
                 $vendor->url = route('users.show', ['user' => $vendor->id]);
                 return $vendor;
-            });
+            })
+            ->toArray();
     }
 
     /**

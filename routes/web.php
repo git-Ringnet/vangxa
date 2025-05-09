@@ -90,6 +90,8 @@ Route::prefix('admin')->group(function () {
     Route::resource('users', UserController::class);
     Route::get('/analytics/trustlist-rate', [\App\Http\Controllers\Admin\AnalyticsController::class, 'trustlistRate'])->name('admin.analytics.trustlist_rate');
     Route::get('/analytics/vendor-profile-views', [\App\Http\Controllers\Admin\AnalyticsController::class, 'vendorProfileViews'])->name('admin.analytics.vendor_profile_views');
+    Route::get('/analytics/posts-with-engagements', [\App\Http\Controllers\Admin\AnalyticsController::class, 'postsWithEngagements'])->name('admin.analytics.posts_with_engagements');
+    Route::get('/analytics/community-posts-with-reactions', [\App\Http\Controllers\Admin\AnalyticsController::class, 'communityPostsWithReactions'])->name('admin.analytics.community_posts_with_reactions');
 })->middleware(['auth', 'role:Admin']);
 
 // Dining routes
@@ -176,6 +178,8 @@ Route::get('/analytics/trustlist-rate', [\App\Http\Controllers\Admin\AnalyticsCo
 Route::get('/analytics/story-post-rate', [\App\Http\Controllers\Admin\AnalyticsController::class, 'storyPostRate'])->name('analytics.story-post-rate');
 Route::get('/analytics/vendor-profile-views', [\App\Http\Controllers\Admin\AnalyticsController::class, 'vendorProfileViews'])->name('analytics.vendor-profile-views');
 Route::get('/analytics/community-post-rate', [\App\Http\Controllers\Admin\AnalyticsController::class, 'communityPostRate'])->name('analytics.community-post-rate');
+Route::get('/analytics/posts-with-engagements', [\App\Http\Controllers\Admin\AnalyticsController::class, 'postsWithEngagements'])->name('analytics.posts-with-engagements');
+Route::get('/analytics/community-posts-with-reactions', [\App\Http\Controllers\Admin\AnalyticsController::class, 'communityPostsWithReactions'])->name('analytics.community-posts-with-reactions');
 Route::post('/analytics/record-activity', [\App\Http\Controllers\Admin\AnalyticsController::class, 'recordActivity'])->name('analytics.record-activity');
 
 require __DIR__ . '/auth.php';

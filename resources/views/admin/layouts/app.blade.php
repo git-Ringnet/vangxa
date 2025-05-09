@@ -85,6 +85,16 @@
                                 <i class="fas fa-users mr-2"></i>Tỷ lệ đăng bài cộng đồng
                             </a>
                         </li>
+                        <li class="{{ request()->routeIs('analytics.posts-with-engagements') ? 'active' : '' }}">
+                            <a href="{{ route('analytics.posts-with-engagements') }}" class="pl-4">
+                                <i class="fas fa-star mr-2"></i>Bài viết Vendor có tương tác
+                            </a>
+                        </li>
+                        <li class="{{ request()->routeIs('analytics.community-posts-with-reactions') ? 'active' : '' }}">
+                            <a href="{{ route('analytics.community-posts-with-reactions') }}" class="pl-4">
+                                <i class="fas fa-comments mr-2"></i>Bài viết Community có tương tác
+                            </a>
+                        </li>
                     </ul>
                 </li>
                 <li>
