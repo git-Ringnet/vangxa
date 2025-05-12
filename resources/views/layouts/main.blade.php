@@ -16,6 +16,82 @@
     <script src="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.js"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <script src="{{ asset('js/notifications.js') }}"></script>
+    <!-- <style>
+        /* Toast Notifications */
+        .toast-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 10000;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            max-width: 350px;
+        }
+        .toast {
+            padding: 15px;
+            border-radius: 8px;
+            color: #fff;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            display: flex;
+            align-items: center;
+            opacity: 0;
+            transform: translateX(20px);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        .toast.show {
+            opacity: 1;
+            transform: translateX(0);
+        }
+        .toast-success {
+            background-color: #4caf50;
+        }
+        .toast-error {
+            background-color: #f44336;
+        }
+        .toast-warning {
+            background-color: #ff9800;
+        }
+        .toast-info {
+            background-color: #2196f3;
+        }
+        .toast-content {
+            flex-grow: 1;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .toast-content i {
+            font-size: 20px;
+        }
+        .toast-content span {
+            word-break: break-word;
+        }
+        .toast-close {
+            cursor: pointer;
+            background: none;
+            border: none;
+            color: white;
+            font-size: 20px;
+            opacity: 0.8;
+            padding: 0 5px;
+        }
+        .toast-close:hover {
+            opacity: 1;
+        }
+        .toast-progress {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            height: 3px;
+            background-color: rgba(255, 255, 255, 0.4);
+            width: 100%;
+            transform-origin: left;
+        }
+    </style> -->
 </head>
 @stack('scripts')
 

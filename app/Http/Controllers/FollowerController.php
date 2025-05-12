@@ -100,12 +100,26 @@ class FollowerController extends Controller
 
         // Lưu trữ thông tin follower trước khi thay đổi trạng thái
         $followerRecord = null;
+        $followerData = null;
 
         if ($isFollowing) {
             // Lấy thông tin follower trước khi xóa
             $followerRecord = Follower::where('follower_id', $currentUser->id)
                 ->where('following_id', $targetUser->id)
                 ->first();
+                
+            // Lưu dữ liệu cần thiết cho unfollow trước khi detach
+            if ($followerRecord) {
+                $followerData = (object)[
+                    'id' => $followerRecord->id,
+                    'follower_id' => $currentUser->id,
+                    'following_id' => $targetUser->id,
+                    'follower' => $currentUser,
+                    'following' => $targetUser,
+                    'created_at' => $followerRecord->created_at,
+                    'updated_at' => now(),
+                ];
+            }
 
             // Hủy theo dõi
             $currentUser->following()->detach($targetUser->id);
@@ -131,12 +145,24 @@ class FollowerController extends Controller
         if ($newFollowState) {
             // Khi follow: followerRecord đã được lấy sau khi attach
             if ($followerRecord) {
+                \Illuminate\Support\Facades\Log::info('Dispatching follow event', [
+                    'status' => $newFollowState,
+                    'follower_id' => $currentUser->id,
+                    'following_id' => $targetUser->id
+                ]);
                 FollowEventReverb::dispatch($followerRecord, $newFollowState);
             }
         } else {
             // Khi unfollow: sử dụng followerRecord đã lưu trước khi detach
-            if ($followerRecord) {
-                FollowEventReverb::dispatch($followerRecord, $newFollowState);
+            if ($followerData) {
+                \Illuminate\Support\Facades\Log::info('Dispatching unfollow event', [
+                    'status' => $newFollowState,
+                    'follower_id' => $currentUser->id,
+                    'following_id' => $targetUser->id
+                ]);
+                
+                // Sử dụng class mới cho unfollow event
+                event(new \App\Events\UnfollowEvent($followerData, $newFollowState));
             }
         }
 

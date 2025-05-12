@@ -41,21 +41,31 @@ class Notifications extends Notification implements ShouldQueue
             ->action('Notification Action', url('/'))
             ->line('Thank you for using our application!');
     }
-    public function toDatabase($notifiable)
-    {
-        return [
-            'message' => $this->data['message'] ?? 'Thông báo mới',
-        ];
-    }
-    public function toArray($notifiable)
-    {
-        return [
-            'message' => $this->data['message'] ?? 'Thông báo mới',
-        ];
-    }
+
     /**
      * Get the array representation of the notification.
      *
      * @return array<string, mixed>
      */
+    public function toArray(object $notifiable): array
+    {
+        return [
+            //
+        ];
+    }
+
+    /**
+     * Get the database representation of the notification.
+     *
+     * @param mixed $notifiable
+     * @return array
+     */
+    public function toDatabase($notifiable): array
+    {
+        return [
+            'message' => $this->data['message'] ?? 'Thông báo mới',
+            'link' => $this->data['link'] ?? null,
+            'type' => $this->data['type'] ?? 'general',
+        ];
+    }
 }

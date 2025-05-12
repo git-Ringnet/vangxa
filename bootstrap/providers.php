@@ -5,4 +5,5 @@ return [
     App\Providers\VoltServiceProvider::class,
     App\Providers\ViewServiceProvider::class,
     App\Providers\TrackActivityServiceProvider::class,
+    App\Providers\EventServiceProvider::class,
 ];

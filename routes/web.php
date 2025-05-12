@@ -12,6 +12,7 @@ use App\Http\Controllers\PostController;
 use App\Http\Controllers\VangXaController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\HomeController as MainHomeController;
+use Illuminate\Support\Facades\Auth;
 
 use App\Http\Controllers\Page\DiningController;
 use App\Http\Controllers\Auth\GoogleController;
@@ -132,9 +133,10 @@ Route::middleware(['auth'])->group(function () {
 
     Route::post('/register-popup', [UserController::class, 'updateInfo'])->name('register-popup');
 
-    Route::get('/notifications', [NotificationController::class, 'fetch'])->name('notifications.fetch');
-    Route::post('/notifications/read', [NotificationController::class, 'markAsRead'])->name('notifications.read');
-    Route::post('/notifications/read-all', [NotificationController::class, 'markAllAsRead'])->name('notifications.read-all');
+    // Routes cho notifications
+    Route::get('/notifications/fetch', [NotificationController::class, 'fetch'])->name('notifications.fetch');
+    Route::post('/notifications/mark-read/{id}', [NotificationController::class, 'markAsRead'])->name('notifications.mark-read');
+    Route::post('/notifications/mark-all-read', [NotificationController::class, 'markAllAsRead'])->name('notifications.mark-all-read');
     Route::get('/notifications/count', function () {
         $count = Auth::user()->unreadNotifications->count();
         return response()->json(['count' => $count]);

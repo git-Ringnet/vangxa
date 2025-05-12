@@ -423,34 +423,98 @@
                 message: '',
                 unreadCount: 0,
                 init() {
-                    unreadCount = this.fetchNotificationCount();
+                    this.fetchNotificationCount();
                     Echo.channel('followers')
                         .subscribed(() => {
                             console.log('Subscribed to followers');
                         })
                         .listen('FollowEventReverb', (e) => {
-                            console.log('event:', e);
+                            console.log('FollowEventReverb received:', e);
+                            console.log('Status from event:', e.status);
+                            console.log('Action from event:', e.action);
+                            console.log('Message from event:', e.message);
+                            
+                            // Debug user IDs
+                            const currentUserId = {{ auth()->user()->id }};
+                            console.log('Current user ID:', currentUserId);
+                            console.log('Follower ID:', e.follower_id);
+                            console.log('Following ID:', e.following_id);
+                            
+                            // Xử lý khi người dùng hiện tại là người theo dõi/hủy theo dõi
                             if({{ auth()->user()->id }} === e.follower_id){
-                                showToast('Bạn đang theo dõi ' + e.following_name, 'success');
+                                if(e.status) {
+                                    console.log('Showing follow toast (follower)');
+                                    showToast('Bạn đang theo dõi ' + e.following_name, 'success');
+                                } else {
+                                    console.log('Showing unfollow toast (follower)');
+                                    showToast('Bạn đã hủy theo dõi ' + e.following_name, 'info');
+                                }
                             }
+                            
+                            // Xử lý khi người dùng hiện tại là người được theo dõi/hủy theo dõi
                             if({{ auth()->user()->id }} === e.following_id) {
                                 this.unreadCount++;
-                                showToast(e.following_name + ' đang theo dõi bạn', 'success');
+                                if(e.status) {
+                                    console.log('Showing follow toast (following)');
+                                    showToast(e.follower_name + ' đã bắt đầu theo dõi bạn', 'success');
+                                } else {
+                                    console.log('Showing unfollow toast (following)');
+                                    showToast(e.follower_name + ' đã hủy theo dõi bạn', 'info');
+                                }
                             }
-                            console.log('unreadCount:', this.unreadCount);
                         });
                 },
                 fetchNotificationCount() {
-                fetch('/notifications/count')
-                    .then(response => response.json())
-                    .then(data => {
-                        this.unreadCount = data.count;
-                    })
-                    .catch(error => {
-                        console.error('Lỗi khi lấy số thông báo:', error);
-                    });
-            },
-            }))
+                    fetch('/notifications/count')
+                        .then(response => response.json())
+                        .then(data => {
+                            this.unreadCount = data.count;
+                        })
+                        .catch(error => {
+                            console.error('Lỗi khi lấy số thông báo:', error);
+                        });
+                }
+            }));
         });
+
+        // Global function để show toast từ bất kỳ đâu trong trang
+        function showToast(message, type = 'success') {
+            const toastContainer = document.querySelector('.toast-container') || (() => {
+                const container = document.createElement('div');
+                container.className = 'toast-container';
+                document.body.appendChild(container);
+                return container;
+            })();
+
+            const toast = document.createElement('div');
+            toast.className = `toast toast-${type}`;
+            toast.innerHTML = `
+                <div class="toast-content">
+                    <i class="fas ${type === 'success' ? 'fa-check-circle' : type === 'info' ? 'fa-info-circle' : 'fa-exclamation-circle'}"></i>
+                    <span>${message}</span>
+                </div>
+                <button class="toast-close">×</button>
+                <div class="toast-progress"></div>
+            `;
+
+            toastContainer.appendChild(toast);
+            setTimeout(() => toast.classList.add('show'), 10);
+
+            const progress = toast.querySelector('.toast-progress');
+            progress.style.transition = 'transform 5000ms linear';
+            progress.style.transform = 'scaleX(0)';
+
+            toast.querySelector('.toast-close').addEventListener('click', () => {
+                toast.classList.remove('show');
+                setTimeout(() => toast.remove(), 300);
+            });
+
+            setTimeout(() => {
+                toast.classList.remove('show');
+                setTimeout(() => toast.remove(), 300);
+            }, 5000);
+
+            return toast;
+        }
     </script>
 @endsection
