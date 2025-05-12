@@ -131,7 +131,6 @@
             </div>
 
             <div class="load-more">
-                <h4>Tiếp tục khám phá ẩm thực</h4>
                 <button class="load-more-button" id="loadMoreButton">
                     Hiển thị thêm
                 </button>
@@ -299,6 +298,11 @@
 
                     // Reinitialize carousels for new posts
                     initializeCarousels();
+
+                    // Update distances for new posts
+                    if (typeof updateDistances === 'function') {
+                        updateDistances();
+                    }
                 })
                 .catch(error => {
                     console.error('Error loading more posts:', error);

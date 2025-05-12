@@ -35,11 +35,20 @@ class PostController extends Controller
 
     public function store(Request $request)
     {
+        // Kiểm tra đăng nhập
+        if (!Auth::check()) {
+            return redirect()->route('login')->with('error', 'Vui lòng đăng nhập để tạo bài viết.');
+        }
+
         $request->validate([
             'title' => 'required|string|max:255',
             'address' => 'required|string|max:255',
             'type' => 'required|in:1,2',
             'description' => 'nullable|string',
+            'min_price' => 'nullable|integer|min:0',
+            'max_price' => 'nullable|integer|min:0',
+            'latitude' => 'nullable|numeric',
+            'longitude' => 'nullable|numeric',
             'images.*' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'sections.*.title' => 'required|string|max:255',
             'sections.*.content' => 'nullable|string',
@@ -52,6 +61,10 @@ class PostController extends Controller
             'address.max' => 'Địa chỉ không được vượt quá 255 ký tự.',
             'type.required' => 'Loại bài viết không được để trống.',
             'type.in' => 'Loại bài viết không hợp lệ.',
+            'min_price.integer' => 'Giá thấp nhất phải là số nguyên.',
+            'min_price.min' => 'Giá thấp nhất không được âm.',
+            'max_price.integer' => 'Giá cao nhất phải là số nguyên.',
+            'max_price.min' => 'Giá cao nhất không được âm.',
             'images.*.image' => 'File phải là ảnh.',
             'images.*.mimes' => 'Ảnh phải có định dạng jpeg, png, jpg, gif.',
             'images.*.max' => 'Ảnh không được vượt quá 2MB.',
@@ -77,12 +90,13 @@ class PostController extends Controller
                 'address' => $request->address,
                 'type' => $request->type,
                 'description' => $request->description,
-                'user_id' => Auth::user()->id,
+                'user_id' => Auth::id(),
                 'min_price' => $request->min_price,
                 'max_price' => $request->max_price,
                 'cuisine' => json_encode($cuisine),
                 'latitude' => $request->latitude,
                 'longitude' => $request->longitude,
+                'status' => 1
             ]);
 
             // Lưu ảnh đại diện (gallery lớn)

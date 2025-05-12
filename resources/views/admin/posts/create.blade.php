@@ -113,6 +113,24 @@
                     </div>
 
                     <div class="mb-4">
+                        <label for="min_price" class="form-label">Giá thấp nhất (VNĐ)</label>
+                        <input type="number" class="form-control @error('min_price') is-invalid @enderror" id="min_price"
+                            name="min_price" value="{{ old('min_price') }}" min="0">
+                        @error('min_price')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="max_price" class="form-label">Giá cao nhất (VNĐ)</label>
+                        <input type="number" class="form-control @error('max_price') is-invalid @enderror" id="max_price"
+                            name="max_price" value="{{ old('max_price') }}" min="0">
+                        @error('max_price')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                    </div>
+
+                    <div class="mb-4">
                         <label class="form-label">Ảnh đại diện/Gallery lớn</label>
                         <input type="file" class="form-control @error('images') is-invalid @enderror" id="images"
                             name="images[]" multiple accept="image/*">

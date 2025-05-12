@@ -28,7 +28,7 @@
                     @method('PUT')
 
                     <div class="mb-4">
-                        <label for="title" class="form-label">Tiêu đề</label>
+                        <label for="title" class="form-label">Tiêu đề bài viết</label>
                         <input type="text" class="form-control @error('title') is-invalid @enderror" id="title"
                             name="title" value="{{ old('title', $post->title) }}" required>
                         @error('title')
@@ -38,10 +38,30 @@
 
                     <div class="mb-4">
                         <label for="address" class="form-label">Địa chỉ</label>
-                        <input type="text" class="form-control @error('address') is-invalid @enderror" id="address"
-                            name="address" value="{{ old('address', $post->address) }}" required>
+                        <div class="input-group">
+                            <input type="text" class="form-control @error('address') is-invalid @enderror" id="address"
+                                name="address" value="{{ old('address', $post->address) }}" required>
+                            <button type="button" class="btn btn-outline-secondary" id="find-address-btn">
+                                <i class="fas fa-search"></i> Tìm
+                            </button>
+                        </div>
                         @error('address')
                             <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="form-label">Chọn vị trí trên bản đồ (miễn phí với OpenStreetMap)</label>
+                        <div id="map" style="height: 300px; border-radius: 10px;"></div>
+                        <input type="hidden" name="latitude" id="latitude" value="{{ old('latitude', $post->latitude) }}">
+                        <input type="hidden" name="longitude" id="longitude"
+                            value="{{ old('longitude', $post->longitude) }}">
+                        <div class="form-text">Nhấn vào bản đồ để chọn vị trí quán/món ăn.</div>
+                        @error('latitude')
+                            <div class="invalid-feedback d-block">{{ $message }}</div>
+                        @enderror
+                        @error('longitude')
+                            <div class="invalid-feedback d-block">{{ $message }}</div>
                         @enderror
                     </div>
 
@@ -57,31 +77,6 @@
                         @enderror
                     </div>
 
-                    <div class="mb-4">
-                        <label for="description" class="form-label">Mô tả</label>
-                        <textarea class="form-control @error('description') is-invalid @enderror" id="description" name="description"
-                            rows="10">{{ old('description', $post->description) }}</textarea>
-                        @error('description')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                        @enderror
-                    </div>
-
-                    <div class="mb-4">
-                        <label for="min_price" class="form-label">Giá thấp nhất (VNĐ)</label>
-                        <input type="number" class="form-control @error('min_price') is-invalid @enderror" id="min_price"
-                            name="min_price" value="{{ old('min_price', $post->min_price) }}" min="0">
-                        @error('min_price')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                        @enderror
-                    </div>
-                    <div class="mb-4">
-                        <label for="max_price" class="form-label">Giá cao nhất (VNĐ)</label>
-                        <input type="number" class="form-control @error('max_price') is-invalid @enderror" id="max_price"
-                            name="max_price" value="{{ old('max_price', $post->max_price) }}" min="0">
-                        @error('max_price')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                        @enderror
-                    </div>
                     <div class="mb-4">
                         <label class="form-label">Loại món ăn</label>
                         <div>
@@ -104,19 +99,31 @@
                                 value="{{ old('cuisine_other', collect($oldCuisines)->filter(fn($c) => !in_array($c, $cuisineOptions))->first()) }}">
                         </div>
                     </div>
+
                     <div class="mb-4">
-                        <label class="form-label">Chọn vị trí trên bản đồ (miễn phí với OpenStreetMap)</label>
-                        <div id="map" style="height: 300px; border-radius: 10px;"></div>
-                        <input type="hidden" name="latitude" id="latitude"
-                            value="{{ old('latitude', $post->latitude) }}">
-                        <input type="hidden" name="longitude" id="longitude"
-                            value="{{ old('longitude', $post->longitude) }}">
-                        <div class="form-text">Nhấn vào bản đồ để chọn vị trí quán/món ăn.</div>
-                        @error('latitude')
-                            <div class="invalid-feedback d-block">{{ $message }}</div>
+                        <label for="description" class="form-label">Mô tả</label>
+                        <textarea class="form-control @error('description') is-invalid @enderror" id="description" name="description"
+                            rows="10">{{ old('description', $post->description) }}</textarea>
+                        @error('description')
+                            <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
-                        @error('longitude')
-                            <div class="invalid-feedback d-block">{{ $message }}</div>
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="min_price" class="form-label">Giá thấp nhất (VNĐ)</label>
+                        <input type="number" class="form-control @error('min_price') is-invalid @enderror" id="min_price"
+                            name="min_price" value="{{ old('min_price', $post->min_price) }}" min="0">
+                        @error('min_price')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="max_price" class="form-label">Giá cao nhất (VNĐ)</label>
+                        <input type="number" class="form-control @error('max_price') is-invalid @enderror" id="max_price"
+                            name="max_price" value="{{ old('max_price', $post->max_price) }}" min="0">
+                        @error('max_price')
+                            <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
                     </div>
 
@@ -159,7 +166,8 @@
                             @foreach ($post->sections as $index => $section)
                                 <div class="card mb-3">
                                     <div class="card-body">
-                                        <input type="hidden" name="sections[{{ $index }}][id]" value="{{ $section->id }}">
+                                        <input type="hidden" name="sections[{{ $index }}][id]"
+                                            value="{{ $section->id }}">
                                         <div class="mb-3">
                                             <label for="section_title" class="form-label">Tiêu đề section</label>
                                             <input type="text" class="form-control"

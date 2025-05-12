@@ -183,10 +183,10 @@
                             <p class="text-muted mb-2"><small>Thành viên từ
                                     {{ $vendor->created_at->format('d/m/Y') }}</small></p>
                             <!-- <div>
-                                                <a href="{{ route('profile.show', ['id' => $vendor->id]) }}" class="btn btn-sm btn-outline-primary">
-                                                    <i class="fas fa-user me-1"></i> Xem hồ sơ
-                                                </a>
-                                            </div> -->
+                                                        <a href="{{ route('profile.show', ['id' => $vendor->id]) }}" class="btn btn-sm btn-outline-primary">
+                                                            <i class="fas fa-user me-1"></i> Xem hồ sơ
+                                                        </a>
+                                                    </div> -->
                         </div>
                     </div>
                 </div>
@@ -233,8 +233,7 @@
                         @if ($section->embed_type && $section->embed_url)
                             <div class="section-embed mt-2">
                                 @if ($section->embed_type == 'youtube')
-                                    <iframe width="100%" height="315" src="{{ $section->embed_url }}"
-                                        frameborder="0" allowfullscreen></iframe>
+                                    {!! $section->embed_url !!}
                                 @elseif($section->embed_type == 'tiktok')
                                     {!! $section->embed_url !!}
                                 @elseif($section->embed_type == 'map')

@@ -50,7 +50,9 @@ Route::view('dashboard', 'dashboard')
     ->name('dashboard');
 
 // Post routes
-Route::resource('posts', PostController::class);
+Route::middleware(['auth'])->group(function () {
+    Route::resource('posts', PostController::class);
+});
 Route::post('/posts/upload-image', [PostController::class, 'uploadImage'])->name('posts.upload-image');
 Route::delete('/posts/images/{id}', [PostController::class, 'destroyImage'])->name('posts.images.destroy');
 Route::delete('/posts/sections/{id}', [PostController::class, 'destroySection'])->name('posts.sections.destroy');
@@ -86,7 +88,7 @@ Route::prefix('admin')->group(function () {
     Route::put('roles/{id}', [RolePermissionController::class, 'updateRole'])->name('roles.update');
     Route::delete('roles/{id}', [RolePermissionController::class, 'destroyRole'])->name('roles.destroy');
     Route::post('permissions', [RolePermissionController::class, 'storePermission'])->name('permissions.store');
-    
+
 
     Route::delete('permissions/{id}', [RolePermissionController::class, 'destroyPermission'])->name('permissions.destroy');
 

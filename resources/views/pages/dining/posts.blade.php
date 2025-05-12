@@ -31,6 +31,44 @@
 @endforeach
 
 <script>
+    // Hàm tính khoảng cách Haversine
+    function haversine(lat1, lon1, lat2, lon2) {
+        function toRad(x) {
+            return x * Math.PI / 180;
+        }
+        var R = 6371; // km
+        var dLat = toRad(lat2 - lat1);
+        var dLon = toRad(lon2 - lon1);
+        var a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+            Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) *
+            Math.sin(dLon / 2) * Math.sin(dLon / 2);
+        var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+        return R * c;
+    }
+
+    // Hàm cập nhật khoảng cách
+    function updateDistances() {
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(function(position) {
+                var userLat = position.coords.latitude;
+                var userLng = position.coords.longitude;
+                document.querySelectorAll('.distance-text').forEach(function(el) {
+                    var lat = el.dataset.lat;
+                    var lng = el.dataset.lng;
+                    if (lat && lng) {
+                        var dist = haversine(userLat, userLng, parseFloat(lat), parseFloat(lng));
+                        el.textContent = dist.toFixed(1) + ' km';
+                    }
+                });
+            });
+        }
+    }
+
+    // Gọi hàm cập nhật khoảng cách khi trang được load
+    document.addEventListener('DOMContentLoaded', function() {
+        updateDistances();
+    });
+
     function handleSave(button) {
         const postId = button.dataset.postId;
         const isAuthenticated = button.dataset.authenticated === 'true';
@@ -106,33 +144,4 @@
             }
         });
     });
-
-    // Nếu có latitude/longitude, tính khoảng cách từ vị trí hiện tại
-    function haversine(lat1, lon1, lat2, lon2) {
-        function toRad(x) {
-            return x * Math.PI / 180;
-        }
-        var R = 6371; // km
-        var dLat = toRad(lat2 - lat1);
-        var dLon = toRad(lon2 - lon1);
-        var a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-            Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) *
-            Math.sin(dLon / 2) * Math.sin(dLon / 2);
-        var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-        return R * c;
-    }
-    if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(function(position) {
-            var userLat = position.coords.latitude;
-            var userLng = position.coords.longitude;
-            document.querySelectorAll('.distance-text').forEach(function(el) {
-                var lat = el.dataset.lat;
-                var lng = el.dataset.lng;
-                if (lat && lng) {
-                    var dist = haversine(userLat, userLng, parseFloat(lat), parseFloat(lng));
-                    el.textContent = dist.toFixed(1) + ' km';
-                }
-            });
-        });
-    }
 </script>
