@@ -157,7 +157,8 @@
                 <!-- Thông tin người bán/chủ sở hữu -->
                 <div class="vendor-profile mb-4">
                     <h2 class="mb-3">Thông tin chủ sở hữu</h2>
-                    <div class="vendor-card d-flex align-items-center p-3" style="background-color: #f8f9fa; border-radius: 10px;">
+                    <div class="vendor-card d-flex align-items-center p-3"
+                        style="background-color: #f8f9fa; border-radius: 10px;">
                         @php
                             // Lấy người bán/chủ sở hữu
                             $vendor = $post->user;
@@ -166,33 +167,83 @@
                                 $vendor = \App\Models\User::find($post->owner_id);
                             }
                         @endphp
-                        
+
                         <a href="{{ route('profile.show', ['id' => $vendor->id]) }}" class="vendor-avatar me-3">
-                            <img src="{{ $vendor->avatar ? asset($vendor->avatar) : asset('images/default-avatar.png') }}" 
-                                alt="{{ $vendor->name }}" 
+                            <img src="{{ $vendor->avatar ? asset('image/avatars/' . basename($vendor->avatar)) : 'https://ui-avatars.com/api/?name=' . urlencode($vendor->name) }}"
+                                alt="{{ $vendor->name }}"
                                 style="width: 70px; height: 70px; border-radius: 50%; object-fit: cover;">
                         </a>
                         <div class="vendor-info">
                             <h5 class="mb-1">
-                                <a href="{{ route('profile.show', ['id' => $vendor->id]) }}" class="text-decoration-none">
+                                <a href="{{ route('profile.show', ['id' => $vendor->id]) }}"
+                                    class="text-decoration-none">
                                     {{ $vendor->name }}
                                 </a>
                             </h5>
-                            <p class="text-muted mb-2"><small>Thành viên từ {{ $vendor->created_at->format('d/m/Y') }}</small></p>
+                            <p class="text-muted mb-2"><small>Thành viên từ
+                                    {{ $vendor->created_at->format('d/m/Y') }}</small></p>
                             <!-- <div>
-                                <a href="{{ route('profile.show', ['id' => $vendor->id]) }}" class="btn btn-sm btn-outline-primary">
-                                    <i class="fas fa-user me-1"></i> Xem hồ sơ
-                                </a>
-                            </div> -->
+                                                <a href="{{ route('profile.show', ['id' => $vendor->id]) }}" class="btn btn-sm btn-outline-primary">
+                                                    <i class="fas fa-user me-1"></i> Xem hồ sơ
+                                                </a>
+                                            </div> -->
                         </div>
                     </div>
                 </div>
-                
-                <!-- Description -->
-                <div class="detail-description">
-                    <h2>Giới thiệu</h2>
-                    <p>{!! $post->description !!}</p>
-                </div>
+
+                {{-- Hiển thị các section dạng box + slide --}}
+                @foreach ($post->sections as $section)
+                    <div class="section-box mb-4 p-4"
+                        style="background: #f9f6ef; border-radius: 18px; border: 2px solid #eee3d0;">
+                        <h2 class="section-title mb-2" style="font-weight:bold; color:#7c5c2b;">{{ $section->title }}
+                        </h2>
+                        <div class="section-description mb-3" style="color:#444;">{!! $section->content !!}</div>
+                        @php
+                            $images = $section->images->all();
+                            $chunks = array_chunk($images, 3);
+                        @endphp
+                        <div id="sectionCarousel{{ $section->id }}" class="carousel slide mb-2"
+                            data-bs-ride="carousel">
+                            <div class="carousel-inner">
+                                @foreach ($chunks as $idx => $chunk)
+                                    <div class="carousel-item {{ $idx == 0 ? 'active' : '' }}">
+                                        <div class="row g-2">
+                                            @foreach ($chunk as $img)
+                                                <div class="col-4">
+                                                    <img src="{{ asset($img->image_path) }}"
+                                                        class="d-block w-100 rounded"
+                                                        style="height: 180px; object-fit: cover;" alt="Ảnh section">
+                                                </div>
+                                            @endforeach
+                                        </div>
+                                    </div>
+                                @endforeach
+                            </div>
+                            @if (count($chunks) > 1)
+                                <button class="carousel-control-prev" type="button"
+                                    data-bs-target="#sectionCarousel{{ $section->id }}" data-bs-slide="prev">
+                                    <span class="carousel-control-prev-icon"></span>
+                                </button>
+                                <button class="carousel-control-next" type="button"
+                                    data-bs-target="#sectionCarousel{{ $section->id }}" data-bs-slide="next">
+                                    <span class="carousel-control-next-icon"></span>
+                                </button>
+                            @endif
+                        </div>
+                        @if ($section->embed_type && $section->embed_url)
+                            <div class="section-embed mt-2">
+                                @if ($section->embed_type == 'youtube')
+                                    <iframe width="100%" height="315" src="{{ $section->embed_url }}"
+                                        frameborder="0" allowfullscreen></iframe>
+                                @elseif($section->embed_type == 'tiktok')
+                                    {!! $section->embed_url !!}
+                                @elseif($section->embed_type == 'map')
+                                    {!! $section->embed_url !!}
+                                @endif
+                            </div>
+                        @endif
+                    </div>
+                @endforeach
 
                 <!-- Menu Highlights -->
                 {{-- <div class="menu-highlights">
@@ -290,7 +341,7 @@
                             @foreach ($post->reviews()->with('user')->latest()->get() as $review)
                                 <div class="review-item">
                                     <div class="review-header">
-                                        <img src="{{ $review->user->avatar ?? 'https://ui-avatars.com/api/?name=' . urlencode($review->user->name) }}"
+                                        <img src="{{ $review->user->avatar ? asset('image/avatars/' . basename($review->user->avatar)) : 'https://ui-avatars.com/api/?name=' . urlencode($review->user->name) }}"
                                             alt="{{ $review->user->name }}" class="reviewer-avatar">
                                         <div class="reviewer-info">
                                             <h4>{{ $review->user->name }}</h4>
@@ -510,30 +561,30 @@
                         }
                         showToast(data.message, data.saved ? 'success' : 'info');
                         document.querySelectorAll(`.trustlist-btn[data-post-id="${postId}"]`).forEach(
-                        btn => {
-                            if (btn !== button) {
-                                const btnIcon = btn.querySelector('i');
-                                const btnText = btn.querySelector('.saves-count');
-                                if (data.saved) {
-                                    btnIcon.classList.remove('far');
-                                    btnIcon.classList.add('fas');
-                                    btnIcon.classList.add('text-primary');
-                                    btn.classList.add('active');
-                                    btn.setAttribute('data-saved', 'true');
-                                    btn.title = 'Bỏ lưu';
-                                } else {
-                                    btnIcon.classList.remove('fas');
-                                    btnIcon.classList.add('far');
-                                    btnIcon.classList.remove('text-primary');
-                                    btn.classList.remove('active');
-                                    btn.setAttribute('data-saved', 'false');
-                                    btn.title = 'Lưu';
+                            btn => {
+                                if (btn !== button) {
+                                    const btnIcon = btn.querySelector('i');
+                                    const btnText = btn.querySelector('.saves-count');
+                                    if (data.saved) {
+                                        btnIcon.classList.remove('far');
+                                        btnIcon.classList.add('fas');
+                                        btnIcon.classList.add('text-primary');
+                                        btn.classList.add('active');
+                                        btn.setAttribute('data-saved', 'true');
+                                        btn.title = 'Bỏ lưu';
+                                    } else {
+                                        btnIcon.classList.remove('fas');
+                                        btnIcon.classList.add('far');
+                                        btnIcon.classList.remove('text-primary');
+                                        btn.classList.remove('active');
+                                        btn.setAttribute('data-saved', 'false');
+                                        btn.title = 'Lưu';
+                                    }
+                                    if (btnText) {
+                                        btnText.textContent = data.savesCount;
+                                    }
                                 }
-                                if (btnText) {
-                                    btnText.textContent = data.savesCount;
-                                }
-                            }
-                        });
+                            });
                     })
                     .catch(error => {
                         console.error('Error:', error);
@@ -643,5 +694,5 @@
     </script>
     <!-- Load owner search JavaScript -->
     {{-- <script src="{{ asset('js/owner-search.js') }}"></script> --}}
-    <script src="{{asset('js/reviews.js')}}"></script>
+    <script src="{{ asset('js/reviews.js') }}"></script>
 @endpush

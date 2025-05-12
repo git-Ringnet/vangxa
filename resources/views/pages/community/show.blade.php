@@ -15,8 +15,21 @@
                                         href="{{ route('groupss.show', $post->group) }}">
                                         <span><b>{{ $post->group->name }}</b></span>
                                     </a>
+                                    <span class="text-white">></span>
+                                    @if ($post->taggedVendors->count() > 0)
+                                        <span class="text-white">
+                                            @foreach ($post->taggedVendors as $vendor)
+                                                <a href="{{ route('profile.show', $vendor->id) }}"
+                                                    class="text-decoration-none text-white">
+                                                    {{ $vendor->name }}
+                                                </a>
+                                            @endforeach
+                                        </span>
+                                    @endif
                                 @endif
-                                <small class="text-white-blur">{{ $post->created_at->diffForHumans() }}</small>
+                                <p>
+                                    <small class="text-white-blur">{{ $post->created_at->diffForHumans() }}</small>
+                                </p>
                             </div>
                             @if (Auth::check() && Auth::id() == $post->user_id)
                                 <div class="dropdown">
@@ -133,6 +146,19 @@
                     @method('PUT')
                     <div class="modal-body">
                         <textarea name="description" rows="3" class="form-control" placeholder="Bạn viết gì đi..." autocomplete="off">{{ $post->description }}</textarea>
+                        <div class="mb-3">
+                            <label for="tagged_vendors" class="form-label">Tag vendor</label>
+                            <select class="form-select" id="tagged_vendors" name="tagged_vendors[]" multiple>
+                                @foreach ($vendors as $vendor)
+                                    <option value="{{ $vendor->id }}"
+                                        {{ $post->taggedVendors->contains($vendor->id) ? 'selected' : '' }}>
+                                        {{ $vendor->name }}
+                                    </option>
+                                @endforeach
+                            </select>
+                            <div class="form-text">Bạn có thể chọn nhiều vendor để tag</div>
+                        </div>
+
                         @if ($post->images->count() > 0)
                             <div class="mb-3">
                                 <label class="form-label">Ảnh hiện tại</label>

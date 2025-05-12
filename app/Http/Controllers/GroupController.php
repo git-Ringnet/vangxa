@@ -24,7 +24,8 @@ class GroupController extends Controller
             ->orderBy('created_at', 'desc')
             ->paginate($perPage);
         $userGroups = Group::all();
-        return view('pages.community.groups.index', compact('groups', 'posts', 'userGroups'));
+        $vendors = User::role('vendor')->get();
+        return view('pages.community.groups.index', compact('groups', 'posts', 'userGroups', 'vendors'));
     }
 
     public function create()
@@ -40,7 +41,9 @@ class GroupController extends Controller
                 'description' => 'nullable|string|max:1000',
                 'is_private' => 'boolean',
                 'cover_image' => 'nullable|image|max:2048',
-                'avatar' => 'nullable|image|max:1024'
+                'avatar' => 'nullable|image|max:1024',
+                'tagged_vendors' => 'nullable|array',
+                'tagged_vendors.*' => 'exists:users,id'
             ]);
 
             $group = new Group($validated);
@@ -73,6 +76,12 @@ class GroupController extends Controller
             $group->members()->attach(Auth::id(), ['role' => 'admin']);
             $group->increment('member_count');
 
+            // Xử lý tagged vendors nếu có
+            if ($request->has('tagged_vendors')) {
+                $group->members()->attach($request->tagged_vendors, ['role' => 'vendor']);
+                $group->increment('member_count', count($request->tagged_vendors));
+            }
+
             return redirect()->route('groupss.show', $group)
                 ->with('success', 'Tạo nhóm thành công!');
         } else {
@@ -88,13 +97,15 @@ class GroupController extends Controller
             $query->with('user')->latest()->paginate(10);
         }]);
 
-        $users = User::all();
+        $users = User::where('id', '!=', $group->user_id)->get();
         $posts = Post::with(['user', 'group', 'likes', 'comments'])
             ->where('type', 3)
             ->where('group_id', $group->id)
             ->orderBy('created_at', 'desc')
             ->get();
-        return view('pages.community.groups.show', compact('group', 'users', 'posts'));
+        // Lấy danh sách vendors (người dùng có vai trò vendor)
+        $vendors = User::role('vendor')->get();
+        return view('pages.community.groups.show', compact('group', 'users', 'posts', 'vendors'));
     }
 
     public function edit(String $id)

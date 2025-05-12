@@ -87,6 +87,16 @@
                                                                         fill="#0095F6" />
                                                                 </svg>
                                                             </span>
+                                                            @if ($post->taggedVendors->count() > 0)
+                                                                <span class="text-white">
+                                                                    @foreach ($post->taggedVendors as $vendor)
+                                                                        <a href="{{ route('profile.show', $vendor->id) }}"
+                                                                            class="text-decoration-none text-white">
+                                                                            {{ $vendor->name }}
+                                                                        </a>
+                                                                    @endforeach
+                                                                </span>
+                                                            @endif
                                                         </div>
                                                         <p class="text-white-blur p-0 m-0">
                                                             <small>
@@ -253,7 +263,7 @@
                                                         </a>
                                                     </li>
                                                     <li>
-                                                        <a class="dropdown-item" href="#" 
+                                                        <a class="dropdown-item" href="#"
                                                             onclick="sharePost({{ $post->id }}, 'link')">
                                                             <i class="fa-solid fa-share me-2"></i> Chia sẻ đường dẫn qua...
                                                         </a>
@@ -261,7 +271,8 @@
                                                     <li>
                                                         <a class="dropdown-item" href="#"
                                                             onclick="sharePost({{ $post->id }}, 'image')">
-                                                            <i class="fa-solid fa-share-nodes me-2"></i> Chia sẻ dạng hình qua...
+                                                            <i class="fa-solid fa-share-nodes me-2"></i> Chia sẻ dạng hình
+                                                            qua...
                                                         </a>
                                                     </li>
                                                 </ul>
@@ -392,6 +403,15 @@
                                     @endforeach
                                 </select>
                                 <div class="invalid-feedback" id="groupError">Vui lòng chọn nhóm</div>
+                            </div>
+                            <div class="mb-3">
+                                <label for="tagged_vendors" class="form-label">Tag vendor</label>
+                                <select class="form-select" id="tagged_vendors" name="tagged_vendors[]" multiple>
+                                    @foreach ($vendors as $vendor)
+                                        <option value="{{ $vendor->id }}">{{ $vendor->name }}</option>
+                                    @endforeach
+                                </select>
+                                <div class="form-text">Bạn có thể chọn nhiều vendor để tag</div>
                             </div>
                         </div>
                         <div class="modal-footer">
@@ -838,11 +858,6 @@
 
     .dropdown-item:hover {
         background-color: #f8f9fa;
-    }
-
-    /* Toast styles */
-    .toast {
-        background-color: rgba(0, 0, 0, 0.8) !important;
     }
 
     /* Like button styles */

@@ -53,6 +53,8 @@ Route::view('dashboard', 'dashboard')
 Route::resource('posts', PostController::class);
 Route::post('/posts/upload-image', [PostController::class, 'uploadImage'])->name('posts.upload-image');
 Route::delete('/posts/images/{id}', [PostController::class, 'destroyImage'])->name('posts.images.destroy');
+Route::delete('/posts/sections/{id}', [PostController::class, 'destroySection'])->name('posts.sections.destroy');
+Route::delete('/posts/section-images/{id}', [PostController::class, 'destroySectionImage'])->name('posts.section-images.destroy');
 
 // Review routes
 Route::resource('reviews', ReviewController::class);

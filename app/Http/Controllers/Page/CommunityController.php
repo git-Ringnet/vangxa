@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Page;
 use App\Http\Controllers\Controller;
 use App\Models\Group;
 use App\Models\Post;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
@@ -28,12 +29,15 @@ class CommunityController extends Controller
             'description' => 'required|string',
             'images.*' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'group_id' => 'required|exists:groups,id',
+            'tagged_vendors' => 'nullable|array',
+            'tagged_vendors.*' => 'exists:users,id',
         ], [
             'description.required' => 'Vui lòng nhập nội dung bài viết',
             'images.*.image' => 'File phải là ảnh',
             'images.*.mimes' => 'Ảnh phải có định dạng jpeg, png, jpg hoặc gif',
             'images.*.max' => 'Ảnh không được lớn hơn 2MB',
             'group_id.required' => 'Vui lòng chọn nhóm',
+            'tagged_vendors.*.exists' => 'Vendor không tồn tại',
         ]);
 
         try {
@@ -61,12 +65,17 @@ class CommunityController extends Controller
                 }
             }
 
+            // Xử lý tag vendor
+            if ($request->has('tagged_vendors')) {
+                $post->taggedVendors()->attach($request->tagged_vendors);
+            }
+
             // Nếu bài viết có group_id, thì tăng post_count
             if ($post->group_id) {
                 $post->group->increment('post_count');
             }
 
-              // Ghi nhận tương tác khi đăng bài
+            // Ghi nhận tương tác khi đăng bài
             if (Auth::check()) {
                 UserInteraction::create([
                     'user_id' => Auth::id(),
@@ -112,7 +121,10 @@ class CommunityController extends Controller
             ->get()
             ->toTree();
 
-        return view('pages.community.show', compact('post', 'comments'));
+        // Lấy danh sách vendors (người dùng có vai trò vendor)
+        $vendors = User::role('vendor')->get();
+
+        return view('pages.community.show', compact('post', 'comments', 'vendors'));
     }
 
     public function edit($id)
@@ -134,11 +146,14 @@ class CommunityController extends Controller
         $request->validate([
             'description' => 'required|string',
             'images.*' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'tagged_vendors' => 'nullable|array',
+            'tagged_vendors.*' => 'exists:users,id',
         ], [
             'description.required' => 'Vui lòng nhập nội dung bài viết',
             'images.*.image' => 'File phải là ảnh',
             'images.*.mimes' => 'Ảnh phải có định dạng jpeg, png, jpg hoặc gif',
             'images.*.max' => 'Ảnh không được lớn hơn 2MB',
+            'tagged_vendors.*.exists' => 'Vendor không tồn tại',
         ]);
 
         try {
@@ -161,6 +176,12 @@ class CommunityController extends Controller
                 }
             }
 
+            // Xử lý cập nhật tag vendor
+            if ($request->has('tagged_vendors')) {
+                $post->taggedVendors()->sync($request->tagged_vendors);
+            } else {
+                $post->taggedVendors()->detach();
+            }
             return redirect()->route('community.index')
                 ->with('success', 'Bài viết đã được cập nhật thành công!');
         } catch (\Exception $e) {

@@ -21,6 +21,11 @@ class Post extends Model
         'type',
         'group_id',
         'owner_id', // Vẫn giữ lại để tương thích ngược
+        'min_price',
+        'max_price',
+        'cuisine',
+        'latitude',
+        'longitude',
     ];
 
     public function user(): BelongsTo
@@ -40,6 +45,15 @@ class Post extends Model
     {
         return $this->belongsToMany(User::class, 'post_owners', 'post_id', 'user_id')
             ->withPivot('role')
+            ->withTimestamps();
+    }
+
+    /**
+     * Lấy danh sách vendors được tag trong bài viết
+     */
+    public function taggedVendors(): BelongsToMany
+    {
+        return $this->belongsToMany(User::class, 'post_tagged_vendors', 'post_id', 'vendor_id')
             ->withTimestamps();
     }
 
@@ -89,5 +103,10 @@ class Post extends Model
     {
         return $this->belongsToMany(User::class, 'likes', 'post_id', 'user_id')
             ->withTimestamps();
+    }
+
+    public function sections()
+    {
+        return $this->hasMany(PostSection::class)->orderBy('order');
     }
 }

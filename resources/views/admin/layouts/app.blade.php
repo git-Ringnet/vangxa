@@ -176,9 +176,6 @@
     <!-- jQuery -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <!-- Custom JS -->
-    <script src="https://cdn.tiny.cloud/1/{{ config('services.tinymce.api_key') }}/tinymce/6/tinymce.min.js"
-        referrerpolicy="origin"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="{{ asset('admin/scripts.js') }}"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
@@ -188,134 +185,17 @@
             $('#sidebarCollapse').on('click', function () {
                 $('#sidebar').toggleClass('active');
             });
-            
             // Toggle dropdown menu với hiệu ứng mượt mà
             $('.dropdown-toggle').on('click', function(e) {
                 e.preventDefault();
                 const target = $(this).attr('href');
-                
-                // Đóng các menu khác nếu đang mở
                 if (!$(target).hasClass('show')) {
                     $('.collapse.show').not(target).removeClass('show');
                     $('.dropdown-toggle[aria-expanded="true"]').not(this).attr('aria-expanded', 'false');
                 }
-                
-                // Toggle menu hiện tại
                 $(target).toggleClass('show');
                 const isExpanded = $(target).hasClass('show');
                 $(this).attr('aria-expanded', isExpanded ? 'true' : 'false');
-            });
-        });
-    </script>
-    <script>
-        $(document).ready(function() {
-            // Khởi tạo TinyMCE
-            tinymce.init({
-                selector: '#description',
-                plugins: [
-                    'advlist', 'autolink', 'lists', 'link', 'image', 'charmap', 'preview',
-                    'anchor', 'searchreplace', 'visualblocks', 'code', 'fullscreen',
-                    'insertdatetime', 'media', 'table', 'help', 'wordcount'
-                ],
-                toolbar: 'undo redo | formatselect | ' +
-                    'bold italic backcolor | alignleft aligncenter ' +
-                    'alignright alignjustify | bullist numlist outdent indent | ' +
-                    'removeformat | image | help',
-                height: 540,
-                promotion: false,
-                file_picker_types: 'image',
-                automatic_uploads: true,
-                images_upload_url: '{{ route('posts.upload-image') }}',
-                images_upload_base_path: '/storage',
-                images_upload_credentials: true,
-                images_reuse_filename: true,
-                setup: function(editor) {
-                    editor.on('change', function() {
-                        editor.save(); // Lưu nội dung vào textarea gốc
-                    });
-                },
-                file_picker_callback: function(callback, value, meta) {
-                    // Chỉ xử lý upload ảnh
-                    if (meta.filetype === 'image') {
-                        var input = document.createElement('input');
-                        input.setAttribute('type', 'file');
-                        input.setAttribute('accept', 'image/*');
-
-                        input.onchange = function() {
-                            var file = this.files[0];
-                            var formData = new FormData();
-                            formData.append('file', file);
-                            formData.append('_token', '{{ csrf_token() }}');
-
-                            fetch('{{ route('posts.upload-image') }}', {
-                                    method: 'POST',
-                                    body: formData
-                                })
-                                .then(response => response.json())
-                                .then(result => {
-                                    callback(result.location, {
-                                        alt: file.name
-                                    });
-                                })
-                                .catch(error => {
-                                    console.error('Upload failed:', error);
-                                });
-                        };
-
-                        input.click();
-                    }
-                },
-                images_upload_handler: function(blobInfo, progress) {
-                    return new Promise((resolve, reject) => {
-                        var xhr, formData;
-                        xhr = new XMLHttpRequest();
-                        xhr.withCredentials = false;
-                        xhr.open('POST', '{{ route('posts.upload-image') }}');
-
-                        xhr.upload.onprogress = function(e) {
-                            progress(e.loaded / e.total * 100);
-                        };
-
-                        xhr.onload = function() {
-                            var json;
-
-                            if (xhr.status === 403) {
-                                reject('HTTP Error: ' + xhr.status);
-                                return;
-                            }
-
-                            if (xhr.status < 200 || xhr.status >= 300) {
-                                reject('HTTP Error: ' + xhr.status);
-                                return;
-                            }
-
-                            try {
-                                json = JSON.parse(xhr.responseText);
-                            } catch (e) {
-                                reject('Invalid JSON: ' + xhr.responseText);
-                                return;
-                            }
-
-                            if (!json || typeof json.location != 'string') {
-                                reject('Invalid JSON: ' + xhr.responseText);
-                                return;
-                            }
-
-                            resolve(json.location);
-                        };
-
-                        xhr.onerror = function() {
-                            reject('Image upload failed due to a XHR Transport error. Code: ' +
-                                xhr.status);
-                        };
-
-                        formData = new FormData();
-                        formData.append('file', blobInfo.blob(), blobInfo.filename());
-                        formData.append('_token', '{{ csrf_token() }}');
-
-                        xhr.send(formData);
-                    });
-                }
             });
         });
     </script>
