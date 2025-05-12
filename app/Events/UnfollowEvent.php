@@ -2,8 +2,6 @@
 
 namespace App\Events;
 
-use App\Models\Follower;
-use App\Models\User;
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Broadcasting\PrivateChannel;
@@ -11,18 +9,18 @@ use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-class FollowEventReverb implements ShouldBroadcast
+class UnfollowEvent implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
     /**
      * Create a new event instance.
      *
-     * @param Follower $follower The follower relationship
-     * @param int|null $status The follow status (1 for follow, 0 for unfollow)
+     * @param object $followerData The follower relationship data saved before detaching
+     * @param int|null $status The follow status (always 0 for unfollow)
      */
     public function __construct(
-        private readonly Follower $follower,
+        private readonly object $followerData,
         public ?int $status = 0,
     ) {
         $this->status = $status;
@@ -40,7 +38,7 @@ class FollowEventReverb implements ShouldBroadcast
             // Public channel để debug và theo dõi
             new Channel('followers'),
             // Private channel cho user được follow
-            new PrivateChannel('user.' . $this->follower->following_id)
+            new PrivateChannel('user.' . $this->followerData->following_id)
         ];
     }
     
@@ -51,23 +49,21 @@ class FollowEventReverb implements ShouldBroadcast
      */
     public function broadcastWith(): array
     {
-        // Load the related users to include in the broadcast data
-        $followerUser = $this->follower->follower()->first();
-        $followingUser = $this->follower->following()->first();
+        // Lấy dữ liệu từ followerData object đã được lưu trước khi detach
+        $followerUser = $this->followerData->follower;
+        $followingUser = $this->followerData->following;
 
         return [
-            'status' => $this->status,
-            'follower_id' => $this->follower->follower_id,
-            'following_id' => $this->follower->following_id,
+            'status' => $this->status, // Luôn là 0 cho unfollow
+            'follower_id' => $this->followerData->follower_id,
+            'following_id' => $this->followerData->following_id,
             'follower_name' => $followerUser ? $followerUser->name : null,
             'following_name' => $followingUser ? $followingUser->name : null,
-            'created_at' => $this->follower->created_at,
-            'action' => $this->status ? 'followed' : 'unfollowed',
-            'message' => $this->status ?
-                ($followerUser ? $followerUser->name : 'Someone') . ' đã bắt đầu theo dõi bạn' :
-                ($followerUser ? $followerUser->name : 'Someone') . ' đã hủy theo dõi bạn',
-            'link' => '/profile/' . $this->follower->follower_id,
+            'created_at' => $this->followerData->created_at,
+            'action' => 'unfollowed',
+            'message' => ($followerUser ? $followerUser->name : 'Someone') . ' đã hủy theo dõi bạn',
+            'link' => '/profile/' . $this->followerData->follower_id,
             'type' => 'follow'
         ];
     }
-}
+} 

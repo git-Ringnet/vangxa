@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Http\Requests;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Notifications\DatabaseNotification;
 
 class NotificationController extends Controller
 {
@@ -14,21 +15,33 @@ class NotificationController extends Controller
             return [
                 'id' => $notification->id,
                 'message' => $notification->data['message'] ?? 'Thông báo mới',
+                'link' => $notification->data['link'] ?? null,
+                'type' => $notification->data['type'] ?? 'general',
                 'created_at' => $notification->created_at->diffForHumans(),
                 'read_at' => $notification->read_at ? $notification->read_at->toISOString() : null,
             ];
         });
 
-        return response()->json($notifications);
+        $unreadCount = Auth::user()->unreadNotifications->count();
+
+        return response()->json([
+            'notifications' => $notifications,
+            'unread_count' => $unreadCount
+        ]);
     }
 
-    public function markAsRead(Request $request)
+    public function markAsRead(Request $request, $id)
     {
-        $notification = Auth::user()->notifications()->find($request->id);
+        $notification = DatabaseNotification::where('id', $id)
+            ->where('notifiable_id', Auth::id())
+            ->where('notifiable_type', get_class(Auth::user()))
+            ->first();
+        
         if ($notification) {
             $notification->markAsRead();
             return response()->json(['success' => true]);
         }
+        
         return response()->json(['success' => false], 404);
     }
 

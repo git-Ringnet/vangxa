@@ -12,9 +12,13 @@ document.addEventListener('DOMContentLoaded', function() {
     // Xử lý nút follow/unfollow
     const followBtn = document.querySelector('.follow-btn');
     if (followBtn) {
+        console.log('Follow button found:', followBtn);
+        console.log('Initial data-action:', followBtn.getAttribute('data-action'));
+        
         followBtn.addEventListener('click', function() {
             const userId = this.getAttribute('data-user-id');
             const action = this.getAttribute('data-action');
+            console.log(`Follow button clicked. Action: ${action}, User ID: ${userId}`);
 
             // Gửi request đến server
             fetch(`/follow-toggle/${userId}`, {
@@ -23,19 +27,25 @@ document.addEventListener('DOMContentLoaded', function() {
             })
             .then(response => response.json())
             .then(data => {
+                console.log('Follow toggle response:', data);
+                
                 if (data.success) {
                     // Cập nhật UI
                     updateFollowButton(followBtn, data.isFollowing);
+                    console.log('Button updated. New state:', data.isFollowing ? 'following' : 'not following');
 
                     // Cập nhật số lượng người theo dõi
                     const followersCountEl = document.querySelector('.followers-count');
                     if (followersCountEl) {
                         followersCountEl.textContent = data.followersCount;
+                        console.log('Updated followers count:', data.followersCount);
                     }
 
                     // Hiển thị thông báo
+                    console.log('Showing notification:', data.message);
                     showNotification(data.message);
                 } else {
+                    console.error('Follow toggle failed:', data.message);
                     showNotification(data.message || 'Đã xảy ra lỗi', 'error');
                 }
             })
@@ -44,6 +54,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 showNotification('Đã xảy ra lỗi khi thực hiện thao tác', 'error');
             });
         });
+    } else {
+        
     }
 
     /**
@@ -53,6 +65,8 @@ document.addEventListener('DOMContentLoaded', function() {
      * @param {boolean} isFollowing Trạng thái theo dõi
      */
     function updateFollowButton(button, isFollowing) {
+        console.log('Updating button to state:', isFollowing ? 'following' : 'not following');
+        
         if (isFollowing) {
             button.classList.remove('btn-primary');
             button.classList.add('btn-secondary');
@@ -68,6 +82,8 @@ document.addEventListener('DOMContentLoaded', function() {
             button.querySelector('.follow-text').textContent = 'Theo dõi';
             button.setAttribute('data-action', 'follow');
         }
+        
+        console.log('Button updated. New data-action:', button.getAttribute('data-action'));
     }
 
     /**
@@ -77,6 +93,8 @@ document.addEventListener('DOMContentLoaded', function() {
      * @param {string} type Loại thông báo ('success' hoặc 'error')
      */
     function showNotification(message, type = 'success') {
+        console.log(`Showing notification. Message: "${message}", Type: ${type}`);
+        
         const alertDiv = document.createElement('div');
         alertDiv.className = `alert alert-${type === 'success' ? 'success' : 'danger'} alert-dismissible fade show position-fixed top-0 end-0 m-3`;
         alertDiv.setAttribute('role', 'alert');
@@ -90,7 +108,15 @@ document.addEventListener('DOMContentLoaded', function() {
         setTimeout(() => {
             if (alertDiv.parentNode) {
                 alertDiv.parentNode.removeChild(alertDiv);
+                console.log('Notification removed after timeout');
             }
         }, 3000);
+    }
+    
+    // Check for direct showToast function
+    if (typeof showToast === 'function') {
+        // console.log('showToast function is available globally');
+    } else {
+        console.log('showToast function is NOT available globally');
     }
 });
