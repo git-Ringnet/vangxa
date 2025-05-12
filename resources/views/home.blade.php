@@ -1201,9 +1201,11 @@ main{
             <div class="flex items-center">
             <nav class="hidden md:flex space-x-6">
                 <a href="#intro" class="header-nav-link text-white hover:text-amber-300 transition-colors">Giới thiệu</a>
-                <a href="#part1" class="header-nav-link text-white hover:text-amber-300 transition-colors">Phần I</a>
-                <a href="#part2" class="header-nav-link text-white hover:text-amber-300 transition-colors">Phần II</a>
-                <a href="#part3" class="header-nav-link text-white hover:text-amber-300 transition-colors">Phần III</a>
+                <a href="{{ route('lodging') }}"  {{ request()->is('lodging') ? 'active' : '' }}" class="header-nav-link text-white hover:text-amber-300 transition-colors">Lưu
+                Trú</a>
+                <a href="{{ route('dining') }}"  {{ request()->is('dining') ? 'active' : '' }}" class="header-nav-link text-white hover:text-amber-300 transition-colors">Ăn
+                Uống</a>
+                <a href="{{ route('groupss.index') }}" {{ request()->routeIs('groupss.*') ? 'active' : '' }}" class="header-nav-link text-white hover:text-amber-300 transition-colors">Cộng đồng</a>
             </nav>
                 <div class="header-icons">
                     <div class="dropdown" id="settingsDropdown">
