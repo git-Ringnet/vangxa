@@ -38,7 +38,17 @@
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"></path>
                             </svg>
                         </template>
-                        <template x-if="notification.type !== 'follow'">
+                        <template x-if="notification.type === 'like'">
+                            <svg class="w-5 h-5 text-red-500" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+                            </svg>
+                        </template>
+                        <template x-if="notification.type === 'unlike'">
+                            <svg class="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
+                            </svg>
+                        </template>
+                        <template x-if="notification.type !== 'follow' && notification.type !== 'like' && notification.type !== 'unlike'">
                             <svg class="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                             </svg>
@@ -75,23 +85,6 @@ document.addEventListener('DOMContentLoaded', function() {
             if (this.currentUserId) {
                 this.fetchNotifications();
 
-                // Lắng nghe trên kênh public (để debug)
-                window.Echo.channel('followers')
-                    .listen('FollowEventReverb', (e) => {
-                        console.log('Public channel FollowEventReverb received:', e);
-                        // Chỉ xử lý nếu thông báo dành cho người dùng hiện tại
-                        if (e.following_id === this.currentUserId) {
-                            this.handleNewNotification(e);
-                        }
-                    })
-                    .listen('UnfollowEvent', (e) => {
-                        console.log('Public channel UnfollowEvent received:', e);
-                        // Chỉ xử lý nếu thông báo dành cho người dùng hiện tại
-                        if (e.following_id === this.currentUserId) {
-                            this.handleNewNotification(e);
-                        }
-                    });
-                
                 // Lắng nghe trên kênh private của user hiện tại
                 window.Echo.private(`user.${this.currentUserId}`)
                     .listen('.Illuminate\\Notifications\\Events\\BroadcastNotificationCreated', (notification) => {
@@ -105,6 +98,28 @@ document.addEventListener('DOMContentLoaded', function() {
                     .listen('UnfollowEvent', (e) => {
                         console.log('Private UnfollowEvent received:', e);
                         this.handleNewNotification(e);
+                    })
+                    .listen('.like.created', (e) => {
+                        console.log('Private LikeEvent received:', e);
+                        this.handleNewNotification({
+                            id: `like-${Date.now()}`,
+                            message: `${e.liker_name} đã thích bài viết của bạn`,
+                            type: 'like',
+                            link: e.link || `/posts/${e.post_id}`,
+                            created_at: 'Vừa xong',
+                            read_at: null
+                        });
+                    })
+                    .listen('.like.deleted', (e) => {
+                        console.log('Private UnlikeEvent received:', e);
+                        this.handleNewNotification({
+                            id: `unlike-${Date.now()}`,
+                            message: `${e.unliker_name} đã bỏ thích bài viết của bạn`,
+                            type: 'unlike',
+                            link: e.link || `/posts/${e.post_id}`,
+                            created_at: 'Vừa xong',
+                            read_at: null
+                        });
                     });
             }
         },
@@ -132,6 +147,10 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (formattedNotification.message.includes('đã bắt đầu theo dõi')) {
                     toastType = 'success';
                 } else if (formattedNotification.message.includes('đã hủy theo dõi')) {
+                    toastType = 'info';
+                } else if (formattedNotification.message.includes('đã thích')) {
+                    toastType = 'success';
+                } else if (formattedNotification.message.includes('đã bỏ thích')) {
                     toastType = 'info';
                 }
                 

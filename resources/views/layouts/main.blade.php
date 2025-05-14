@@ -16,7 +16,7 @@
     <script src="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.js"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-    <script src="{{ asset('js/notifications.js') }}"></script>
+
     <!-- <style>
         /* Toast Notifications */
         .toast-container {
@@ -95,7 +95,7 @@
 </head>
 @stack('scripts')
 
-<body>
+<body data-user-id="{{ auth()->check() ? auth()->id() : '' }}">
     <!-- Navbar -->
     <nav class="navbar-custom">
         <div class="container-custom">
@@ -273,6 +273,7 @@
     @stack('scripts')
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="{{ asset('js/like-handler.js') }}"></script>
 
     <script>
         // Rankings Modal Control
@@ -366,7 +367,7 @@
             const timeoutId = setTimeout(() => {
                 toast.classList.remove('show');
                 setTimeout(() => toast.remove(), 300);
-            }, 5000);
+            }, 60000);
 
             // Cancel timeout if close button is clicked
             closeBtn.addEventListener('click', () => {

@@ -12,3 +12,13 @@ Broadcast::channel('App.Models.User.{id}', function ($user, $id) {
 Broadcast::channel('posts.{postId}', function ($user, $postId) {
     return true;
 });
+
+// Kênh public cho like/unlike events
+Broadcast::channel('likes', function ($user) {
+    return true;
+});
+
+// Kênh private cho từng user
+Broadcast::channel('user.{userId}', function ($user, $userId) {
+    return (int) $user->id === (int) $userId;
+});

@@ -93,8 +93,14 @@ document.addEventListener('DOMContentLoaded', function() {
      * @param {string} type Loại thông báo ('success' hoặc 'error')
      */
     function showNotification(message, type = 'success') {
-        console.log(`Showing notification. Message: "${message}", Type: ${type}`);
-        
+        console.log('Showing notification:', message, type);
+        // Kiểm tra nếu hàm này đã tồn tại trong global scope
+        if (typeof window.showToast === 'function') {
+            window.showToast(message, type);
+        }
+        else{
+            console.log(`Showing notification. Message: "${message}", Type: ${type}`);
+            
         const alertDiv = document.createElement('div');
         alertDiv.className = `alert alert-${type === 'success' ? 'success' : 'danger'} alert-dismissible fade show position-fixed top-0 end-0 m-3`;
         alertDiv.setAttribute('role', 'alert');
@@ -111,6 +117,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 console.log('Notification removed after timeout');
             }
         }, 3000);
+        }
     }
     
     // Check for direct showToast function
