@@ -428,8 +428,11 @@
         const dropdownMenu = el.closest('.dropdown-menu');
         if (dropdownMenu) dropdownMenu.style.display = 'none';
 
+        // Sử dụng màu nền cụ thể
+        const bodyBgColor = '#faf6e9';
+
         html2canvas(clone, {
-            backgroundColor: null,
+            backgroundColor: bodyBgColor,
             useCORS: true,
             scale: 2
         }).then(canvas => {
@@ -484,8 +487,11 @@
                 clone.style.width = postCard.offsetWidth + 'px';
                 document.body.appendChild(clone);
 
+                // Sử dụng màu nền cụ thể
+                const bodyBgColor = '#faf6e9';
+
                 const canvas = await html2canvas(clone, {
-                    backgroundColor: null,
+                    backgroundColor: bodyBgColor,
                     useCORS: true,
                     scale: 2
                 });
@@ -550,15 +556,21 @@
         const allDropdowns = clone.querySelectorAll('.dropdown-menu');
         allDropdowns.forEach(menu => menu.style.display = 'none');
 
-        // Đảm bảo background-image là inline style tuyệt đối cho bản clone
+        // Sử dụng màu nền cụ thể thay vì lấy từ body
+        const bodyBgColor = '#faf6e9';
+
+        // Sử dụng màu nền thay vì background image
         const cloneBg = clone.classList.contains('post-card-bg') ? clone : clone.querySelector('.post-card-bg');
         if (cloneBg) {
-            cloneBg.style.backgroundImage = "url('" + window.location.origin + "/image/default/Window.png')";
-            cloneBg.style.backgroundSize = "cover";
-            cloneBg.style.backgroundPosition = "center";
+            cloneBg.style.backgroundColor = bodyBgColor;
+            cloneBg.style.backgroundImage = 'none'; // Xóa background image nếu có
             cloneBg.style.padding = '12px'; // Giảm padding tổng thể
+            cloneBg.style.borderRadius = '8px'; // Thêm bo tròn
         }
 
+        // Thêm màu nền cho toàn bộ post card nếu cần
+        clone.style.backgroundColor = bodyBgColor;
+        
         // Điều chỉnh header và user info
         const userInfo = clone.querySelector('.d-flex.align-items-center.mb-3');
         if (userInfo) {
@@ -693,8 +705,11 @@
         const dropdownMenu = el.closest('.dropdown-menu');
         if (dropdownMenu) dropdownMenu.style.display = 'none';
 
+        // Sử dụng màu nền cụ thể
+        const bodyBgColor = '#faf6e9';
+
         html2canvas(clone, {
-            backgroundColor: null,
+            backgroundColor: bodyBgColor,
             useCORS: true,
             scale: 2
         }).then(canvas => {

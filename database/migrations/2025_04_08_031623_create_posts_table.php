@@ -19,6 +19,7 @@ return new class extends Migration
             $table->integer('min_price')->nullable();
             $table->integer('max_price')->nullable();
             $table->json('cuisine')->nullable();
+            $table->json('styles')->nullable();
             $table->float('latitude', 10, 6)->nullable();
             $table->float('longitude', 10, 6)->nullable();
             $table->integer('user_id');

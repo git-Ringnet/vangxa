@@ -24,6 +24,7 @@ class Post extends Model
         'min_price',
         'max_price',
         'cuisine',
+        'styles',
         'latitude',
         'longitude',
     ];
