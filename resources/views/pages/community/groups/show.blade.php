@@ -77,6 +77,25 @@
                                             Chỉnh sửa nhóm
                                         </a>
                                     @endif
+
+                                    <div class="dropdown">
+                                        <button class="btn btn-outline-primary dropdown-toggle" type="button" id="shareGroupButton" data-bs-toggle="dropdown" aria-expanded="false">
+                                            <i class="fas fa-share-alt me-2"></i>
+                                            Chia sẻ nhóm
+                                        </button>
+                                        <ul class="dropdown-menu" aria-labelledby="shareGroupButton">
+                                            <li>
+                                                <a class="dropdown-item" href="#" onclick="copyGroupLink()">
+                                                    <i class="fas fa-link me-2"></i> Sao chép đường dẫn
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <a class="dropdown-item" href="#" onclick="shareViaWebAPI()">
+                                                    <i class="fas fa-share-alt me-2"></i> Chia sẻ qua...
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -96,13 +115,26 @@
                                     <input type="hidden" name="user_id" value="{{ Auth::user()->id }}">
                                     <input type="hidden" name="page" value="nhom">
                                     <div class="mb-3">
-                                        <textarea name="description" rows="3" class="form-control" placeholder="Bạn viết gì đi..."></textarea>
+                                        <textarea name="description" id="postDescription" rows="3" class="form-control" placeholder="Bạn viết gì đi..."
+                                            autocomplete="off"></textarea>
+                                        <div class="invalid-feedback" id="descriptionError">Vui lòng nhập nội dung bài viết
+                                        </div>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="tagged_vendors" class="form-label">Tag vendor</label>
+                                        <select class="form-select" id="tagged_vendors" name="tagged_vendors[]" multiple>
+                                            @foreach ($vendors as $vendor)
+                                                <option value="{{ $vendor->id }}">{{ $vendor->name }}</option>
+                                            @endforeach
+                                        </select>
+                                        <div class="form-text">Bạn có thể chọn nhiều vendor để tag</div>
                                     </div>
                                     <div class="mb-3">
                                         <label for="images" class="form-label">Thêm ảnh</label>
                                         <input type="file" class="form-control" id="images" name="images[]" multiple
                                             accept="image/*">
                                         <div class="form-text">Bạn có thể chọn nhiều ảnh cùng lúc</div>
+                                        <div class="invalid-feedback" id="imagesError"></div>
                                     </div>
                                     <div class="mb-3">
                                         <div id="image-preview" class="d-flex flex-wrap gap-2"></div>
@@ -142,6 +174,16 @@
                                                                 fill="#0095F6" />
                                                         </svg>
                                                     </span>
+                                                    @if ($post->taggedVendors->count() > 0)
+                                                        <span class="text-white">
+                                                            @foreach ($post->taggedVendors as $vendor)
+                                                                <a href="{{ route('profile.show', $vendor->id) }}"
+                                                                    class="text-decoration-none text-white">
+                                                                    {{ $vendor->name }}
+                                                                </a>
+                                                            @endforeach
+                                                        </span>
+                                                    @endif
                                                 </div>
                                                 <p class="text-white-blur p-0 m-0">
                                                     <small>{{ $post->created_at->diffForHumans() }}</small>
@@ -414,7 +456,9 @@
                                     <select name="user_id" id="user_id" class="form-control">
                                         <option value="">Chọn thành viên...</option>
                                         @foreach ($users as $user)
+                                            @if (!$group->members->contains($user->id))
                                             <option value="{{ $user->id }}">{{ $user->name }}</option>
+                                            @endif
                                         @endforeach
                                     </select>
                                 </div>
@@ -447,6 +491,18 @@
                         <div class="modal-body">
                             <textarea name="description" rows="3" class="form-control" placeholder="Bạn viết gì đi..."
                                 autocomplete="off">{{ $post->description }}</textarea>
+                            <div class="mb-3">
+                                <label for="tagged_vendors" class="form-label">Tag vendor</label>
+                                <select class="form-select" id="tagged_vendors" name="tagged_vendors[]" multiple>
+                                    @foreach ($vendors as $vendor)
+                                        <option value="{{ $vendor->id }}"
+                                            {{ $post->taggedVendors->contains($vendor->id) ? 'selected' : '' }}>
+                                            {{ $vendor->name }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                                <div class="form-text">Bạn có thể chọn nhiều vendor để tag</div>
+                            </div>
                             @if ($post->images->count() > 0)
                                 <div class="mb-3">
                                     <label class="form-label">Ảnh hiện tại</label>
@@ -491,39 +547,68 @@
             background-position: center;
             background-repeat: no-repeat;
         }
+
+        .dropdown-menu {
+            min-width: 200px;
+        }
+
+        .dropdown-item {
+            padding: 0.5rem 1rem;
+        }
+
+        .dropdown-item i {
+            width: 20px;
+            text-align: center;
+        }
+
+        .dropdown-item:hover {
+            background-color: #f8f9fa;
+        }
+
+        .show {
+            display: block;
+        }
     </style>
     <script>
-        function copyPostLink(postId) {
-            const postUrl = `${window.location.origin}/communities/${postId}`;
-            navigator.clipboard.writeText(postUrl).then(() => {
-                showToast('Đã sao chép liên kết vào clipboard', 'success');
+        function copyGroupLink() {
+            const groupLink = window.location.href;
+            navigator.clipboard.writeText(groupLink).then(() => {
+                showToast('Đã sao chép đường dẫn nhóm!', 'success');
             }).catch(err => {
                 console.error('Failed to copy text: ', err);
-                showToast('Có lỗi xảy ra khi sao chép liên kết', 'error');
+                showToast('Có lỗi xảy ra khi sao chép đường dẫn', 'error');
             });
         }
 
-        function deleteImage(imageId, button) {
-            if (confirm('Bạn có chắc chắn muốn xóa ảnh này?')) {
-                fetch(`/posts/images/${imageId}`, {
-                        method: 'DELETE',
-                        headers: {
-                            'X-CSRF-TOKEN': '{{ csrf_token() }}',
-                            'Content-Type': 'application/json'
-                        }
-                    })
-                    .then(response => {
-                        if (response.ok) {
-                            button.closest('.col-4').remove();
-                            showToast('Đã xóa ảnh thành công', 'success');
+        function shareViaWebAPI() {
+            const groupLink = window.location.href;
+            const groupName = '{{ $group->name }}';
+            const groupDescription = '{{ $group->description }}';
+
+            if (navigator.share) {
+                navigator.share({
+                    title: groupName,
+                    text: groupDescription,
+                    url: groupLink
+                }).catch(err => {
+                    console.error('Error sharing:', err);
+                    showToast('Có lỗi xảy ra khi chia sẻ', 'error');
+                });
                         } else {
-                            throw new Error('Network response was not ok');
+                showToast('Trình duyệt của bạn không hỗ trợ tính năng chia sẻ này', 'error');
                         }
-                    })
-                    .catch(error => {
-                        console.error('Error:', error);
-                        showToast('Có lỗi xảy ra khi xóa ảnh', 'error');
-                    });
+        }
+
+        // Đóng dropdown khi click ra ngoài
+        window.onclick = function(event) {
+            if (!event.target.matches('.btn-outline-primary')) {
+                const dropdowns = document.getElementsByClassName('dropdown-menu');
+                for (let i = 0; i < dropdowns.length; i++) {
+                    const openDropdown = dropdowns[i];
+                    if (openDropdown.classList.contains('show')) {
+                        openDropdown.classList.remove('show');
+                    }
+                }
             }
         }
     </script>

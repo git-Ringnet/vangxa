@@ -93,7 +93,7 @@
                             @endphp
                             
                             <a href="{{ route('profile.show', ['id' => $vendor->id]) }}" class="vendor-avatar me-3">
-                                <img src="{{ $vendor->avatar ? asset($vendor->avatar) : asset('images/default-avatar.png') }}" 
+                                <img src="{{ $vendor->avatar ? asset('image/avatars/' . basename($vendor->avatar)) : asset('images/default-avatar.png') }}" 
                                     alt="{{ $vendor->name }}" 
                                     style="width: 70px; height: 70px; border-radius: 50%; object-fit: cover;">
                             </a>
@@ -194,7 +194,7 @@
                             @foreach ($post->reviews()->with('user')->latest()->get() as $review)
                                 <div class="review-item">
                                     <div class="review-header">
-                                        <img src="{{ $review->user->avatar ?? 'https://ui-avatars.com/api/?name=' . urlencode($review->user->name) }}"
+                                        <img src="{{ $review->user->avatar ? asset('image/avatars/' . basename($review->user->avatar)) : 'https://ui-avatars.com/api/?name=' . urlencode($review->user->name) }}"
                                             alt="{{ $review->user->name }}" class="reviewer-avatar">
                                         <div class="reviewer-info">
                                             <h4>{{ $review->user->name }}</h4>

@@ -1,240 +1,162 @@
 @foreach ($posts as $post)
-<a href="{{ route('detail', $post->id) }}" class="listing-card">
-    <div class="listing-image-container">
-        <div class="image-carousel">
-            <div class="carousel-images">
-                @foreach ($post->images as $image)
-                <img src="{{ asset($image->image_path) }}"
-                    class="img-fluid rounded"
+    <div class="listing-card custom-card">
+        <a href="{{ route('detail', $post->id) }}">
+            <div>
+                <img src="{{ asset(optional($post->images->first())->image_path) }}" class="img-fluid rounded"
                     alt="Post image">
-                @endforeach
             </div>
-            <button class="carousel-nav prev" onclick="event.preventDefault(); prevImage(this);">
-                <i class="fas fa-chevron-left"></i>
-            </button>
-            <button class="carousel-nav next" onclick="event.preventDefault(); nextImage(this);">
-                <i class="fas fa-chevron-right"></i>
-            </button>
-            <div class="carousel-dots">
-                @foreach ($post->images as $index => $image)
-                <span class="dot {{ $index == 0 ? 'active' : '' }}"></span>
-                @endforeach
-            </div>
-        </div>
-        <form action="{{ route('trustlist.toggle', ['id' => $post->id]) }}" method="POST" class="trustlist-form" data-post-id="{{ $post->id }}">
-            @csrf
-            <button type="button" class="trustlist-button trustlist-btn" data-post-id="{{ $post->id }}" data-saved="{{ Auth::check() && $post->isSaved ? 'true' : 'false' }}" data-authenticated="{{ Auth::check() ? 'true' : 'false' }}" onclick="event.preventDefault(); handleSave(this);">
-                <i class="{{ Auth::check() && $post->isSaved ? 'fas' : 'far' }} fa-bookmark {{ Auth::check() && $post->isSaved ? 'text-primary' : '' }}"></i>
-            </button>
-        </form>
-        <div class="bookWrap" onclick="event.preventDefault(); event.stopPropagation(); showStoryModal({{ $post->id }})">
-            <div class="book">
-                <div class="cover">
-                    <img src="image/sách.png" style="width: 100%; height: 100%; object-fit: cover;">
-                    <div class="circleImage">
-                        <img src="https://img.tripi.vn/cdn-cgi/image/width=700,height=700/https://gcs.tripi.vn/public-tripi/tripi-feed/img/474090Ypg/hinh-anh-girl-xinh-dep-de-thuong_025104504.jpg" alt="Avatar">
-                    </div>
+            <div class="listing-content">
+                <div class="fw-semibold mb-1"
+                    style="display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis;">
+                    {{ $post->description }}</div>
+                <div class="text-muted small mb-1">
+                    {{ $post->address }}
+                    <span class="mx-1">|</span>
+                    <span class="distance-text" data-lat="{{ $post->latitude }}" data-lng="{{ $post->longitude }}" data-post-id="{{ $post->id }}">-- km</span>
                 </div>
-                <div class="spine"></div>
+                <div class="text-muted small mb-2">
+                    {{ number_format($post->min_price, 0, ',', '.') }}k -
+                    {{ number_format($post->max_price, 0, ',', '.') }}k/ng
+                </div>
+                <div class="d-flex align-items-center justify-content-between">
+                    <a href="https://www.google.com/maps/search/?api=1&query={{ urlencode($post->address) }}"
+                        target="_blank" class="btn btn-map rounded-pill" style="background:#e2c9a0;color:#7a5c2e;">
+                        <i class="fas fa-map-marked-alt"></i>
+                    </a>
+                </div>
             </div>
-        </div>
+        </a>
     </div>
-    <div class="listing-content">
-        <div class="listing-header">
-            <h3 class="listing-title">{{ $post->title }}</h3>
-            {{-- <div class="listing-rating">
-                <i class="fas fa-star"></i>
-                <span>4.96</span>
-            </div> --}}
-        </div>
-        <!-- <p class="listing-location">{{ $post->address }}</p> -->
-        <!-- <p class="listing-dates">22-27 tháng 5</p>
-        <p class="listing-price">
-            <span class="price-amount">2,000,000₫</span>
-            <span class="price-period">đêm</span>
-        </p> -->
-    </div>
-    
-</a>
-<!-- Story Modal -->
-<div class="story-modal" id="storyModal-{{ $post->id }}">
-    <div class="story-modal-content">
-        <!-- User Profile Section -->
-        <div class="story-profile-section">
-            <div class="story-profile-header">
-                <div class="story-user-main">
-                    <div class="story-avatar">
-                        <img src="{{ $post->user->avatar ?? 'https://via.placeholder.com/150' }}" alt="User Avatar">
-                        @if($post->user->is_verified)
-                            <span class="verified-badge">
-                                <i class="fas fa-check-circle"></i>
-                            </span>
-                        @endif
-                    </div>
-                    <div class="story-user-info">
-                        <h2>{{ $post->user->name ?? 'Anonymous' }}</h2>
-                        <p class="user-type">Chủ nhà siêu cấp</p>
-                    </div>
-                </div>
-                <button class="story-close-btn" onclick="closeStoryModal({{ $post->id }})">
-                    <i class="fas fa-times"></i>
-                </button>
-            </div>
-
-            <!-- Stats Section -->
-            <div class="story-stats">
-                <div class="stat-item">
-                    <span class="stat-number">{{ $post->reviews_count ?? 19 }}</span>
-                    <span class="stat-label">Bài đánh giá</span>
-                </div>
-                <div class="stat-item">
-                    <span class="stat-number">{{ number_format($post->rating ?? 4.95, 2) }} <i class="fas fa-star"></i></span>
-                    <span class="stat-label">Xếp hạng</span>
-                </div>
-                <div class="stat-item">
-                    <span class="stat-number">{{ $post->years_active ?? 9 }}</span>
-                    <span class="stat-label">Năm kinh nghiệm đón tiếp khách</span>
-                </div>
-            </div>
-
-            <!-- User Details -->
-            <div class="story-details">
-                <div class="detail-item">
-                    <i class="fas fa-briefcase"></i>
-                    <div class="detail-text">
-                        <strong>Công việc:</strong>
-                        <p>{{ $post->user->occupation ?? 'The Nature\'s Grove' }}</p>
-                    </div>
-                </div>
-                <div class="detail-item">
-                    <i class="fas fa-graduation-cap"></i>
-                    <div class="detail-text">
-                        <strong>Nơi từng theo học:</strong>
-                        <p>{{ $post->user->education ?? 'St. Josephs' }}</p>
-                    </div>
-                </div>
-                <div class="detail-item">
-                    <i class="fas fa-language"></i>
-                    <div class="detail-text">
-                        <strong>Ngôn ngữ:</strong>
-                        <p>Tiếng Anh, Tiếng Việt</p>
-                    </div>
-                </div>
-                <div class="detail-item">
-                    <i class="fas fa-map-marker-alt"></i>
-                    <div class="detail-text">
-                        <strong>Sống tại:</strong>
-                        <p>{{ $post->address ?? 'Chưa cập nhật' }}</p>
-                    </div>
-                </div>
-            </div>
-
-            <!-- About Section -->
-            <div class="story-about">
-                <p>{{ $post->description ?? 'Chưa có mô tả' }}</p>
-            </div>
-
-            <!-- Interests Section -->
-            <div class="story-interests">
-                <h3>Sở thích</h3>
-                <div class="interest-tags">
-                    <span class="interest-tag">
-                        <i class="fas fa-hiking"></i>
-                        Hoạt động ngoài trời
-                    </span>
-                    <span class="interest-tag">
-                        <i class="fas fa-camera"></i>
-                        Nhiếp ảnh
-                    </span>
-                    <span class="interest-tag">
-                        <i class="fas fa-music"></i>
-                        Nhạc sống
-                    </span>
-                    <span class="interest-tag">
-                        <i class="fas fa-utensils"></i>
-                        Nấu ăn
-                    </span>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
 @endforeach
 
 <script>
-function handleSave(button) {
-    const postId = button.dataset.postId;
-    const isAuthenticated = button.dataset.authenticated === 'true';
-    
-    if (!isAuthenticated) {
-        showToast('Vui lòng đăng nhập để thêm vào danh sách tin cậy', 'warning');
-        return;
+    // Biến toàn cục để lưu vị trí người dùng
+    let userPosition = null;
+
+    // Hàm tính khoảng cách Haversine
+    function haversine(lat1, lon1, lat2, lon2) {
+        function toRad(x) {
+            return x * Math.PI / 180;
+        }
+        var R = 6371; // km - bán kính trái đất
+        
+        // Xử lý các giá trị không hợp lệ
+        lat1 = parseFloat(lat1);
+        lon1 = parseFloat(lon1);
+        lat2 = parseFloat(lat2);
+        lon2 = parseFloat(lon2);
+        
+        if (isNaN(lat1) || isNaN(lon1) || isNaN(lat2) || isNaN(lon2)) {
+            console.error('Invalid coordinates in haversine calculation', {lat1, lon1, lat2, lon2});
+            return 0;
+        }
+        
+        var dLat = toRad(lat2 - lat1);
+        var dLon = toRad(lon2 - lon1);
+        var a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+            Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) *
+            Math.sin(dLon / 2) * Math.sin(dLon / 2);
+        var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+        var d = R * c;
+        
+        return d;
     }
-    
-    const form = button.closest('.trustlist-form');
-    const formData = new FormData(form);
-    
-    fetch(form.action, {
-        method: 'POST',
-        body: formData,
-        headers: {
-            'X-Requested-With': 'XMLHttpRequest',
-            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-        }
-    })
-    .then(response => {
-        if (!response.ok) {
-            throw new Error('Network response was not ok');
-        }
-        return response.json();
-    })
-    .then(data => {
-        if (data.success) {
-            const icon = button.querySelector('i');
-            const savesCount = button.querySelector('.saves-count');
-            if (data.saved) {
-                icon.classList.remove('far');
-                icon.classList.add('fas', 'text-primary');
-                button.dataset.saved = 'true';
-                showToast(data.message, 'success');
+
+    // Hàm lấy vị trí người dùng
+    function getUserPosition() {
+        return new Promise((resolve, reject) => {
+            if (userPosition) {
+                // Nếu đã có vị trí từ trước, sử dụng lại
+                resolve(userPosition);
+                return;
+            }
+            
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(
+                    (position) => {
+                        userPosition = {
+                            latitude: position.coords.latitude,
+                            longitude: position.coords.longitude
+                        };
+                        console.log('Got user position:', userPosition);
+                        resolve(userPosition);
+                    },
+                    (error) => {
+                        console.error('Error getting location:', error);
+                        reject(error);
+                    },
+                    {
+                        enableHighAccuracy: true,
+                        timeout: 5000,
+                        maximumAge: 0
+                    }
+                );
             } else {
-                icon.classList.remove('fas', 'text-primary');
-                icon.classList.add('far');
-                button.dataset.saved = 'false';
-                showToast(data.message, 'info');
+                const error = new Error('Geolocation is not supported by this browser.');
+                console.error(error);
+                reject(error);
             }
-            if (savesCount) {
-                savesCount.textContent = data.savesCount;
+        });
+    }
+
+    // Hàm cập nhật khoảng cách
+    function updateDistances() {
+        console.log('Updating distances...');
+        
+        getUserPosition()
+            .then(position => {
+                const userLat = position.latitude;
+                const userLng = position.longitude;
+                
+                document.querySelectorAll('.distance-text').forEach(function(el) {
+                    const lat = parseFloat(el.dataset.lat);
+                    const lng = parseFloat(el.dataset.lng);
+                    const postId = el.dataset.postId;
+                    
+                    if (!isNaN(lat) && !isNaN(lng)) {
+                        const dist = haversine(userLat, userLng, lat, lng);
+                        el.textContent = dist.toFixed(1) + ' km';
+                    } else {
+                        console.log('Invalid coordinates for post', postId, ':', lat, lng);
+                    }
+                });
+            })
+            .catch(error => {
+                console.error('Failed to update distances:', error);
+            });
+    }
+
+    // Gọi hàm cập nhật khoảng cách khi trang được load
+    document.addEventListener('DOMContentLoaded', function() {
+        updateDistances();
+    });
+
+    // Thêm sự kiện cho nút Load More
+    document.addEventListener('click', function(e) {
+        if (e.target && e.target.id === 'loadMoreBtn') {
+            setTimeout(function() {
+                updateDistances();
+            }, 1000);
+        }
+    });
+
+    // Thêm sự kiện cho AJAX load more
+    $(document).ajaxComplete(function() {
+        updateDistances();
+    });
+
+    // Thêm MutationObserver để theo dõi thay đổi DOM
+    const observer = new MutationObserver(function(mutations) {
+        mutations.forEach(function(mutation) {
+            if (mutation.addedNodes.length) {
+                updateDistances();
             }
-        } else {
-            showToast(data.message, 'error');
-        }
-    })
-    .catch(error => {
-        console.error('Error:', error);
-        showToast('Có lỗi xảy ra, vui lòng thử lại sau', 'error');
+        });
     });
-}
 
-function showStoryModal(postId) {
-    const modal = document.getElementById(`storyModal-${postId}`);
-    modal.classList.add('show');
-    document.body.style.overflow = 'hidden';
-}
-
-function closeStoryModal(postId) {
-    const modal = document.getElementById(`storyModal-${postId}`);
-    modal.classList.remove('show');
-    document.body.style.overflow = 'auto';
-}
-
-// Close modal when clicking outside
-document.querySelectorAll('.story-modal').forEach(modal => {
-    modal.addEventListener('click', function(e) {
-        if (e.target === this) {
-            this.classList.remove('show');
-            document.body.style.overflow = 'auto';
-        }
+    // Bắt đầu quan sát thay đổi DOM
+    observer.observe(document.body, {
+        childList: true,
+        subtree: true
     });
-});
 </script>

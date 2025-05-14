@@ -417,7 +417,7 @@
     <script src="{{ asset('js/profile.js') }}"></script>
     <script src="{{ asset('js/carousel.js') }}"></script>
     <script src="{{ asset('js/follow-handler.js') }}"></script>
-    <script>
+     <script>
         document.addEventListener('alpine:init', () => {
             Alpine.data('progress', () => ({
                 message: '',

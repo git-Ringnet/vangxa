@@ -14,10 +14,7 @@ use Spatie\Permission\Models\Role;
 
 class UserController extends Controller
 {
-    public function __construct()
-    {
-
-    }
+    public function __construct() {}
 
     public function index()
     {
@@ -122,22 +119,34 @@ class UserController extends Controller
         ]);
 
         // Xóa avatar cũ nếu có
-        if ($user->avatar && Storage::exists('public/' . $user->avatar)) {
-            Storage::delete('public/' . $user->avatar);
+        if ($user->avatar && file_exists(public_path($user->avatar))) {
+            unlink(public_path($user->avatar));
         }
 
-        // Lưu avatar mới
-        $avatarPath = $request->file('avatar')->store('avatars', 'public');
+        // Tạo tên file duy nhất
+        $avatar = $request->file('avatar');
+        $filename = time() . '_' . $avatar->getClientOriginalName();
+
+        // Đảm bảo thư mục tồn tại
+        $destinationPath = public_path('image/avatars');
+        if (!file_exists($destinationPath)) {
+            mkdir($destinationPath, 0755, true);
+        }
+
+        // Lưu file vào thư mục public/image/avatars
+        $avatar->move($destinationPath, $filename);
+
+        // Cập nhật avatar path
+        $avatarPath = 'image/avatars/' . $filename;
 
         $user->update([
             'avatar' => $avatarPath,
         ]);
 
-        // Trả về phản hồi JSON thay vì redirect
         return response()->json([
             'success' => true,
             'message' => 'Avatar đã được cập nhật thành công',
-            'avatar' => $user->avatar // Trả về đường dẫn tới avatar mới
+            'avatar' => $user->avatar,
         ]);
     }
 
@@ -171,7 +180,7 @@ class UserController extends Controller
             } else {
                 // Kiểm tra xem người dùng hiện tại có đang theo dõi người này không
                 $isFollowing = $currentUser->following()->where('following_id', $user->id)->exists();
-                
+
                 // Ghi lại lượt xem profile nếu không phải chủ profile
                 $this->recordProfileView($currentUser->id, $user->id);
             }
@@ -186,7 +195,7 @@ class UserController extends Controller
 
         return view('users.profile', compact('user', 'isOwnProfile', 'isFollowing', 'followersCount', 'followingCount'));
     }
-    
+
     /**
      * Ghi lại lượt xem profile của người bán
      * 
@@ -198,11 +207,11 @@ class UserController extends Controller
     {
         // Phân loại vai trò của người dùng được xem
         $vendor = User::find($vendorId);
-        
+
         // Chỉ ghi lại nếu người được xem là vendor/business hoặc đã tạo ít nhất 1 bài viết
         $isVendor = $vendor->hasRole('vendor') || $vendor->hasRole('business');
         $hasPosts = $vendor->posts()->exists();
-        
+
         if ($isVendor || $hasPosts) {
             // Tạo bản ghi mới
             \App\Models\ProfileView::create([
@@ -223,9 +232,9 @@ class UserController extends Controller
 
         // Tìm kiếm người dùng theo tên hoặc email
         $users = User::where('name', 'LIKE', "%{$query}%")
-                    ->orWhere('email', 'LIKE', "%{$query}%")
-                    ->limit(10)
-                    ->get(['id', 'name', 'email', 'avatar']);
+            ->orWhere('email', 'LIKE', "%{$query}%")
+            ->limit(10)
+            ->get(['id', 'name', 'email', 'avatar']);
 
         return response()->json($users);
     }

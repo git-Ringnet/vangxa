@@ -4,8 +4,11 @@ namespace App\Http\Controllers;
 
 use App\Models\Post;
 use App\Models\PostImage;
+use App\Models\PostSection;
+use App\Models\PostSectionImage;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 
@@ -32,42 +35,121 @@ class PostController extends Controller
 
     public function store(Request $request)
     {
+        // Kiểm tra đăng nhập
+        if (!Auth::check()) {
+            return redirect()->route('login')->with('error', 'Vui lòng đăng nhập để tạo bài viết.');
+        }
+
         $request->validate([
             'title' => 'required|string|max:255',
             'address' => 'required|string|max:255',
-            'description' => 'required|string',
-            'images.*' => 'image|mimes:jpeg,png,jpg,gif|max:2048'
+            'type' => 'required|in:1,2',
+            'description' => 'nullable|string',
+            'min_price' => 'nullable|integer|min:0',
+            'max_price' => 'nullable|integer|min:0',
+            'latitude' => 'nullable|numeric',
+            'longitude' => 'nullable|numeric',
+            'images.*' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'sections.*.title' => 'required|string|max:255',
+            'sections.*.content' => 'nullable|string',
+            'sections.*.images.*' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'sections.*.embed_type' => 'nullable|string|in:tiktok,youtube,map',
+        ], [
+            'title.required' => 'Tiêu đề bài viết không được để trống.',
+            'title.max' => 'Tiêu đề bài viết không được vượt quá 255 ký tự.',
+            'address.required' => 'Địa chỉ không được để trống.',
+            'address.max' => 'Địa chỉ không được vượt quá 255 ký tự.',
+            'type.required' => 'Loại bài viết không được để trống.',
+            'type.in' => 'Loại bài viết không hợp lệ.',
+            'min_price.integer' => 'Giá thấp nhất phải là số nguyên.',
+            'min_price.min' => 'Giá thấp nhất không được âm.',
+            'max_price.integer' => 'Giá cao nhất phải là số nguyên.',
+            'max_price.min' => 'Giá cao nhất không được âm.',
+            'images.*.image' => 'File phải là ảnh.',
+            'images.*.mimes' => 'Ảnh phải có định dạng jpeg, png, jpg, gif.',
+            'images.*.max' => 'Ảnh không được vượt quá 2MB.',
+            'sections.*.title.required' => 'Tiêu đề phần không được để trống.',
+            'sections.*.title.max' => 'Tiêu đề phần không được vượt quá 255 ký tự.',
+            'sections.*.images.*.image' => 'File phải là ảnh.',
+            'sections.*.images.*.mimes' => 'Ảnh phải có định dạng jpeg, png, jpg, gif.',
+            'sections.*.images.*.max' => 'Ảnh không được vượt quá 2MB.',
+            'sections.*.embed_type.in' => 'Loại nhúng không hợp lệ.',
         ]);
 
-        // Convert link TikTok thành iframe
-        $description = $this->convertTikTokLinksToIframe($request->description);
-
-        $post = Post::create([
-            'title' => $request->title,
-            'address' => $request->address,
-            'description' => $description,
-            'user_id' => Auth::id() ?? 1,
-            'status' => '1',
-            'type' => $request->type,
-        ]);
-
-        if ($request->hasFile('images')) {
-            foreach ($request->file('images') as $image) {
-                // Tạo tên file duy nhất
-                $filename = time() . '_' . $image->getClientOriginalName();
-
-                // Lưu ảnh vào thư mục public/image/posts
-                $image->move(public_path('image/posts'), $filename);
-
-                // Lưu đường dẫn vào database
-                $post->images()->create([
-                    'image_path' => 'image/posts/' . $filename
-                ]);
+        DB::beginTransaction();
+        try {
+            // Gom các loại món ăn đã chọn và loại nhập thêm
+            $cuisine = $request->input('cuisine', []);
+            if ($request->filled('cuisine_other') && !in_array($request->input('cuisine_other'), $cuisine)) {
+                $cuisine[] = $request->input('cuisine_other');
             }
-        }
 
-        return redirect()->route('posts.index')
-            ->with('success', 'Bài đăng đã được tạo thành công!');
+            // Lưu thông tin cơ bản của bài viết
+            $post = Post::create([
+                'title' => $request->title,
+                'address' => $request->address,
+                'type' => $request->type,
+                'description' => $request->description,
+                'user_id' => Auth::id(),
+                'min_price' => $request->min_price,
+                'max_price' => $request->max_price,
+                'cuisine' => json_encode($cuisine),
+                'latitude' => $request->latitude,
+                'longitude' => $request->longitude,
+                'status' => 1
+            ]);
+
+            // Lưu ảnh đại diện (gallery lớn)
+            if ($request->hasFile('images')) {
+                foreach ($request->file('images') as $image) {
+                    // Tạo tên file duy nhất
+                    $filename = time() . '_' . $image->getClientOriginalName();
+
+                    // Lưu ảnh vào thư mục public/image/posts
+                    $image->move(public_path('image/posts'), $filename);
+
+                    // Lưu đường dẫn vào database
+                    $post->images()->create([
+                        'image_path' => 'image/posts/' . $filename
+                    ]);
+                }
+            }
+
+            // Lưu các section
+            if ($request->has('sections')) {
+                foreach ($request->sections as $index => $section) {
+                    $postSection = PostSection::create([
+                        'post_id' => $post->id,
+                        'title' => $section['title'],
+                        'content' => $section['content'],
+                        'embed_type' => $section['embed_type'],
+                        'embed_url' => $section['embed_url'],
+                        'order' => $index,
+                    ]);
+
+                    // Lưu ảnh cho section
+                    if (isset($section['images'])) {
+                        foreach ($section['images'] as $image) {
+                            // Tạo tên file duy nhất
+                            $filename = time() . '_' . $image->getClientOriginalName();
+
+                            // Lưu ảnh vào thư mục public/image/posts
+                            $image->move(public_path('image/posts/post_section_images'), $filename);
+                            PostSectionImage::create([
+                                'post_section_id' => $postSection->id,
+                                'image_path' => 'image/posts/post_section_images/' . $filename,
+                            ]);
+                        }
+                    }
+                }
+            }
+
+            DB::commit();
+            return redirect()->route('posts.index')->with('success', 'Bài viết đã được tạo thành công.');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return back()->withInput()->with('error', 'Có lỗi xảy ra: ' . $e->getMessage());
+        }
     }
 
     private function convertTikTokLinksToIframe($content)
@@ -83,50 +165,78 @@ class PostController extends Controller
 
     public function destroy(Post $post)
     {
-        // Xóa tất cả ảnh liên quan
-        foreach ($post->images as $image) {
-            // Xóa file ảnh từ thư mục public
-            if (file_exists(public_path($image->image_path))) {
-                unlink(public_path($image->image_path));
+        DB::beginTransaction();
+        try {
+            // Xóa tất cả ảnh liên quan
+            foreach ($post->images as $image) {
+                // Xóa file ảnh từ thư mục public
+                if (file_exists(public_path($image->image_path))) {
+                    unlink(public_path($image->image_path));
+                }
+                // Xóa bản ghi ảnh
+                $image->delete();
             }
-        }
 
-        // Xóa các ảnh trong nội dung mô tả
-        if ($post->description) {
-            // Tìm tất cả các thẻ img trong nội dung
-            preg_match_all('/<img[^>]+src="([^">]+)"/', $post->description, $matches);
+            // Xóa các ảnh trong nội dung mô tả
+            if ($post->description) {
+                // Tìm tất cả các thẻ img trong nội dung
+                preg_match_all('/<img[^>]+src="([^">]+)"/', $post->description, $matches);
 
-            if (!empty($matches[1])) {
-                foreach ($matches[1] as $imageUrl) {
-                    // Lấy đường dẫn tương đối từ URL
-                    $path = parse_url($imageUrl, PHP_URL_PATH);
+                if (!empty($matches[1])) {
+                    foreach ($matches[1] as $imageUrl) {
+                        // Lấy đường dẫn tương đối từ URL
+                        $path = parse_url($imageUrl, PHP_URL_PATH);
 
-                    if ($path) {
-                        // Loại bỏ tất cả các tiền tố có thể có
-                        $path = preg_replace('/^.*image\//', 'image/', $path);
+                        if ($path) {
+                            // Loại bỏ tất cả các tiền tố có thể có
+                            $path = preg_replace('/^.*image\//', 'image/', $path);
 
-                        // Xóa cả ảnh trong thư mục posts và uploads
-                        if (strpos($path, 'image/posts/') === 0 || strpos($path, 'image/uploads/') === 0) {
-                            $fullPath = public_path($path);
-                            if (file_exists($fullPath)) {
-                                unlink($fullPath);
+                            // Xóa cả ảnh trong thư mục posts và uploads
+                            if (strpos($path, 'image/posts/') === 0 || strpos($path, 'image/uploads/') === 0) {
+                                $fullPath = public_path($path);
+                                if (file_exists($fullPath)) {
+                                    unlink($fullPath);
+                                }
                             }
                         }
                     }
                 }
             }
+
+            // Xóa các section và ảnh của section
+            foreach ($post->sections as $section) {
+                foreach ($section->images as $image) {
+                    if (file_exists(public_path($image->image_path))) {
+                        unlink(public_path($image->image_path));
+                    }
+                    $image->delete();
+                }
+                $section->delete();
+            }
+
+            // Xóa các đánh giá
+            $post->reviews()->delete();
+
+            // Xóa các like
+            $post->likes()->detach();
+
+            // Xóa các comment
+            $post->comments()->delete();
+
+            // Xóa các chủ sở hữu
+            $post->owners()->detach();
+
+            // Xóa bài đăng
+            $post->delete();
+
+            DB::commit();
+            return redirect()->route('posts.index')
+                ->with('success', 'Bài đăng đã được xóa thành công!');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return redirect()->back()
+                ->with('error', 'Có lỗi xảy ra khi xóa bài đăng: ' . $e->getMessage());
         }
-
-        foreach ($post->images as $image) {
-            // Xóa bản ghi ảnh
-            $image->delete();
-        }
-
-        // Xóa bài đăng (cascade sẽ tự động xóa các bản ghi ảnh liên quan)
-        $post->delete();
-
-        return redirect()->route('posts.index')
-            ->with('success', 'Bài đăng đã được xóa thành công!');
     }
 
     public function uploadImage(Request $request)
@@ -154,33 +264,6 @@ class PostController extends Controller
 
     public function edit(Post $post)
     {
-        // Chuẩn bị nội dung mô tả với đường dẫn ảnh đúng định dạng
-        $description = $post->description;
-
-        // Tìm tất cả các thẻ img trong nội dung
-        preg_match_all('/<img[^>]+src="([^">]+)"/', $description, $matches);
-
-        if (!empty($matches[1])) {
-            foreach ($matches[1] as $imageUrl) {
-                // Lấy đường dẫn tương đối từ URL
-                $path = parse_url($imageUrl, PHP_URL_PATH);
-
-                if ($path) {
-                    // Loại bỏ tất cả các tiền tố có thể có
-                    $path = preg_replace('/^.*image\//', 'image/', $path);
-
-                    // Tạo đường dẫn mới với định dạng chuẩn
-                    $newPath = asset($path);
-
-                    // Thay thế đường dẫn cũ bằng đường dẫn mới
-                    $description = str_replace($imageUrl, $newPath, $description);
-                }
-            }
-        }
-
-        // Cập nhật nội dung mô tả với đường dẫn ảnh đã chuẩn hóa
-        $post->description = $description;
-
         return view('admin.posts.edit', compact('post'));
     }
 
@@ -190,88 +273,121 @@ class PostController extends Controller
             'title' => 'required|string|max:255',
             'address' => 'required|string|max:255',
             'description' => 'required|string',
-            'images.*' => 'image|mimes:jpeg,png,jpg,gif|max:2048'
+            'min_price' => 'nullable|integer|min:0',
+            'max_price' => 'nullable|integer|min:0',
+            'latitude' => 'nullable|numeric',
+            'longitude' => 'nullable|numeric',
+            'images.*' => 'image|mimes:jpeg,png,jpg,gif|max:2048',
+            'sections.*.title' => 'required|string|max:255',
+            'sections.*.content' => 'nullable|string',
+            'sections.*.images.*' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'sections.*.embed_type' => 'nullable|string|in:tiktok,youtube,map',
         ]);
 
-        // Lưu nội dung mô tả cũ để so sánh
-        $oldDescription = $post->description;
-
-        // Xử lý nhúng TikTok trong mô tả mới
-        $processedDescription = $this->convertTikTokLinksToIframe($request->description);
-
-        // Cập nhật thông tin cơ bản
-        $post->update([
-            'title' => $request->title,
-            'address' => $request->address,
-            'description' => $processedDescription,
-            'status' => 1,
-            'type' => $request->type,
-        ]);
-
-        // Xử lý ảnh đính kèm
-        if ($request->hasFile('images')) {
-            foreach ($request->file('images') as $image) {
-                $filename = time() . '_' . $image->getClientOriginalName();
-
-                // Lưu ảnh vào thư mục public/image/posts
-                $image->move(public_path('image/posts'), $filename);
-
-                // Lưu đường dẫn vào database
-                $post->images()->create([
-                    'image_path' => 'image/posts/' . $filename
-                ]);
+        DB::beginTransaction();
+        try {
+            // Gom các loại món ăn đã chọn và loại nhập thêm
+            $cuisine = $request->input('cuisine', []);
+            if ($request->filled('cuisine_other') && !in_array($request->input('cuisine_other'), $cuisine)) {
+                $cuisine[] = $request->input('cuisine_other');
             }
-        }
 
-        // Xử lý ảnh trong nội dung mô tả
-        if ($oldDescription !== $request->description) {
-            // Tìm tất cả ảnh cũ trong nội dung
-            preg_match_all('/<img[^>]+src="([^">]+)"/', $oldDescription, $oldMatches);
-            $oldImages = $oldMatches[1] ?? [];
+            $post->update([
+                'title' => $request->title,
+                'address' => $request->address,
+                'description' => $request->description,
+                'status' => 1,
+                'type' => $request->type,
+                'min_price' => $request->min_price,
+                'max_price' => $request->max_price,
+                'cuisine' => json_encode($cuisine),
+                'latitude' => $request->latitude,
+                'longitude' => $request->longitude,
+            ]);
 
-            // Tìm tất cả ảnh mới trong nội dung
-            preg_match_all('/<img[^>]+src="([^">]+)"/', $processedDescription, $newMatches);
-            $newImages = $newMatches[1] ?? [];
-
-            // Chuẩn hóa đường dẫn ảnh để so sánh
-            $normalizedOldImages = [];
-            foreach ($oldImages as $oldImage) {
-                $path = parse_url($oldImage, PHP_URL_PATH);
-                if ($path) {
-                    // Loại bỏ tất cả các tiền tố có thể có
-                    $path = preg_replace('/^.*image\//', 'image/', $path);
-                    $normalizedOldImages[] = $path;
+            // Xử lý ảnh đính kèm (gallery lớn)
+            if ($request->hasFile('images')) {
+                foreach ($request->file('images') as $image) {
+                    $filename = time() . '_' . $image->getClientOriginalName();
+                    $image->move(public_path('image/posts'), $filename);
+                    $post->images()->create([
+                        'image_path' => 'image/posts/' . $filename
+                    ]);
                 }
             }
 
-            $normalizedNewImages = [];
-            foreach ($newImages as $newImage) {
-                $path = parse_url($newImage, PHP_URL_PATH);
-                if ($path) {
-                    // Loại bỏ tất cả các tiền tố có thể có
-                    $path = preg_replace('/^.*image\//', 'image/', $path);
-                    $normalizedNewImages[] = $path;
-                }
-            }
-
-            // Xóa những ảnh cũ không còn được sử dụng
-            foreach ($normalizedOldImages as $index => $normalizedOldImage) {
-                if (!in_array($normalizedOldImage, $normalizedNewImages)) {
-                    // Chỉ xóa nếu file nằm trong thư mục uploads
-                    if (strpos($normalizedOldImage, 'image/uploads/') === 0) {
-                        // Log để debug
-                        Log::info('Deleting unused image: ' . $normalizedOldImage);
-                        $fullPath = public_path($normalizedOldImage);
-                        if (file_exists($fullPath)) {
-                            unlink($fullPath);
+            // Xử lý các section
+            $sectionIdsInRequest = [];
+            if ($request->has('sections')) {
+                foreach ($request->sections as $index => $section) {
+                    if (isset($section['id'])) {
+                        $sectionIdsInRequest[] = $section['id'];
+                        // Cập nhật section hiện tại
+                        $postSection = PostSection::find($section['id']);
+                        if ($postSection) {
+                            $postSection->update([
+                                'title' => $section['title'],
+                                'content' => $section['content'],
+                                'embed_type' => $section['embed_type'],
+                                'embed_url' => $section['embed_url'],
+                            ]);
+                            // Xử lý ảnh mới cho section
+                            if (isset($section['images'])) {
+                                foreach ($section['images'] as $image) {
+                                    $filename = time() . '_' . $image->getClientOriginalName();
+                                    $image->move(public_path('image/posts/post_section_images'), $filename);
+                                    PostSectionImage::create([
+                                        'post_section_id' => $postSection->id,
+                                        'image_path' => 'image/posts/post_section_images/' . $filename,
+                                    ]);
+                                }
+                            }
+                        }
+                    } else {
+                        // Thêm section mới
+                        $postSection = PostSection::create([
+                            'post_id' => $post->id,
+                            'title' => $section['title'],
+                            'content' => $section['content'],
+                            'embed_type' => $section['embed_type'],
+                            'embed_url' => $section['embed_url'],
+                            'order' => $index,
+                        ]);
+                        $sectionIdsInRequest[] = $postSection->id;
+                        // Xử lý ảnh cho section mới
+                        if (isset($section['images'])) {
+                            foreach ($section['images'] as $image) {
+                                $filename = time() . '_' . $image->getClientOriginalName();
+                                $image->move(public_path('image/posts/post_section_images'), $filename);
+                                PostSectionImage::create([
+                                    'post_section_id' => $postSection->id,
+                                    'image_path' => 'image/posts/post_section_images/' . $filename,
+                                ]);
+                            }
                         }
                     }
                 }
+                // Xóa các section cũ không còn trong request
+                $post->sections()->whereNotIn('id', $sectionIdsInRequest)->each(function($section) {
+                    // Xóa ảnh của section
+                    foreach ($section->images as $image) {
+                        if (file_exists(public_path($image->image_path))) {
+                            unlink(public_path($image->image_path));
+                        }
+                        $image->delete();
+                    }
+                    $section->delete();
+                });
             }
-        }
 
-        return redirect()->route('posts.index')
-            ->with('success', 'Bài đăng đã được cập nhật thành công!');
+            DB::commit();
+            return redirect()->route('posts.index')
+                ->with('success', 'Bài viết đã được cập nhật thành công!');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return back()->withInput()
+                ->with('error', 'Có lỗi xảy ra khi cập nhật bài viết: ' . $e->getMessage());
+        }
     }
 
     public function destroyImage($id)
@@ -308,7 +424,7 @@ class PostController extends Controller
 
             return response()->json([
                 'posts' => $posts->map(function ($post) {
-                    $isLiked = $post->likes->contains(auth()->id());
+                    $isLiked = $post->likes->contains(Auth::user()->id);
                     return [
                         'id' => $post->id,
                         'description' => $post->description,
@@ -523,5 +639,34 @@ class PostController extends Controller
         }
 
         return redirect()->back()->with('success', 'Đã xóa chủ sở hữu khỏi bài đăng');
+    }
+
+    public function destroySectionImage($id)
+    {
+        $image = PostSectionImage::findOrFail($id);
+
+        // Xóa file ảnh từ thư mục public
+        if (file_exists(public_path($image->image_path))) {
+            unlink(public_path($image->image_path));
+        }
+
+        // Xóa bản ghi ảnh
+        $image->delete();
+
+        return response()->json(['success' => true]);
+    }
+
+    public function destroySection($id)
+    {
+        $section = PostSection::findOrFail($id);
+        // Xóa ảnh của section
+        foreach ($section->images as $image) {
+            if (file_exists(public_path($image->image_path))) {
+                unlink(public_path($image->image_path));
+            }
+            $image->delete();
+        }
+        $section->delete();
+        return response()->json(['success' => true]);
     }
 }

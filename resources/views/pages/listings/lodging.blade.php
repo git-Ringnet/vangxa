@@ -168,7 +168,6 @@
             </div>
 
             <div class="load-more">
-                <h4>Tiếp tục khám phá danh mục phòng</h4>
                 <button class="load-more-button" id="loadMoreButton">
                     Hiển thị thêm
                 </button>
@@ -388,6 +387,16 @@
 
                     // Reinitialize carousels for new posts
                     initializeCarousels();
+                    
+                    // Update distances for new posts
+                    console.log('Load more completed, updating distances for new posts...');
+                    setTimeout(function() {
+                        if (typeof updateDistances === 'function') {
+                            updateDistances();
+                        } else {
+                            console.error('updateDistances function not found');
+                        }
+                    }, 500);
                 })
                 .catch(error => {
                     console.error('Error loading more posts:', error);

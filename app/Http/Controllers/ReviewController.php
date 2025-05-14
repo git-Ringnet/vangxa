@@ -12,9 +12,9 @@ class ReviewController extends Controller
     public function store(Request $request, Post $post)
     {
         $request->validate([
-            'food_rating' => 'integer|min:1|max:5',
-            'satisfaction_level' => 'integer|min:1|max:5',
-            'comment' => 'string|min:10|max:1000'
+            'food_rating' => 'nullable|integer|min:1|max:5',
+            'satisfaction_level' => 'nullable|integer|min:1|max:5',
+            'comment' => 'nullable|string|min:10|max:1000'
         ], [
             'food_rating.integer' => 'Đánh giá sao không hợp lệ',
             'food_rating.min' => 'Đánh giá sao phải từ 1-5',
@@ -25,6 +25,13 @@ class ReviewController extends Controller
             'comment.min' => 'Nhận xét phải có ít nhất 10 ký tự',
             'comment.max' => 'Nhận xét không được vượt quá 1000 ký tự'
         ]);
+
+        // Kiểm tra có ít nhất 1 loại đánh giá
+        if (!$request->food_rating && !$request->satisfaction_level && !$request->comment) {
+            return redirect()->back()
+                ->withInput()
+                ->withErrors(['general' => 'Vui lòng chọn ít nhất một loại đánh giá (sao, biểu tượng hoặc nhận xét)']);
+        }
 
         $review = Review::create([
             'post_id' => $request->post_id,
