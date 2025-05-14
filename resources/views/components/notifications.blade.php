@@ -99,7 +99,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         console.log('Private UnfollowEvent received:', e);
                         this.handleNewNotification(e);
                     })
-                    .listen('LikeEvent', (e) => {
+                    .listen('.like.created', (e) => {
                         console.log('Private LikeEvent received:', e);
                         this.handleNewNotification({
                             id: `like-${Date.now()}`,
@@ -110,7 +110,7 @@ document.addEventListener('DOMContentLoaded', function() {
                             read_at: null
                         });
                     })
-                    .listen('UnlikeEvent', (e) => {
+                    .listen('.like.deleted', (e) => {
                         console.log('Private UnlikeEvent received:', e);
                         this.handleNewNotification({
                             id: `unlike-${Date.now()}`,

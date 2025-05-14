@@ -70,15 +70,19 @@ document.addEventListener('DOMContentLoaded', function() {
         // Lắng nghe trên kênh private của user hiện tại
         window.Echo.private(`user.${currentUserId}`)
             .listen('.like.created', (e) => {
-                console.log('Received LikeEvent in private channel:', e);
+                console.log('[DEBUG] Received LikeEvent in private channel:', e);
+                // showNotification(`Nhận được sự kiện like: ${JSON.stringify(e)}`, 'info');
                 updateNotificationCount();
             })
             .listen('.like.deleted', (e) => {
-                console.log('Received UnlikeEvent in private channel:', e);
+                console.log('[DEBUG] Received UnlikeEvent in private channel:', e);
+                // showNotification(`Nhận được sự kiện unlike: ${JSON.stringify(e)}`, 'info');
                 updateNotificationCount();
             });
     } else {
         console.warn('Echo is not defined or user is not logged in - real-time updates will not work');
+        if (!window.Echo) console.error('window.Echo undefined, check your setup!');
+        if (!currentUserId) console.error('currentUserId not found in body data-user-id attribute!');
     }
     
     // Hàm cập nhật UI của nút like
