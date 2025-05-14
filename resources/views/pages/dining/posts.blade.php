@@ -36,7 +36,7 @@
                         onclick="event.preventDefault(); event.stopPropagation(); showStoryModal({{ $post->id }})">
                         <div class="book">
                             <div class="cover">
-                                <img src="image/sách.png" style="width: 100%; height: 100%; object-fit: cover;">
+                                <img src="image/book.png" style="width: 100%; height: 100%; object-fit: cover;">
                                 <div class="circleImage">
                                     <img src="https://img.tripi.vn/cdn-cgi/image/width=700,height=700/https://gcs.tripi.vn/public-tripi/tripi-feed/img/474090Ypg/hinh-anh-girl-xinh-dep-de-thuong_025104504.jpg"
                                         alt="Avatar">

@@ -36,7 +36,7 @@
                         onclick="event.preventDefault(); event.stopPropagation(); showStoryModal({{ $post->id }})">
                         <div class="book">
                             <div class="cover">
-                                <img src="image/sách.png" style="width: 100%; height: 100%; object-fit: cover;">
+                                <img src="image/book.png" style="width: 100%; height: 100%; object-fit: cover;">
                                 <div class="circleImage">
                                     <img src="{{ asset($post->user->avatar ?? 'image/default/default-avatar.jpg') }}"
                                         alt="User Avatar" style="width: 100%; height: 100%; object-fit: cover;">

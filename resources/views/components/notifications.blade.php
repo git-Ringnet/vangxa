@@ -3,14 +3,13 @@
     <!-- Chuông thông báo -->
     <button @click="toggleDropdown" class="relative focus:outline-none">
         <div class="d-flex">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path
-                    d="M15 17V18C15 19.6569 13.6569 21 12 21C10.3431 21 9 19.6569 9 18V17.0001M15 17L9 17.0001M15 17H19C19.5523 17 20 16.5523 20 16V15.4141C20 15.1489 19.8945 14.8946 19.707 14.707L19.1963 14.1963C19.0706 14.0706 19 13.9 19 13.7222V10C19 6 15.3835 3 12 3C8.134 3 5 6 5 9.99998V13.7224C5 13.9002 4.92939 14.0701 4.80371 14.1958L4.29297 14.7073C4.10544 14.8949 4 15.1489 4 15.4141V15.9998C4 16.5521 4.44772 17.0001 5 17.0001L9 17.0001"
-                    stroke="#3C3C3C" stroke-opacity="0.5" stroke-width="2" stroke-linecap="round"
-                    stroke-linejoin="round" />
-                <circle cx="18" cy="5" r="4.5" fill="#FF5A00" stroke="#F5E5CC" />
+            <svg class="w-6 h-6 text-gray-600 hover:text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9">
+                </path>
             </svg>
-            <span class="pl-3 text-menu">Thông báo</span>
+            <span class="pl-3">Thông báo</span>
         </div>
         <!-- Đếm số lượng thông báo chưa đọc -->
         <span x-show="unreadCount > 0"
@@ -55,18 +54,25 @@
                             </svg>
                         </template>
                         <template x-if="notification.type === 'like'">
-                            <svg class="w-5 h-5 text-red-500" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+                            <svg class="w-5 h-5 text-red-500" fill="currentColor" viewBox="0 0 24 24"
+                                xmlns="http://www.w3.org/2000/svg">
+                                <path
+                                    d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
                             </svg>
                         </template>
                         <template x-if="notification.type === 'unlike'">
-                            <svg class="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
+                            <svg class="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                                xmlns="http://www.w3.org/2000/svg">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
                             </svg>
                         </template>
-                        <template x-if="notification.type !== 'follow' && notification.type !== 'like' && notification.type !== 'unlike'">
-                            <svg class="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        <template
+                            x-if="notification.type !== 'follow' && notification.type !== 'like' && notification.type !== 'unlike'">
+                            <svg class="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                                xmlns="http://www.w3.org/2000/svg">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                             </svg>
                         </template>
                     </div>
@@ -100,73 +106,44 @@
             init() {
                 if (this.currentUserId) {
                     this.fetchNotifications();
-                // Lắng nghe trên kênh private của user hiện tại
-                window.Echo.private(`user.${this.currentUserId}`)
-                    .listen('.Illuminate\\Notifications\\Events\\BroadcastNotificationCreated', (notification) => {
-                        console.log('Notification system event received:', notification);
-                        this.handleNewNotification(notification);
-                    })
-                    .listen('FollowEventReverb', (e) => {
-                        console.log('Private FollowEventReverb received:', e);
-                        this.handleNewNotification(e);
-                    })
-                    .listen('UnfollowEvent', (e) => {
-                        console.log('Private UnfollowEvent received:', e);
-                        this.handleNewNotification(e);
-                    })
-                    .listen('.like.created', (e) => {
-                        console.log('Private LikeEvent received:', e);
-                        this.handleNewNotification({
-                            id: `like-${Date.now()}`,
-                            message: `${e.liker_name} đã thích bài viết của bạn`,
-                            type: 'like',
-                            link: e.link || `/posts/${e.post_id}`,
-                            created_at: 'Vừa xong',
-                            read_at: null
-                        });
-                    })
-                    .listen('.like.deleted', (e) => {
-                        console.log('Private UnlikeEvent received:', e);
-                        this.handleNewNotification({
-                            id: `unlike-${Date.now()}`,
-                            message: `${e.unliker_name} đã bỏ thích bài viết của bạn`,
-                            type: 'unlike',
-                            link: e.link || `/posts/${e.post_id}`,
-                            created_at: 'Vừa xong',
-                            read_at: null
-                        });
-                    });
-            }
-        },
 
-        // Xử lý thông báo mới
-        handleNewNotification(notification) {
-            // Format dữ liệu nếu cần thiết
-            let formattedNotification = {
-                id: notification.id || `temp-${Date.now()}`,
-                message: notification.message,
-                type: notification.type || 'general',
-                link: notification.link,
-                created_at: 'Vừa xong',
-                read_at: null
-            };
-            
-            // Thêm vào đầu danh sách
-            this.notifications.unshift(formattedNotification);
-                    this.unreadCount++;
-            
-            // Hiển thị toast thông báo với kiểu phù hợp
-            if (typeof showToast === 'function') {
-                // Xác định kiểu thông báo dựa vào nội dung
-                let toastType = 'info';
-                if (formattedNotification.message.includes('đã bắt đầu theo dõi')) {
-                    toastType = 'success';
-                } else if (formattedNotification.message.includes('đã hủy theo dõi')) {
-                    toastType = 'info';
-                } else if (formattedNotification.message.includes('đã thích')) {
-                    toastType = 'success';
-                } else if (formattedNotification.message.includes('đã bỏ thích')) {
-                    toastType = 'info';
+                    // Lắng nghe trên kênh private của user hiện tại
+                    window.Echo.private(`user.${this.currentUserId}`)
+                        .listen('.Illuminate\\Notifications\\Events\\BroadcastNotificationCreated',
+                            (notification) => {
+                                console.log('Notification system event received:', notification);
+                                this.handleNewNotification(notification);
+                            })
+                        .listen('FollowEventReverb', (e) => {
+                            console.log('Private FollowEventReverb received:', e);
+                            this.handleNewNotification(e);
+                        })
+                        .listen('UnfollowEvent', (e) => {
+                            console.log('Private UnfollowEvent received:', e);
+                            this.handleNewNotification(e);
+                        })
+                        .listen('.like.created', (e) => {
+                            console.log('Private LikeEvent received:', e);
+                            this.handleNewNotification({
+                                id: `like-${Date.now()}`,
+                                message: `${e.liker_name} đã thích bài viết của bạn`,
+                                type: 'like',
+                                link: e.link || `/posts/${e.post_id}`,
+                                created_at: 'Vừa xong',
+                                read_at: null
+                            });
+                        })
+                        .listen('.like.deleted', (e) => {
+                            console.log('Private UnlikeEvent received:', e);
+                            this.handleNewNotification({
+                                id: `unlike-${Date.now()}`,
+                                message: `${e.unliker_name} đã bỏ thích bài viết của bạn`,
+                                type: 'unlike',
+                                link: e.link || `/posts/${e.post_id}`,
+                                created_at: 'Vừa xong',
+                                read_at: null
+                            });
+                        });
                 }
             },
 
@@ -193,6 +170,10 @@
                     if (formattedNotification.message.includes('đã bắt đầu theo dõi')) {
                         toastType = 'success';
                     } else if (formattedNotification.message.includes('đã hủy theo dõi')) {
+                        toastType = 'info';
+                    } else if (formattedNotification.message.includes('đã thích')) {
+                        toastType = 'success';
+                    } else if (formattedNotification.message.includes('đã bỏ thích')) {
                         toastType = 'info';
                     }
 
