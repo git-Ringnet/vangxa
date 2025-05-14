@@ -3,8 +3,12 @@
 namespace App\Providers;
 
 use App\Events\FollowEventReverb;
+use App\Events\LikeEvent;
+use App\Events\UnlikeEvent;
 use App\Events\UnfollowEvent;
 use App\Listeners\CreateFollowNotification;
+use App\Listeners\CreateLikeNotification;
+use App\Listeners\CreateUnlikeNotification;
 use App\Listeners\CreateUnfollowNotification;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
@@ -27,6 +31,12 @@ class EventServiceProvider extends ServiceProvider
         // ],
         // UnfollowEvent::class => [
         //     CreateUnfollowNotification::class,
+        // ],
+        // LikeEvent::class => [
+        //     CreateLikeNotification::class,
+        // ],
+        // UnlikeEvent::class => [
+        //     CreateUnlikeNotification::class,
         // ],
     ];
 

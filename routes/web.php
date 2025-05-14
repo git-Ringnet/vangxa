@@ -167,6 +167,8 @@ Route::get('/loadmore-posts', [PostController::class, 'getPosts'])->name('posts.
 Route::middleware(['auth'])->group(function () {
     Route::post('/posts/{post}/like', [LikeController::class, 'store'])->name('posts.like');
     Route::delete('/posts/{post}/like', [LikeController::class, 'destroy'])->name('posts.unlike');
+    Route::post('/like/{post}', [LikeController::class, 'store'])->name('like.store');
+    Route::post('/unlike/{post}', [LikeController::class, 'destroy'])->name('unlike.store');
 });
 
 Route::get('/leaderboard', [LeaderboardController::class, 'index'])->name('leaderboard');

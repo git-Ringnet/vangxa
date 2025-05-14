@@ -2,8 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\LikeEvent;
+use App\Events\UnlikeEvent;
 use App\Models\Post;
 use App\Models\Like;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -19,7 +22,7 @@ class LikeController extends Controller
         if ($existingLike) {
             return response()->json([
                 'success' => false,
-                'message' => 'You have already liked this post'
+                'message' => 'Bạn đã thích bài viết này rồi'
             ]);
         }
 
@@ -29,13 +32,23 @@ class LikeController extends Controller
             'post_id' => $post->id
         ]);
 
+        // Lấy người dùng hiện tại
+        $currentUser = User::find(Auth::id());
+
+        // Dispatch event để tạo thông báo
+        if ($post->user_id != Auth::id()) {
+            event(new LikeEvent($post, $currentUser));
+        }
+
         // Lấy lại số lượng like mới nhất
         $post->load('likes');
         
         return response()->json([
             'success' => true,
-            'count' => $post->likes->count(),
-            'is_liked' => true
+            'message' => 'Đã thích bài viết',
+            'likes_count' => $post->likes->count(),
+            'is_liked' => true,
+            'post_id' => $post->id
         ]);
     }
 
@@ -49,8 +62,16 @@ class LikeController extends Controller
         if (!$like) {
             return response()->json([
                 'success' => false,
-                'message' => 'You have not liked this post'
+                'message' => 'Bạn chưa thích bài viết này'
             ]);
+        }
+
+        // Lấy người dùng hiện tại trước khi xóa like
+        $currentUser = User::find(Auth::id());
+
+        // Dispatch event để tạo thông báo unlike
+        if ($post->user_id != Auth::id()) {
+            event(new UnlikeEvent($post, $currentUser));
         }
 
         // Xóa like
@@ -61,8 +82,10 @@ class LikeController extends Controller
         
         return response()->json([
             'success' => true,
-            'count' => $post->likes->count(),
-            'is_liked' => false
+            'message' => 'Đã bỏ thích bài viết',
+            'likes_count' => $post->likes->count(),
+            'is_liked' => false,
+            'post_id' => $post->id
         ]);
     }
 } 

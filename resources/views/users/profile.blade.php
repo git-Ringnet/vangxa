@@ -424,12 +424,10 @@
                 unreadCount: 0,
                 init() {
                     this.fetchNotificationCount();
-                    Echo.channel('followers')
-                        .subscribed(() => {
-                            console.log('Subscribed to followers');
-                        })
+                    // Chỉ lắng nghe trên kênh private để tránh thông báo trùng lặp
+                    Echo.private(`user.{{ auth()->user()->id }}`)
                         .listen('FollowEventReverb', (e) => {
-                            console.log('FollowEventReverb received:', e);
+                            console.log('Private FollowEventReverb received:', e);
                             console.log('Status from event:', e.status);
                             console.log('Action from event:', e.action);
                             console.log('Message from event:', e.message);
@@ -439,17 +437,6 @@
                             console.log('Current user ID:', currentUserId);
                             console.log('Follower ID:', e.follower_id);
                             console.log('Following ID:', e.following_id);
-                            
-                            // Xử lý khi người dùng hiện tại là người theo dõi/hủy theo dõi
-                            if({{ auth()->user()->id }} === e.follower_id){
-                                if(e.status) {
-                                    console.log('Showing follow toast (follower)');
-                                    showToast('Bạn đang theo dõi ' + e.following_name, 'success');
-                                } else {
-                                    console.log('Showing unfollow toast (follower)');
-                                    showToast('Bạn đã hủy theo dõi ' + e.following_name, 'info');
-                                }
-                            }
                             
                             // Xử lý khi người dùng hiện tại là người được theo dõi/hủy theo dõi
                             if({{ auth()->user()->id }} === e.following_id) {
@@ -461,6 +448,16 @@
                                     console.log('Showing unfollow toast (following)');
                                     showToast(e.follower_name + ' đã hủy theo dõi bạn', 'info');
                                 }
+                            }
+                        })
+                        .listen('UnfollowEvent', (e) => {
+                            console.log('Private UnfollowEvent received:', e);
+                            
+                            // Xử lý khi người dùng hiện tại là người được theo dõi/hủy theo dõi
+                            if({{ auth()->user()->id }} === e.following_id) {
+                                this.unreadCount++;
+                                console.log('Showing unfollow toast (following)');
+                                showToast(e.follower_name + ' đã hủy theo dõi bạn', 'info');
                             }
                         });
                 },
