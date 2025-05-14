@@ -67,7 +67,7 @@
 
                     <div class="mb-4">
                         <label for="type" class="form-label">Loại bài viết</label>
-                        <select class="form-select @error('type') is-invalid @enderror" id="type" name="type"
+                        <select class="form-select @error('type') is-invalid @enderror" id="post-type" name="type"
                             required>
                             <option value="1" {{ old('type', $post->type) == 1 ? 'selected' : '' }}>Du lịch</option>
                             <option value="2" {{ old('type', $post->type) == 2 ? 'selected' : '' }}>Ẩm thực</option>
@@ -77,7 +77,7 @@
                         @enderror
                     </div>
 
-                    <div class="mb-4">
+                    <div class="mb-4 food-only" id="cuisine-section" style="{{ old('type', $post->type) == 1 ? 'display: none;' : '' }}">
                         <label class="form-label">Loại món ăn</label>
                         <div>
                             @php
@@ -100,6 +100,46 @@
                         </div>
                     </div>
 
+                    <div class="mb-4 food-only" id="food-style-section" style="{{ old('type', $post->type) == 1 ? 'display: none;' : '' }}">
+                        <label class="form-label">Phong cách</label>
+                        <div>
+                            @php
+                                $styleOptions = ['Có Tâm', 'Family-Friendly', 'Ăn vặt', 'View đẹp'];
+                                $oldStyles = old('styles', json_decode($post->styles ?? '[]', true) ?? []);
+                            @endphp
+                            @foreach ($styleOptions as $option)
+                                <label class="me-3">
+                                    <input type="checkbox" name="styles[]" value="{{ $option }}"
+                                        {{ in_array($option, $oldStyles) ? 'checked' : '' }}>
+                                    {{ $option }}
+                                </label>
+                            @endforeach
+                        </div>
+                        @error('styles')
+                            <div class="invalid-feedback d-block">{{ $message }}</div>
+                        @enderror
+                    </div>
+
+                    <div class="mb-4 travel-only" id="travel-style-section" style="{{ old('type', $post->type) == 2 ? 'display: none;' : '' }}">
+                        <label class="form-label">Phong cách du lịch</label>
+                        <div>
+                            @php
+                                $travelStyleOptions = ['Thiên nhiên', 'Văn hóa', 'Giải trí', 'Nghỉ dưỡng', 'Phiêu lưu'];
+                                $oldStyles = old('styles', json_decode($post->styles ?? '[]', true) ?? []);
+                            @endphp
+                            @foreach ($travelStyleOptions as $option)
+                                <label class="me-3">
+                                    <input type="checkbox" name="styles[]" value="{{ $option }}"
+                                        {{ in_array($option, $oldStyles) ? 'checked' : '' }}>
+                                    {{ $option }}
+                                </label>
+                            @endforeach
+                        </div>
+                        @error('styles')
+                            <div class="invalid-feedback d-block">{{ $message }}</div>
+                        @enderror
+                    </div>
+
                     <div class="mb-4">
                         <label for="description" class="form-label">Mô tả</label>
                         <textarea class="form-control @error('description') is-invalid @enderror" id="description" name="description"
@@ -109,7 +149,7 @@
                         @enderror
                     </div>
 
-                    <div class="mb-4">
+                    <div class="mb-4 food-only" id="min-price-section" style="{{ old('type', $post->type) == 1 ? 'display: none;' : '' }}">
                         <label for="min_price" class="form-label">Giá thấp nhất (VNĐ)</label>
                         <input type="number" class="form-control @error('min_price') is-invalid @enderror" id="min_price"
                             name="min_price" value="{{ old('min_price', $post->min_price) }}" min="0">
@@ -118,7 +158,7 @@
                         @enderror
                     </div>
 
-                    <div class="mb-4">
+                    <div class="mb-4 food-only" id="max-price-section" style="{{ old('type', $post->type) == 1 ? 'display: none;' : '' }}">
                         <label for="max_price" class="form-label">Giá cao nhất (VNĐ)</label>
                         <input type="number" class="form-control @error('max_price') is-invalid @enderror" id="max_price"
                             name="max_price" value="{{ old('max_price', $post->max_price) }}" min="0">
@@ -252,6 +292,29 @@
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
     <script>
         $(document).ready(function() {
+            // Toggle form fields based on post type
+            $('#post-type').on('change', function() {
+                const postType = $(this).val();
+                
+                if (postType === '1') { // Du lịch
+                    $('.food-only').hide();
+                    $('.travel-only').show();
+                    
+                    // Clear food-specific data
+                    $('input[name="cuisine[]"]').prop('checked', false);
+                    $('input[name="cuisine_other"]').val('');
+                    $('#food-style-section input[name="styles[]"]').prop('checked', false);
+                    $('#min_price').val('');
+                    $('#max_price').val('');
+                } else { // Ẩm thực
+                    $('.food-only').show();
+                    $('.travel-only').hide();
+                    
+                    // Clear travel-specific data
+                    $('#travel-style-section input[name="styles[]"]').prop('checked', false);
+                }
+            });
+
             // Xử lý preview ảnh mới
             $("#images").on("change", function() {
                 const files = this.files;

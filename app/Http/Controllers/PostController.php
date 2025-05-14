@@ -50,6 +50,8 @@ class PostController extends Controller
             'latitude' => 'nullable|numeric',
             'longitude' => 'nullable|numeric',
             'images.*' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'styles' => 'nullable|array',
+            'styles.*' => 'nullable|string',
             'sections.*.title' => 'required|string|max:255',
             'sections.*.content' => 'nullable|string',
             'sections.*.images.*' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
@@ -94,6 +96,7 @@ class PostController extends Controller
                 'min_price' => $request->min_price,
                 'max_price' => $request->max_price,
                 'cuisine' => json_encode($cuisine),
+                'styles' => json_encode($request->input('styles', [])),
                 'latitude' => $request->latitude,
                 'longitude' => $request->longitude,
                 'status' => 1
@@ -278,6 +281,8 @@ class PostController extends Controller
             'latitude' => 'nullable|numeric',
             'longitude' => 'nullable|numeric',
             'images.*' => 'image|mimes:jpeg,png,jpg,gif|max:2048',
+            'styles' => 'nullable|array',
+            'styles.*' => 'nullable|string',
             'sections.*.title' => 'required|string|max:255',
             'sections.*.content' => 'nullable|string',
             'sections.*.images.*' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
@@ -301,6 +306,7 @@ class PostController extends Controller
                 'min_price' => $request->min_price,
                 'max_price' => $request->max_price,
                 'cuisine' => json_encode($cuisine),
+                'styles' => json_encode($request->input('styles', [])),
                 'latitude' => $request->latitude,
                 'longitude' => $request->longitude,
             ]);

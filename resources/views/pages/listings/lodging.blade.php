@@ -3,168 +3,24 @@
 
 @section('content')
     <div class="container-custom">
-        <!-- Categories -->
-        <section class="categories-section">
-            <div class="categories-wrapper">
-                <button class="categories-nav-button prev" id="prevButton" disabled>
-                    <i class="fas fa-chevron-left"></i>
-                </button>
-                <div class="categories-container" id="categoriesContainer">
-                    <div class="category-item active">
-                        <div class="category-icon">
-                            <i class="fas fa-home"></i>
-                        </div>
-                        <span class="category-name">Nhà</span>
-                    </div>
-                    <div class="category-item">
-                        <div class="category-icon">
-                            <i class="fas fa-mountain"></i>
-                        </div>
-                        <span class="category-name">Cabin</span>
-                    </div>
-                    <div class="category-item">
-                        <div class="category-icon">
-                            <i class="fas fa-umbrella-beach"></i>
-                        </div>
-                        <span class="category-name">Bãi biển</span>
-                    </div>
-                    <div class="category-item">
-                        <div class="category-icon">
-                            <i class="fas fa-swimming-pool"></i>
-                        </div>
-                        <span class="category-name">Hồ bơi</span>
-                    </div>
-                    <div class="category-item">
-                        <div class="category-icon">
-                            <i class="fas fa-campground"></i>
-                        </div>
-                        <span class="category-name">Cắm trại</span>
-                    </div>
-                    <div class="category-item">
-                        <div class="category-icon">
-                            <i class="fas fa-tree"></i>
-                        </div>
-                        <span class="category-name">Công viên</span>
-                    </div>
-                    <div class="category-item">
-                        <div class="category-icon">
-                            <i class="fas fa-city"></i>
-                        </div>
-                        <span class="category-name">Thành phố</span>
-                    </div>
-                    <div class="category-item">
-                        <div class="category-icon">
-                            <i class="fas fa-water"></i>
-                        </div>
-                        <span class="category-name">Ven hồ</span>
-                    </div>
-                    <div class="category-item">
-                        <div class="category-icon">
-                            <i class="fas fa-skiing"></i>
-                        </div>
-                        <span class="category-name">Trượt tuyết</span>
-                    </div>
-                    <div class="category-item">
-                        <div class="category-icon">
-                            <i class="fas fa-island-tropical"></i>
-                        </div>
-                        <span class="category-name">Đảo</span>
-                    </div>
-                    <div class="category-item">
-                        <div class="category-icon">
-                            <i class="fas fa-water"></i>
-                        </div>
-                        <span class="category-name">Ven hồ</span>
-                    </div>
-                    <div class="category-item">
-                        <div class="category-icon">
-                            <i class="fas fa-skiing"></i>
-                        </div>
-                        <span class="category-name">Trượt tuyết</span>
-                    </div>
-                    <div class="category-item">
-                        <div class="category-icon">
-                            <i class="fas fa-water"></i>
-                        </div>
-                        <span class="category-name">Ven hồ</span>
-                    </div>
-                    <div class="category-item">
-                        <div class="category-icon">
-                            <i class="fas fa-skiing"></i>
-                        </div>
-                        <span class="category-name">Trượt tuyết</span>
-                    </div>
-                    <div class="category-item">
-                        <div class="category-icon">
-                            <i class="fas fa-water"></i>
-                        </div>
-                        <span class="category-name">Ven hồ</span>
-                    </div>
-                    <div class="category-item">
-                        <div class="category-icon">
-                            <i class="fas fa-skiing"></i>
-                        </div>
-                        <span class="category-name">Trượt tuyết</span>
-                    </div>
-                    <div class="category-item">
-                        <div class="category-icon">
-                            <i class="fas fa-water"></i>
-                        </div>
-                        <span class="category-name">Ven hồ</span>
-                    </div>
-                    <div class="category-item">
-                        <div class="category-icon">
-                            <i class="fas fa-skiing"></i>
-                        </div>
-                        <span class="category-name">Trượt tuyết</span>
-                    </div>
-                </div>
-                <button class="categories-nav-button next" id="nextButton">
-                    <i class="fas fa-chevron-right"></i>
-                </button>
-
-            </div>
-            <button class="filter-button" id="filterButton">
+        <!-- Filter Controls -->
+        <div class="filter-controls">
+            <button class="filter-button" id="filterButton" onclick="openFilter()">
                 <i class="fas fa-sliders"></i>
                 <span>Bộ lọc</span>
             </button>
-        </section>
-
-        <!-- Filter Modal -->
-        <div class="filter-modal" id="filterModal">
-            <div class="filter-content">
-                <div class="filter-header">
-                    <h3>Bộ lọc</h3>
-                    <button class="filter-close" id="filterClose">
-                        <i class="fas fa-times"></i>
-                    </button>
-                </div>
-                <div class="filter-section">
-                    <h4>Khoảng giá</h4>
-                    <div class="price-range">
-                        <input type="number" class="price-input" placeholder="Giá tối thiểu">
-                        <input type="number" class="price-input" placeholder="Giá tối đa">
-                    </div>
-                </div>
-                <div class="filter-section">
-                    <h4>Loại chỗ ở</h4>
-                    <div class="checkbox-group">
-                        <label><input type="checkbox"> Nhà nguyên căn</label><br>
-                        <label><input type="checkbox"> Phòng riêng</label><br>
-                        <label><input type="checkbox"> Phòng chung</label>
-                    </div>
-                </div>
-                <div class="filter-buttons">
-                    <button class="filter-clear">Xóa tất cả</button>
-                    <button class="filter-apply">Áp dụng</button>
-                </div>
-            </div>
         </div>
+
+        <!-- Filter Sidebar -->
+        @include('components.filter-sidebar')
+
+        <!-- Overlay for Filter -->
+        <div class="filter-overlay" id="filterOverlay" onclick="closeFilter()"></div>
 
         <!-- Listings -->
         <section class="listings-section">
             <div class="listings-grid" id="post-list">
-                @include('pages.listings.posts', ['posts' => $posts])
+                @include('pages.listings.posts')
             </div>
 
             <div class="load-more">
@@ -176,89 +32,110 @@
     </div>
 @endsection
 
+<style>
+    .filter-controls {
+        display: flex;
+        justify-content: flex-end;
+    }
+    
+    .filter-button {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        background-color: #fff;
+        border: 1px solid #ddd;
+        border-radius: 20px;
+        padding: 8px 16px;
+        font-size: 14px;
+        color: #555;
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
+    
+    .filter-button:hover {
+        background-color: #f8f8f8;
+    }
+</style>
+
 <script>
-    function searchComponent() {
-            return {
-                query: '',
-                search() {
-                    fetch(`/search/lodging?search=${this.query}`)
-                        .then(res => res.json())
-                        .then(data => {
-                            document.getElementById('post-list').innerHTML = data.html;
-                        })
-                        .catch(err => console.error(err));
+    // Filter Functions
+    function openFilter() {
+        console.log("Opening filter");
+        const filterSidebar = document.getElementById('filterSidebar');
+        const filterOverlay = document.getElementById('filterOverlay');
+        const filterControls = document.querySelector('.filter-controls');
+        
+        // Show overlay first
+        filterOverlay.style.display = 'block';
+        
+        // Force reflow to ensure transition works
+        void filterOverlay.offsetWidth;
+        
+        // Start overlay fade-in animation
+        filterOverlay.style.opacity = '1';
+        
+        // Show sidebar
+        setTimeout(() => {
+            filterSidebar.style.visibility = 'visible';
+            filterSidebar.classList.add('show');
+            
+            // Store current scroll position
+            const scrollY = window.scrollY;
+            
+            // Calculate scrollbar width
+            const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth;
+            
+            // Apply fixed position without layout shift
+            document.body.style.position = 'fixed';
+            document.body.style.top = `-${scrollY}px`;
+            document.body.style.width = '100%';
+            document.body.style.overflow = 'hidden';
+            
+            // Compensate for scrollbar width to prevent layout shift
+            if (scrollbarWidth > 0) {
+                document.body.style.paddingRight = scrollbarWidth + 'px';
+                
+                // Also apply to filter controls to prevent button misalignment
+                if (filterControls) {
+                    filterControls.style.paddingRight = scrollbarWidth + 'px';
                 }
             }
+        }, 100);
+    }
+    
+    function closeFilter() {
+        console.log("Closing filter");
+        const filterSidebar = document.getElementById('filterSidebar');
+        const filterOverlay = document.getElementById('filterOverlay');
+        const filterControls = document.querySelector('.filter-controls');
+        
+        // Start sidebar closing animation
+        filterSidebar.classList.remove('show');
+        
+        // Restore scrolling without layout shift
+        const scrollY = parseInt(document.body.style.top || '0');
+        document.body.style.position = '';
+        document.body.style.top = '';
+        document.body.style.width = '';
+        document.body.style.overflow = '';
+        document.body.style.paddingRight = '';
+        
+        // Reset padding on filter controls as well
+        if (filterControls) {
+            filterControls.style.paddingRight = '';
         }
-
-    document.addEventListener('DOMContentLoaded', function() {
-        const container = document.getElementById('categoriesContainer');
-        const prevButton = document.getElementById('prevButton');
-        const nextButton = document.getElementById('nextButton');
-        const filterButton = document.getElementById('filterButton');
-        const filterModal = document.getElementById('filterModal');
-        const filterClose = document.getElementById('filterClose');
-
-        // Categories navigation
-        let scrollPosition = 0;
-        const scrollAmount = 200;
-
-        function updateButtonStates() {
-            prevButton.disabled = scrollPosition <= 0;
-            nextButton.disabled = scrollPosition >= container.scrollWidth - container.clientWidth;
-        }
-
-        prevButton.addEventListener('click', () => {
-            scrollPosition = Math.max(0, scrollPosition - scrollAmount);
-            container.scrollTo({
-                left: scrollPosition,
-                behavior: 'smooth'
-            });
-            updateButtonStates();
-        });
-
-        nextButton.addEventListener('click', () => {
-            scrollPosition = Math.min(
-                container.scrollWidth - container.clientWidth,
-                scrollPosition + scrollAmount
-            );
-            container.scrollTo({
-                left: scrollPosition,
-                behavior: 'smooth'
-            });
-            updateButtonStates();
-        });
-
-        // Filter modal
-        filterButton.addEventListener('click', () => {
-            filterModal.classList.add('show');
-        });
-
-        filterClose.addEventListener('click', () => {
-            filterModal.classList.remove('show');
-        });
-
-        filterModal.addEventListener('click', (e) => {
-            if (e.target === filterModal) {
-                filterModal.classList.remove('show');
-            }
-        });
-
-        // Category item click
-        const categoryItems = document.querySelectorAll('.category-item');
-        categoryItems.forEach(item => {
-            item.addEventListener('click', () => {
-                categoryItems.forEach(i => i.classList.remove('active'));
-                item.classList.add('active');
-            });
-        });
-
-        // Initial button states
-        updateButtonStates();
-
-        // Initialize all carousels
-        initializeCarousels();
-    });
+        
+        window.scrollTo(0, -scrollY);
+        
+        // Start overlay fade-out animation
+        filterOverlay.style.opacity = '0';
+        
+        // Wait for animation to complete
+        setTimeout(() => {
+            filterOverlay.style.display = 'none';
+            filterSidebar.style.visibility = 'hidden';
+        }, 300);
+    }
 
     function toggleFavorite(button) {
         button.querySelector('i').style.color =
@@ -305,6 +182,7 @@
             dot.classList.toggle('active', i === index);
         });
     }
+    
     // Hàm khởi tạo các carousel (bộ sưu tập hình ảnh) trên trang
     function initializeCarousels() {
         const carousels = document.querySelectorAll('.image-carousel');
@@ -345,7 +223,17 @@
             });
         });
     }
+    
     document.addEventListener('DOMContentLoaded', function() {
+        // Initialize carousels
+        initializeCarousels();
+        
+        // Setup close button for filter
+        const filterClose = document.getElementById('filterClose');
+        if (filterClose) {
+            filterClose.addEventListener('click', closeFilter);
+        }
+        
         const loadMoreButton = document.getElementById('loadMoreButton');
         const listingsGrid = document.querySelector('.listings-grid');
         let offset = 30; // Initial offset
@@ -387,7 +275,7 @@
 
                     // Reinitialize carousels for new posts
                     initializeCarousels();
-                    
+
                     // Update distances for new posts
                     console.log('Load more completed, updating distances for new posts...');
                     setTimeout(function() {

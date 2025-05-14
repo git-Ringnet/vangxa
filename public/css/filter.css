@@ -1,0 +1,426 @@
+/* Filter Sidebar Styles */
+.filter-sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 85%;
+    max-width: 360px;
+    height: 100%;
+    background-color: #faf6e9;
+    z-index: 1000;
+    transform: translate3d(-100%, 0, 0);
+    transition: transform 0.3s ease;
+    overflow-y: auto;
+    box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+    border-radius: 0 10px 10px 0;
+    will-change: transform;
+}
+
+/* Styles for when filter is open */
+/* html.filter-open body {
+    position: relative;
+} */
+
+/* Fake scrollbar styles */
+/* #fakeScrollbar {
+    background-color: transparent; 
+    pointer-events: none;
+} */
+
+/* Tăng thời gian transition cho margin */
+/* body {
+    transition: margin-right 0.3s ease;
+} */
+
+.filter-sidebar.show {
+    transform: translate3d(0, 0, 0);
+}
+
+.filter-content {
+    padding: 20px;
+}
+
+.filter-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #e0d8c0;
+}
+
+.filter-header h3 {
+    font-weight: bold;
+    color: #5d4037;
+    margin: 0;
+}
+
+.filter-close {
+    background: none;
+    border: none;
+    color: #8d6e63;
+    font-size: 1.2rem;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+}
+
+.filter-close:hover {
+    transform: scale(1.1);
+    color: #5d4037;
+}
+
+/* Search Input Styles */
+.filter-search {
+    margin-bottom: 20px;
+}
+
+.search-input-wrapper {
+    display: flex;
+    align-items: center;
+    background-color: #fff;
+    border-radius: 25px;
+    padding: 8px 15px;
+    border: 1px solid #d9c9a3;
+    box-shadow: 0 1px 5px rgba(0, 0, 0, 0.05);
+    transition: box-shadow 0.3s ease, border-color 0.3s ease;
+}
+
+.search-input-wrapper.focused,
+.search-input-wrapper:focus-within {
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1);
+    border-color: #c8b790;
+}
+
+.search-input-wrapper i.fa-search {
+    color: #8d6e63;
+    margin-right: 10px;
+}
+
+.filter-search-input {
+    flex-grow: 1;
+    border: none;
+    background: transparent;
+    outline: none;
+    font-size: 14px;
+    color: #5d4037;
+}
+
+.filter-search-input::placeholder {
+    color: #a39281;
+    transition: opacity 0.3s ease;
+}
+
+.filter-search-input:focus::placeholder {
+    opacity: 0.5;
+}
+
+.filter-menu-button {
+    background: #c8b790;
+    border: none;
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    cursor: pointer;
+    transition: transform 0.2s ease, background-color 0.2s ease;
+}
+
+.filter-menu-button:hover {
+    transform: scale(1.1);
+    background-color: #b9a677;
+}
+
+/* Loại bỏ các hiệu ứng phụ của filter section */
+.filter-section {
+    margin-bottom: 30px;
+    border-bottom: 1px solid #e0d8c0;
+    padding-bottom: 20px;
+}
+
+.filter-section h4 {
+    color: #5d4037;
+    margin-bottom: 15px;
+    font-weight: 600;
+}
+
+/* Hiệu ứng cơ bản cho các nút */
+.price-range-buttons, .style-buttons, .location-options, .trust-options {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.price-button, .style-button, .location-button, .trust-button {
+    background-color: #f0e9d2;
+    border: 1px solid #d9c9a3;
+    border-radius: 20px;
+    padding: 8px 16px;
+    font-size: 14px;
+    color: #5d4037;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.price-button:hover, .style-button:hover, .location-button:hover, .trust-button:hover {
+    background-color: #e6ddc4;
+    transform: translateY(-2px);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.price-button.active, .style-button.active, .location-button.active, .trust-button.active {
+    background-color: #c8b790;
+    color: #fff;
+    transform: translateY(-2px);
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.15);
+}
+
+/* Style buttons with icons */
+.style-button, .location-button[data-location="current"], .trust-button[data-trust] {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.style-button i, .location-button i, .trust-button i {
+    font-size: 14px;
+    transition: transform 0.3s ease;
+}
+
+.style-button.active i, .location-button.active i, .trust-button.active i {
+    transform: scale(1.2);
+}
+
+/* Filter Pills Container */
+.filter-pills-container {
+    display: flex;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    gap: 10px;
+    padding: 5px 0 15px 0;
+    margin-bottom: 15px;
+    border-bottom: 1px solid #e0d8c0;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+.filter-pills-container::-webkit-scrollbar {
+    display: none;
+}
+
+.filter-pill-item {
+    white-space: nowrap;
+    padding: 8px 16px;
+    border-radius: 20px;
+    border: 1px solid #d9c9a3;
+    background-color: #f0e9d2;
+    color: #5d4037;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.filter-pill-item:hover {
+    background-color: #e6ddc4;
+    transform: translateY(-2px);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.filter-pill-item.active {
+    background-color: #7a5c2e;
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.15);
+}
+
+/* Action buttons */
+.filter-buttons {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 40px;
+}
+
+.filter-clear, .filter-apply {
+    padding: 10px 20px;
+    border-radius: 20px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.filter-clear {
+    background-color: transparent;
+    border: 1px solid #c8b790;
+    color: #8d6e63;
+}
+
+.filter-apply {
+    background-color: #c8b790;
+    border: none;
+    color: #fff;
+    opacity: 0.8;
+}
+
+.filter-apply.active {
+    background-color: #b9a677;
+    transform: translateY(-2px);
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.15);
+    opacity: 1;
+}
+
+/* Overlay when filter is open */
+.filter-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 999;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    display: none;
+}
+
+.filter-overlay.show, 
+.filter-overlay[style*="display: block"] {
+    opacity: 1;
+}
+
+/* Đơn giản hóa CSS cho body khi filter đang mở */
+html, body {
+    /* Removed transitions that cause content shifts */
+    /* transition: padding-right 0.3s ease, margin-right 0.3s ease; */
+    /* will-change: padding-right; */
+}
+
+body.no-scroll {
+    overflow: hidden;
+    padding-right: 17px; /* Standard scrollbar width */
+}
+
+/* Đảm bảo container không bị dịch chuyển */
+/* .container-custom {
+    transition: padding-right 0.3s ease;
+}
+
+body.no-scroll .container-custom {
+    padding-right: var(--scrollbar-width, 0);
+} */
+
+/* Content transition styles */
+#post-list {
+    transition: opacity 0.3s ease;
+    /* No transform here */
+}
+
+/* Kỹ thuật WordPress cho body */
+html.has-filter-open {
+    overflow: hidden;
+    /* margin-right: var(--scrollbar-width, 15px); */
+}
+
+/* Kỹ thuật này cho phép fixed elements cũng có margin right */
+html.has-filter-open .navbar-custom {
+    /* padding-right: var(--scrollbar-width, 15px); */
+}
+
+/* Phương pháp luôn giữ thanh cuộn */
+body.no-scroll-but-keep-bar {
+    overflow-y: scroll !important;
+    /* Vô hiệu hóa cuộn bằng cách bắt events */
+    height: 100% !important;
+    position: fixed !important;
+    width: 100% !important;
+    /* Thêm layer chặn trên body để bắt tất cả các event */
+    pointer-events: none !important;
+}
+
+/* Khôi phục pointer-events cho sidebar và overlay */
+body.no-scroll-but-keep-bar .filter-sidebar,
+body.no-scroll-but-keep-bar .filter-overlay {
+    pointer-events: auto !important;
+}
+
+/* Style cho navbar để không bị nhảy */
+.navbar-custom {
+    /* transition: padding-right 0.3s ease; */
+    /* will-change: padding-right; */
+}
+
+body.no-scroll .navbar-custom {
+    /* padding-right: 17px; */ /* Removed to prevent content shift */
+}
+
+/* CSS đơn giản cho body */
+html.filter-open {
+    /* overflow đặt tại thẻ HTML */
+    overflow: hidden;
+}
+
+/* Khi đóng filter, đảm bảo overflow được reset */
+html:not(.filter-open) {
+    overflow: auto;
+    overflow-x: hidden;
+}
+
+/* Bù đắp cho thân trang */
+html.filter-open body {
+    /* padding-right: 17px; */ /* Removed to prevent content shift */
+    overflow-y: hidden;
+}
+
+/* Style cho navbar */
+html.filter-open .navbar-custom {
+    /* padding-right: 17px; */ /* Removed to prevent content shift */
+}
+
+/* Filter Pills in Sidebar */
+.filter-pills-sidebar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 10px;
+}
+
+.filter-pill-item {
+    padding: 8px 16px;
+    border-radius: 20px;
+    border: 1px solid #d9c9a3;
+    background-color: #f0e9d2;
+    color: #5d4037;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.filter-pill-item:hover {
+    background-color: #e6ddc4;
+    transform: translateY(-2px);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.filter-pill-item.active {
+    background-color: #7a5c2e;
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.15);
+}
+
+/* Filter Sections Wrapper */
+.filter-sections {
+    opacity: 0;
+    transform: translate3d(0, 8px, 0);
+    transition: opacity 0.2s ease-out, transform 0.2s ease-out;
+    transition-delay: 0.15s;
+    will-change: opacity, transform;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+}
+
+.filter-sidebar.show .filter-sections {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+} 
