@@ -6,7 +6,7 @@ use App\Events\TestReverbEvent;
 use App\Http\Controllers\Controller;
 use App\Models\Post;
 use App\Models\User;
-use Auth;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
@@ -199,28 +199,144 @@ class UserController extends Controller
     /**
      * Ghi lại lượt xem profile của người bán
      * 
-     * @param int|null $viewerId ID người xem (null nếu là khách)
-     * @param int $vendorId ID người bán được xem
+     * @param integer|null $viewerId ID của người xem, null nếu là khách
+     * @param integer $vendorId ID của người bán được xem
      * @return void
      */
     private function recordProfileView($viewerId, $vendorId)
     {
-        // Phân loại vai trò của người dùng được xem
-        $vendor = User::find($vendorId);
+        // Lấy địa chỉ IP và User Agent
+        $ipAddress = request()->ip();
+        $userAgent = request()->userAgent();
+        
+        // Xác định nền tảng nguồn truy cập - ưu tiên sử dụng tham số UTM
+        $utmSource = request()->query('utm_source');
+        $referer = request()->header('referer');
 
-        // Chỉ ghi lại nếu người được xem là vendor/business hoặc đã tạo ít nhất 1 bài viết
-        $isVendor = $vendor->hasRole('vendor') || $vendor->hasRole('business');
-        $hasPosts = $vendor->posts()->exists();
-
-        if ($isVendor || $hasPosts) {
-            // Tạo bản ghi mới
-            \App\Models\ProfileView::create([
-                'user_id' => $viewerId,
-                'vendor_id' => $vendorId,
-                'ip_address' => request()->ip(),
-                'user_agent' => request()->userAgent()
-            ]);
+        // Ghi log để debug
+        \Illuminate\Support\Facades\Log::info('Profile View UTM Source: ' . $utmSource);
+        \Illuminate\Support\Facades\Log::info('Profile View Referer: ' . $referer);
+        
+        // Ưu tiên sử dụng UTM Source nếu có
+        $referrerPlatform = null;
+        if (!empty($utmSource)) {
+            // Chuẩn hóa utm_source thành tên nền tảng
+            $referrerPlatform = $this->normalizePlatformName($utmSource);
+        } else {
+            // Nếu không có utm_source, thử xác định từ referer
+            $referrerPlatform = $this->determineReferrerPlatform($referer);
         }
+        
+        // Ghi log platform đã phát hiện
+        \Illuminate\Support\Facades\Log::info('Detected Platform: ' . $referrerPlatform);
+        
+        // Kiểm tra xem đã có lượt xem gần đây trong session chưa
+        // Tạo key phân biệt cả vendor và nền tảng để tránh bỏ qua các lượt xem từ nền tảng khác nhau
+        $viewKey = 'viewed_profile_' . $vendorId . '_' . ($referrerPlatform ?: 'direct');
+        if (session()->has($viewKey) && session($viewKey) > now()->subMinutes(2)->timestamp) {
+            // Đã có lượt xem từ nền tảng này trong 2 phút trước đó, bỏ qua để tránh đếm nhiều lần
+            \Illuminate\Support\Facades\Log::info('Skipping duplicate view from platform: ' . $referrerPlatform);
+            return;
+        }
+        
+        // Lưu lượt xem vào session với timestamp hiện tại
+        session([$viewKey => now()->timestamp]);
+        
+        // Ghi vào bảng profile_views
+        \App\Models\ProfileView::create([
+            'user_id' => $viewerId,
+            'vendor_id' => $vendorId,
+            'ip_address' => $ipAddress,
+            'user_agent' => $userAgent,
+            'referrer_platform' => $referrerPlatform
+        ]);
+    }
+    
+    /**
+     * Chuẩn hóa tên nền tảng từ utm_source
+     */
+    private function normalizePlatformName($source)
+    {
+        if (empty($source)) {
+            return null;
+        }
+        
+        $source = strtolower(trim($source));
+        
+        // Ánh xạ giá trị utm_source với các nền tảng
+        $platformMapping = [
+            'fb' => 'facebook',
+            'facebook' => 'facebook',
+            'insta' => 'instagram',
+            'instagram' => 'instagram',
+            'ig' => 'instagram',
+            'twitter' => 'twitter',
+            'tw' => 'twitter',
+            'x' => 'twitter',
+            'tiktok' => 'tiktok',
+            'tt' => 'tiktok',
+            'google' => 'google',
+            'gg' => 'google',
+            'youtube' => 'youtube',
+            'yt' => 'youtube',
+            'linkedin' => 'linkedin',
+            'li' => 'linkedin',
+            'pinterest' => 'pinterest',
+            'pin' => 'pinterest',
+            'zalo' => 'zalo',
+            'zl' => 'zalo'
+        ];
+        
+        return $platformMapping[$source] ?? 'khác';
+    }
+
+    /**
+     * Xác định nền tảng nguồn truy cập từ URL referrer
+     * 
+     * @param string|null $referer URL nguồn truy cập
+     * @return string|null Tên nền tảng hoặc null nếu không xác định được
+     */
+    private function determineReferrerPlatform($referer)
+    {
+        if (empty($referer)) {
+            return null;
+        }
+        
+        $referer = strtolower($referer);
+        
+        // Kiểm tra các nền tảng phổ biến - sử dụng cách tiếp cận linh hoạt hơn
+        $platforms = [
+            'facebook' => ['facebook.com', 'fb.com', 'fbcdn.net', 'm.facebook.com'],
+            'instagram' => ['instagram.com', 'cdninstagram.com', 'instagr.am'],
+            'twitter' => ['twitter.com', 'x.com', 't.co', 'twimg.com'],
+            'tiktok' => ['tiktok.com', 'tiktokv.com', 'tiktokcdn.com', 'musical.ly'],
+            'google' => ['google.com', 'google.', 'goo.gl', 'g.co', 'plus.google.com'],
+        ];
+        
+        foreach ($platforms as $platform => $domains) {
+            foreach ($domains as $domain) {
+                if (strpos($referer, $domain) !== false) {
+                    return $platform;
+                }
+            }
+        }
+        
+        // Kiểm tra các nguồn khác
+        if (strpos($referer, 'youtube.com') !== false || 
+            strpos($referer, 'youtu.be') !== false) {
+            return 'youtube';
+        } elseif (strpos($referer, 'linkedin.com') !== false) {
+            return 'linkedin';
+        } elseif (strpos($referer, 'pinterest.com') !== false || 
+                 strpos($referer, 'pin.it') !== false) {
+            return 'pinterest';
+        } elseif (strpos($referer, 'zalo.me') !== false || 
+                 strpos($referer, 'zalo.vn') !== false) {
+            return 'zalo';
+        }
+        
+        // Nếu không phải các nền tảng đã biết
+        return 'khác';
     }
 
     /**
