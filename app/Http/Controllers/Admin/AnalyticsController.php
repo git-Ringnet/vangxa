@@ -1388,4 +1388,209 @@ class AnalyticsController extends Controller
 
         return compact('communityPostsLast7Days', 'communityPostUsersLast7Days', 'activeUsersLast7Days', 'weeklyCommunityPostRate');
     }
+
+    /**
+     * Hiển thị thống kê tỷ lệ bài đăng có gắn thẻ vendor
+     * 
+     * @param Request $request
+     * @return \Illuminate\Contracts\View\View
+     */
+    public function postsWithTaggedVendors(Request $request)
+    {
+        // Lấy ngày hiện tại
+        $today = Carbon::now()->startOfDay();
+        
+        // Xử lý bộ lọc thời gian
+        $timeFilter = $request->input('time_filter', 'all'); // Mặc định là 'all'
+        
+        // Thu thập dữ liệu thống kê
+        $dailyStats = $this->getDailyTaggedVendorStats($today);
+        $generalStats = $this->getGeneralTaggedVendorStats();
+        $weeklyStats = $this->getWeeklyTaggedVendorStats($today);
+        $topTaggedVendors = $this->getTopTaggedVendors($timeFilter);
+        
+        // Kết hợp dữ liệu và trả về view
+        return view('admin.analytics.posts_with_tagged_vendors', array_merge(
+            $dailyStats,
+            $generalStats,
+            $weeklyStats,
+            [
+                'topTaggedVendors' => $topTaggedVendors,
+                'timeFilter' => $timeFilter
+            ]
+        ));
+    }
+
+    /**
+     * Lấy thống kê hàng ngày cho bài đăng có gắn thẻ vendor
+     * 
+     * @param Carbon $today Ngày hiện tại
+     * @return array Dữ liệu thống kê hàng ngày
+     */
+    private function getDailyTaggedVendorStats(Carbon $today)
+    {
+        $vendorTaggedRates = [];
+        $postCounts = [];
+        $taggedPostCounts = [];
+        $labels = [];
+
+        // Lấy dữ liệu cho 30 ngày qua
+        for ($i = 29; $i >= 0; $i--) {
+            $date = $today->copy()->subDays($i);
+            $nextDate = $date->copy()->addDay();
+            $labels[] = $date->format('d/m');
+
+            // Tổng số bài đăng trong ngày
+            $totalPostsPerDay = \App\Models\Post::whereDate('created_at', '>=', $date)
+                ->whereDate('created_at', '<', $nextDate)
+                ->count();
+
+            // Số bài đăng có gắn thẻ vendor
+            $taggedPostsPerDay = \App\Models\Post::whereDate('created_at', '>=', $date)
+                ->whereDate('created_at', '<', $nextDate)
+                ->whereHas('taggedVendors')
+                ->count();
+
+            // Tính tỷ lệ bài đăng có gắn thẻ vendor
+            $rate = $totalPostsPerDay > 0 ? round(($taggedPostsPerDay / $totalPostsPerDay) * 100, 2) : 0;
+
+            $vendorTaggedRates[] = $rate;
+            $postCounts[] = $totalPostsPerDay;
+            $taggedPostCounts[] = $taggedPostsPerDay;
+        }
+
+        return compact('labels', 'vendorTaggedRates', 'postCounts', 'taggedPostCounts');
+    }
+
+    /**
+     * Lấy thống kê chung về bài đăng có gắn thẻ vendor
+     * 
+     * @return array Dữ liệu thống kê chung
+     */
+    private function getGeneralTaggedVendorStats()
+    {
+        // Tổng số bài đăng
+        $totalPosts = \App\Models\Post::count();
+        
+        // Số bài đăng trong nhóm
+        $totalGroupPosts = \App\Models\Post::whereNotNull('group_id')->count();
+        
+        // Số bài đăng có gắn thẻ vendor
+        $postsWithTaggedVendors = \App\Models\Post::whereHas('taggedVendors')->count();
+        
+        // Số bài đăng trong nhóm có gắn thẻ vendor
+        $groupPostsWithTaggedVendors = \App\Models\Post::whereNotNull('group_id')
+            ->whereHas('taggedVendors')
+            ->count();
+        
+        // Tính toán các tỷ lệ
+        $overallTaggedRate = $totalPosts > 0 ? round(($postsWithTaggedVendors / $totalPosts) * 100, 2) : 0;
+        $groupTaggedRate = $totalGroupPosts > 0 ? round(($groupPostsWithTaggedVendors / $totalGroupPosts) * 100, 2) : 0;
+        
+        // Đếm số lượng vendors được gắn thẻ ít nhất một lần
+        $distinctTaggedVendors = DB::table('post_tagged_vendors')
+            ->select('vendor_id')
+            ->distinct()
+            ->count();
+        
+        // Tổng số vendor trong hệ thống
+        $totalVendors = User::role('vendor')->count();
+        
+        // Tỷ lệ vendor đã được gắn thẻ ít nhất một lần
+        $vendorTaggedRate = $totalVendors > 0 ? round(($distinctTaggedVendors / $totalVendors) * 100, 2) : 0;
+
+        return compact(
+            'totalPosts',
+            'totalGroupPosts',
+            'postsWithTaggedVendors',
+            'groupPostsWithTaggedVendors',
+            'overallTaggedRate',
+            'groupTaggedRate',
+            'distinctTaggedVendors',
+            'totalVendors',
+            'vendorTaggedRate'
+        );
+    }
+
+    /**
+     * Lấy thống kê bài đăng có gắn thẻ vendor trong 7 ngày gần nhất
+     * 
+     * @param Carbon $today Ngày hiện tại
+     * @return array Dữ liệu thống kê tuần
+     */
+    private function getWeeklyTaggedVendorStats(Carbon $today)
+    {
+        $last7DaysDate = $today->copy()->subDays(7);
+
+        // Tổng số bài đăng trong 7 ngày
+        $postsLast7Days = \App\Models\Post::where('created_at', '>=', $last7DaysDate)
+            ->count();
+        
+        // Số bài đăng có gắn thẻ vendor trong 7 ngày
+        $taggedPostsLast7Days = \App\Models\Post::where('created_at', '>=', $last7DaysDate)
+            ->whereHas('taggedVendors')
+            ->count();
+        
+        // Số bài đăng trong nhóm trong 7 ngày
+        $groupPostsLast7Days = \App\Models\Post::where('created_at', '>=', $last7DaysDate)
+            ->whereNotNull('group_id')
+            ->count();
+        
+        // Số bài đăng trong nhóm có gắn thẻ vendor trong 7 ngày
+        $taggedGroupPostsLast7Days = \App\Models\Post::where('created_at', '>=', $last7DaysDate)
+            ->whereNotNull('group_id')
+            ->whereHas('taggedVendors')
+            ->count();
+
+        // Tính tỷ lệ
+        $weeklyTaggedRate = $postsLast7Days > 0 ? 
+            round(($taggedPostsLast7Days / $postsLast7Days) * 100, 2) : 0;
+        
+        $weeklyGroupTaggedRate = $groupPostsLast7Days > 0 ? 
+            round(($taggedGroupPostsLast7Days / $groupPostsLast7Days) * 100, 2) : 0;
+
+        return compact(
+            'postsLast7Days', 
+            'taggedPostsLast7Days', 
+            'weeklyTaggedRate',
+            'groupPostsLast7Days',
+            'taggedGroupPostsLast7Days',
+            'weeklyGroupTaggedRate'
+        );
+    }
+
+    /**
+     * Lấy danh sách vendor được gắn thẻ nhiều nhất
+     * 
+     * @param string $timeFilter Bộ lọc thời gian: 'day', 'week', 'month', 'year', 'all'
+     * @return \Illuminate\Support\Collection Danh sách vendor được gắn thẻ nhiều nhất
+     */
+    private function getTopTaggedVendors($timeFilter = 'all')
+    {
+        $query = DB::table('post_tagged_vendors')
+            ->join('users', 'post_tagged_vendors.vendor_id', '=', 'users.id')
+            ->select('users.id', 'users.name', 'users.avatar', DB::raw('count(*) as tag_count'));
+        
+        // Lọc theo thời gian
+        switch ($timeFilter) {
+            case 'day':
+                $query->where('post_tagged_vendors.created_at', '>=', Carbon::now()->subDay());
+                break;
+            case 'week':
+                $query->where('post_tagged_vendors.created_at', '>=', Carbon::now()->subWeek());
+                break;
+            case 'month':
+                $query->where('post_tagged_vendors.created_at', '>=', Carbon::now()->subMonth());
+                break;
+            case 'year':
+                $query->where('post_tagged_vendors.created_at', '>=', Carbon::now()->subYear());
+                break;
+            // 'all' không cần lọc
+        }
+        
+        return $query->groupBy('users.id', 'users.name', 'users.avatar')
+            ->orderBy('tag_count', 'desc')
+            ->limit(10)
+            ->get();
+    }
 }

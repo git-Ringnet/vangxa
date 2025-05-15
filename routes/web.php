@@ -188,6 +188,7 @@ Route::get('/analytics/vendor-profile-views', [\App\Http\Controllers\Admin\Analy
 Route::get('/analytics/community-post-rate', [\App\Http\Controllers\Admin\AnalyticsController::class, 'communityPostRate'])->name('analytics.community-post-rate');
 Route::get('/analytics/posts-with-engagements', [\App\Http\Controllers\Admin\AnalyticsController::class, 'postsWithEngagements'])->name('analytics.posts-with-engagements');
 Route::get('/analytics/community-posts-with-reactions', [\App\Http\Controllers\Admin\AnalyticsController::class, 'communityPostsWithReactions'])->name('analytics.community-posts-with-reactions');
+Route::get('/analytics/posts-with-tagged-vendors', [\App\Http\Controllers\Admin\AnalyticsController::class, 'postsWithTaggedVendors'])->name('analytics.posts-with-tagged-vendors');
 Route::post('/analytics/record-activity', [\App\Http\Controllers\Admin\AnalyticsController::class, 'recordActivity'])->name('analytics.record-activity');
 
 require __DIR__ . '/auth.php';
