@@ -95,6 +95,11 @@
                                 <i class="fas fa-comments mr-2"></i>Bài viết Community có tương tác
                             </a>
                         </li>
+                        <li class="{{ request()->routeIs('analytics.posts-with-tagged-vendors') ? 'active' : '' }}">
+                            <a href="{{ route('analytics.posts-with-tagged-vendors') }}" class="pl-4">
+                                <i class="fas fa-tags mr-2"></i>Bài viết có gắn thẻ vendor
+                            </a>
+                        </li>
                     </ul>
                 </li>
                 <li>
