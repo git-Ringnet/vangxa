@@ -45,6 +45,9 @@ class UrlHelper
         $urlWithUtmTelegram = self::addUtmParams($url, 'telegram');
         $urlWithUtmReddit = self::addUtmParams($url, 'reddit');
         $urlWithUtmTiktok = self::addUtmParams($url, 'tiktok');
+        $urlWithUtmWhatsApp = self::addUtmParams($url, 'whatsapp');
+        $urlWithUtmEmail = self::addUtmParams($url, 'email');
+        $urlWithUtmSms = self::addUtmParams($url, 'sms');
         
         return [
             'facebook' => "https://www.facebook.com/sharer/sharer.php?u=" . urlencode($urlWithUtmFacebook),
@@ -53,6 +56,9 @@ class UrlHelper
             'pinterest' => "https://pinterest.com/pin/create/button/?url=" . urlencode($urlWithUtmPinterest) . "&description=" . $encodedTitle,
             'telegram' => "https://t.me/share/url?url=" . urlencode($urlWithUtmTelegram) . "&text=" . $encodedTitle,
             'reddit' => "https://www.reddit.com/submit?url=" . urlencode($urlWithUtmReddit) . "&title=" . $encodedTitle,
+            'whatsapp' => "https://api.whatsapp.com/send?text=" . urlencode($title . "\n\n" . $urlWithUtmWhatsApp),
+            'email' => "mailto:?subject=" . $encodedTitle . "&body=" . urlencode("\n\n" . $urlWithUtmEmail),
+            'sms' => "sms:?body=" . urlencode($title . "\n\n" . $urlWithUtmSms),
             'tiktok' => $urlWithUtmTiktok, // Không có API chia sẻ trực tiếp, sẽ xử lý bằng modal như Instagram
             'copy' => $url
         ];
