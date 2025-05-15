@@ -16,9 +16,9 @@
         <i class="fab fa-facebook-f"></i>
     </a>
     
-    <!-- Twitter -->
+    <!-- Twitter/X -->
     <a href="{{ $shareUrls['twitter'] }}" target="_blank" class="btn btn-sm btn-social btn-twitter mb-1 mr-1" 
-       data-toggle="tooltip" title="Chia sẻ qua Twitter">
+       data-toggle="tooltip" title="Chia sẻ qua Twitter/X">
         <i class="fab fa-twitter"></i>
     </a>
     
@@ -28,30 +28,12 @@
         <i class="fab fa-linkedin-in"></i>
     </a>
     
-    <!-- Pinterest -->
-    <a href="{{ $shareUrls['pinterest'] }}" target="_blank" class="btn btn-sm btn-social btn-pinterest mb-1 mr-1" 
-       data-toggle="tooltip" title="Chia sẻ qua Pinterest">
-        <i class="fab fa-pinterest-p"></i>
-    </a>
-    
-    <!-- Reddit -->
-    <a href="{{ $shareUrls['reddit'] }}" target="_blank" class="btn btn-sm btn-social btn-reddit mb-1 mr-1" 
-       data-toggle="tooltip" title="Chia sẻ qua Reddit">
-        <i class="fab fa-reddit-alien"></i>
-    </a>
-    
-    <!-- Telegram -->
-    <a href="{{ $shareUrls['telegram'] }}" target="_blank" class="btn btn-sm btn-social btn-telegram mb-1 mr-1" 
-       data-toggle="tooltip" title="Chia sẻ qua Telegram">
-        <i class="fab fa-telegram-plane"></i>
-    </a>
-    
-    <!-- TikTok -->
-    <a href="javascript:void(0);" class="btn btn-sm btn-social btn-tiktok mb-1 mr-1 tiktok-share" 
-       data-toggle="tooltip" title="Chia sẻ qua TikTok"
-       data-share-url="{{ $tiktokShareUrl }}" data-share-title="{{ $title ?? '' }}">
-        <i class="fab fa-tiktok"></i>
-    </a>
+    <!-- Web Share API -->
+    <button type="button" class="btn btn-sm btn-social btn-more mb-1 mr-1 web-share-btn" 
+            data-toggle="tooltip" title="Chia sẻ qua ứng dụng khác"
+            data-url="{{ $url }}" data-title="{{ $title ?? '' }}" data-text="{{ $description ?? $title ?? '' }}">
+        <i class="fas fa-share-alt"></i>
+    </button>
     
     <!-- Copy Link -->
     <button type="button" class="btn btn-sm btn-light mb-1 copy-link" 
@@ -59,6 +41,77 @@
             data-toggle="tooltip" title="Sao chép liên kết">
         <i class="far fa-copy"></i>
     </button>
+</div>
+
+<!-- Fallback Modal for Web Share API -->
+<div class="modal fade" id="fallbackShareModal" tabindex="-1" aria-labelledby="fallbackShareModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="fallbackShareModalLabel">Chia sẻ qua các nền tảng khác</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row row-cols-3 g-3">
+                    <!-- Pinterest -->
+                    <div class="col">
+                        <a href="{{ $shareUrls['pinterest'] }}" target="_blank" class="d-block text-center text-decoration-none p-2 border rounded">
+                            <i class="fab fa-pinterest fa-2x text-danger mb-2"></i>
+                            <p class="m-0 small">Pinterest</p>
+                        </a>
+                    </div>
+                    
+                    <!-- Telegram -->
+                    <div class="col">
+                        <a href="{{ $shareUrls['telegram'] }}" target="_blank" class="d-block text-center text-decoration-none p-2 border rounded">
+                            <i class="fab fa-telegram-plane fa-2x text-info mb-2"></i>
+                            <p class="m-0 small">Telegram</p>
+                        </a>
+                    </div>
+                    
+                    <!-- Reddit -->
+                    <div class="col">
+                        <a href="{{ $shareUrls['reddit'] }}" target="_blank" class="d-block text-center text-decoration-none p-2 border rounded">
+                            <i class="fab fa-reddit-alien fa-2x text-danger mb-2"></i>
+                            <p class="m-0 small">Reddit</p>
+                        </a>
+                    </div>
+                    
+                    <!-- Email -->
+                    <div class="col">
+                        <a href="mailto:?subject={{ urlencode($title ?? '') }}&body={{ urlencode(($description ?? '') . "\n\n" . $url) }}" class="d-block text-center text-decoration-none p-2 border rounded">
+                            <i class="fas fa-envelope fa-2x text-secondary mb-2"></i>
+                            <p class="m-0 small">Email</p>
+                        </a>
+                    </div>
+                    
+                    <!-- WhatsApp -->
+                    <div class="col">
+                        <a href="https://api.whatsapp.com/send?text={{ urlencode(($title ?? '') . "\n\n" . $url) }}" target="_blank" class="d-block text-center text-decoration-none p-2 border rounded">
+                            <i class="fab fa-whatsapp fa-2x text-success mb-2"></i>
+                            <p class="m-0 small">WhatsApp</p>
+                        </a>
+                    </div>
+                    
+                    <!-- SMS/Message -->
+                    <div class="col">
+                        <a href="{{ $shareUrls['sms'] }}" class="d-block text-center text-decoration-none p-2 border rounded">
+                            <i class="fas fa-sms fa-2x text-primary mb-2"></i>
+                            <p class="m-0 small">SMS/Message</p>
+                        </a>
+                    </div>
+                    
+                    <!-- TikTok (Requires manual sharing) -->
+                    <div class="col tiktok-share" data-share-url="{{ $tiktokShareUrl }}">
+                        <div class="d-block text-center text-decoration-none p-2 border rounded" style="cursor:pointer">
+                            <i class="fab fa-tiktok fa-2x mb-2"></i>
+                            <p class="m-0 small">TikTok</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 
 <!-- TikTok Share Modal -->
@@ -112,20 +165,8 @@
         background-color: #0077b5;
         color: white;
     }
-    .btn-pinterest {
-        background-color: #E60023;
-        color: white;
-    }
-    .btn-reddit {
-        background-color: #FF5700;
-        color: white;
-    }
-    .btn-telegram {
-        background-color: #0088cc;
-        color: white;
-    }
-    .btn-tiktok {
-        background-color: #000000;
+    .btn-more {
+        background-color: #6c757d;
         color: white;
     }
     .btn-social:hover {
@@ -156,9 +197,33 @@
             e.clearSelection();
         });
         
+        // Web Share API handler
+        $('.web-share-btn').on('click', function() {
+            const shareData = {
+                title: $(this).data('title'),
+                text: $(this).data('text'),
+                url: $(this).data('url')
+            };
+            
+            // Kiểm tra xem trình duyệt có hỗ trợ Web Share API không
+            if (navigator.share && navigator.canShare && navigator.canShare(shareData)) {
+                navigator.share(shareData)
+                    .then(() => console.log('Chia sẻ thành công'))
+                    .catch((error) => {
+                        console.log('Lỗi khi chia sẻ:', error);
+                        $('#fallbackShareModal').modal('show');
+                    });
+            } else {
+                // Fallback for browsers that don't support Web Share API
+                console.log('Web Share API không được hỗ trợ');
+                $('#fallbackShareModal').modal('show');
+            }
+        });
+        
         // TikTok share button click handler
         $('.tiktok-share').on('click', function(e) {
             e.preventDefault();
+            $('#fallbackShareModal').modal('hide');
             $('#tiktokShareModal').modal('show');
         });
         
