@@ -7,6 +7,7 @@ use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 
 class AnalyticsController extends Controller
 {
@@ -140,8 +141,11 @@ class AnalyticsController extends Controller
      */
     public function recordActivity(Request $request)
     {
-        if (auth()->check()) {
-            auth()->user()->update([
+        if (Auth::check()) {
+            $userId = Auth::id();
+            
+            // Cập nhật trường last_activity_at cho user
+            User::where('id', $userId)->update([
                 'last_activity_at' => Carbon::now(),
             ]);
 
@@ -924,15 +928,196 @@ class AnalyticsController extends Controller
         $weeklyStats = $this->getWeeklyVendorStats($today);
         $topVendors = $this->getTopViewedVendors($timeFilter);
         
+        // Thống kê theo nền tảng
+        $platformStats = $this->getPlatformStats($timeFilter);
+        $topViewedFromExternal = $this->getTopViewedVendorsFromExternal($timeFilter);
+        $dailyExternalStats = $this->getDailyVendorExternalStats($today);
+        $weeklyExternalStats = $this->getWeeklyVendorExternalStats($today);
+        
         // Kết hợp dữ liệu và trả về view
         return view('admin.analytics.vendor_profile_views', array_merge(
             $dailyStats,
             $weeklyStats,
             [
                 'topViewedVendors' => $topVendors,
-                'timeFilter' => $timeFilter
+                'timeFilter' => $timeFilter,
+                'platformStats' => $platformStats,
+                'topViewedFromExternal' => $topViewedFromExternal,
+                'dailyExternalStats' => $dailyExternalStats,
+                'weeklyExternalStats' => $weeklyExternalStats
             ]
         ));
+    }
+
+    /**
+     * Lấy thống kê theo nền tảng nguồn truy cập
+     * 
+     * @param string $timeFilter Bộ lọc thời gian: 'day', 'week', 'month', 'year', 'all'
+     * @return array Thống kê theo nền tảng
+     */
+    private function getPlatformStats($timeFilter = 'all')
+    {
+        $query = \App\Models\ProfileView::select(
+            'referrer_platform',
+            DB::raw('count(*) as view_count')
+        )
+        ->whereNotNull('referrer_platform')
+        ->groupBy('referrer_platform');
+        
+        // Áp dụng bộ lọc thời gian
+        $query = $this->applyTimeFilter($query, $timeFilter);
+        
+        return $query->orderBy('view_count', 'desc')->get();
+    }
+    
+    /**
+     * Lấy top 5 vendor có lượt xem từ nền tảng ngoài cao nhất
+     * 
+     * @param string $timeFilter Bộ lọc thời gian: 'day', 'week', 'month', 'year', 'all'
+     * @return array Dữ liệu top 5 vendor
+     */
+    private function getTopViewedVendorsFromExternal($timeFilter = 'all')
+    {
+        $query = \App\Models\ProfileView::select(
+            'users.id',
+            'users.name',
+            'profile_views.referrer_platform',
+            DB::raw('count(*) as view_count')
+        )
+        ->join('users', 'profile_views.vendor_id', '=', 'users.id')
+        ->whereNotNull('profile_views.referrer_platform')
+        ->groupBy('users.id', 'users.name', 'profile_views.referrer_platform');
+        
+        // Áp dụng bộ lọc thời gian
+        $query = $this->applyTimeFilter($query, $timeFilter);
+        
+        $vendors = $query
+            ->orderBy('view_count', 'desc')
+            ->limit(5)
+            ->get();
+            
+        // Chuyển đổi thành mảng kết hợp với các khóa phù hợp
+        return $vendors->map(function ($vendor) {
+            return [
+                'id' => $vendor->id,
+                'name' => $vendor->name,
+                'referrer_platform' => $vendor->referrer_platform,
+                'view_count' => $vendor->view_count,
+                'url' => route('profile.show', ['id' => $vendor->id])
+            ];
+        })->toArray();
+    }
+    
+    /**
+     * Hàm áp dụng bộ lọc thời gian cho query
+     * 
+     * @param \Illuminate\Database\Query\Builder $query Query builder
+     * @param string $timeFilter Bộ lọc thời gian
+     * @return \Illuminate\Database\Query\Builder Query đã áp dụng bộ lọc
+     */
+    private function applyTimeFilter($query, $timeFilter)
+    {
+        $now = Carbon::now();
+        
+        switch ($timeFilter) {
+            case 'day':
+                $start = $now->copy()->startOfDay();
+                $end = $now->copy()->endOfDay();
+                $query->whereBetween('created_at', [$start, $end]);
+                break;
+            
+            case 'week':
+                $start = $now->copy()->startOfWeek();
+                $end = $now->copy()->endOfWeek();
+                $query->whereBetween('created_at', [$start, $end]);
+                break;
+            
+            case 'month':
+                $start = $now->copy()->startOfMonth();
+                $end = $now->copy()->endOfMonth();
+                $query->whereBetween('created_at', [$start, $end]);
+                break;
+            
+            case 'year':
+                $start = $now->copy()->startOfYear();
+                $end = $now->copy()->endOfYear();
+                $query->whereBetween('created_at', [$start, $end]);
+                break;
+            
+            default:
+                // Không áp dụng bộ lọc, lấy tất cả
+                break;
+        }
+        
+        return $query;
+    }
+    
+    /**
+     * Lấy thống kê lượt xem từ nền tảng ngoài theo ngày
+     * 
+     * @param Carbon $today Ngày hiện tại
+     * @return array Dữ liệu thống kê hàng ngày
+     */
+    private function getDailyVendorExternalStats(Carbon $today)
+    {
+        $platforms = ['facebook', 'instagram', 'twitter', 'tiktok', 'google', 'youtube', 'linkedin', 'pinterest', 'zalo', 'khác'];
+        $dailyStats = [];
+        $labels = [];
+        
+        // Tạo mảng kết quả cho từng nền tảng
+        foreach ($platforms as $platform) {
+            $dailyStats[$platform] = [];
+        }
+        
+        // Lấy dữ liệu cho 14 ngày qua
+        for ($i = 13; $i >= 0; $i--) {
+            $date = $today->copy()->subDays($i);
+            $nextDate = $date->copy()->addDay();
+            $labels[] = $date->format('d/m');
+            
+            // Lấy dữ liệu cho mỗi nền tảng
+            foreach ($platforms as $platform) {
+                // Đếm số lượt xem theo nền tảng trong ngày
+                $count = \App\Models\ProfileView::where('referrer_platform', $platform)
+                    ->whereDate('created_at', '>=', $date)
+                    ->whereDate('created_at', '<', $nextDate)
+                    ->count();
+                
+                $dailyStats[$platform][] = $count;
+            }
+        }
+        
+        return ['externalLabels' => $labels, 'dailyExternalStats' => $dailyStats];
+    }
+    
+    /**
+     * Lấy thống kê tổng hợp lượt xem từ nền tảng ngoài trong 7 ngày gần nhất
+     * 
+     * @param Carbon $today Ngày hiện tại
+     * @return array Dữ liệu thống kê tuần
+     */
+    private function getWeeklyVendorExternalStats(Carbon $today)
+    {
+        $last7DaysDate = $today->copy()->subDays(7);
+        $platforms = ['facebook', 'instagram', 'twitter', 'tiktok', 'google', 'youtube', 'linkedin', 'pinterest', 'zalo', 'khác'];
+        $weeklyStats = [];
+        
+        foreach ($platforms as $platform) {
+            // Đếm số lượt xem theo nền tảng trong 7 ngày qua
+            $count = \App\Models\ProfileView::where('referrer_platform', $platform)
+                ->where('created_at', '>=', $last7DaysDate)
+                ->count();
+            
+            $weeklyStats[$platform] = $count;
+        }
+        
+        // Tổng số lượt xem từ các nền tảng trong 7 ngày qua
+        $totalViews = array_sum($weeklyStats);
+        
+        return [
+            'weeklyExternalStats' => $weeklyStats,
+            'totalExternalViews' => $totalViews
+        ];
     }
 
     /**
@@ -948,7 +1133,7 @@ class AnalyticsController extends Controller
             'users.name',
             DB::raw('count(*) as view_count')
         )
-        ->join('users', 'profile_views.user_id', '=', 'users.id')
+        ->join('users', 'profile_views.vendor_id', '=', 'users.id')
         ->groupBy('users.id', 'users.name');
 
         // Áp dụng bộ lọc thời gian
@@ -983,16 +1168,20 @@ class AnalyticsController extends Controller
                 break;
         }
 
-        return $query
+        $vendors = $query
             ->orderBy('view_count', 'desc')
             ->limit(5)
-            ->get()
-            ->map(function ($vendor) {
-                // Tạo đường dẫn đến profile của vendor
-                $vendor->url = route('users.show', ['user' => $vendor->id]);
-                return $vendor;
-            })
-            ->toArray();
+            ->get();
+            
+        // Chuyển đổi thành mảng kết hợp với các khóa phù hợp
+        return $vendors->map(function ($vendor) {
+            return [
+                'id' => $vendor->id,
+                'name' => $vendor->name,
+                'view_count' => $vendor->view_count,
+                'url' => route('profile.show', ['id' => $vendor->id])
+            ];
+        })->toArray();
     }
 
     /**
@@ -1022,11 +1211,6 @@ class AnalyticsController extends Controller
                 ->whereDate('created_at', '<', $nextDate)
                 ->count();
 
-            // Nếu chưa có dữ liệu thực, sử dụng dữ liệu mô phỏng tạm thời
-            if ($vendorViews == 0 && $dau > 0) {
-                $vendorViews = round($dau * (0.25 + (mt_rand(0, 20) / 100)));
-            }
-
             // Tính tỷ lệ xem hồ sơ người bán / DAU
             $rate = $dau > 0 ? round(($vendorViews / $dau) * 100, 2) : 0;
 
@@ -1053,11 +1237,6 @@ class AnalyticsController extends Controller
 
         // Đếm số lượt xem hồ sơ người bán thực tế trong 7 ngày qua
         $vendorViewsLast7Days = \App\Models\ProfileView::where('created_at', '>=', $last7DaysDate)->count();
-
-        // Nếu chưa có dữ liệu thực, sử dụng dữ liệu mô phỏng tạm thời
-        if ($vendorViewsLast7Days == 0 && $activeUsersLast7Days > 0) {
-            $vendorViewsLast7Days = round($activeUsersLast7Days * (0.3 + (mt_rand(0, 20) / 100)));
-        }
 
         // Tỷ lệ xem hồ sơ 7 ngày qua
         $weeklyViewRate = $activeUsersLast7Days > 0 ?

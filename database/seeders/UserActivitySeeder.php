@@ -19,7 +19,7 @@ class UserActivitySeeder extends Seeder
         // DB::table('users')->where('email', 'like', 'test_activity%')->delete();
         
         // Tổng số người dùng mẫu để tạo
-        $totalUsers = 100;
+        $totalUsers = 10;
         
         // Mảng lưu trữ user theo ngày để tính toán retention
         $usersByDay = [];

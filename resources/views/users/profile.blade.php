@@ -75,6 +75,30 @@
                                     <span class="follow-text">{{ $isFollowing ? 'Hủy theo dõi' : 'Theo dõi' }}</span>
                                 </button>
                             @endif
+                            <!-- Dropdown thay thế nút chia sẻ -->
+                            <div class="dropdown d-inline-block ml-2">
+                                <button class="btn btn-sm btn-light dropdown-toggle no-arrow" type="button" id="profileActionDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <i class="fas fa-ellipsis-h"></i>
+                                </button>
+                                <ul class="dropdown-menu" aria-labelledby="profileActionDropdown">
+                                    <li>
+                                        <a class="dropdown-item share-profile-btn" href="#" data-bs-toggle="modal" data-bs-target="#shareProfileModal">
+                                            <i class="fas fa-share-alt mr-2"></i> Chia sẻ
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item copy-profile-link" href="javascript:void(0);" 
+                                           data-clipboard-text="{{ route('profile.show', $user->id) }}">
+                                            <i class="far fa-copy mr-2"></i> Sao chép liên kết
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item report-profile" href="javascript:void(0);">
+                                            <i class="fas fa-flag mr-2"></i> Báo cáo
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
                         </div>
                         <div class="user-bio">{{ $user->bio ?? '' }}</div>
                         <div class="user-stats">
@@ -417,7 +441,8 @@
     <script src="{{ asset('js/profile.js') }}"></script>
     <script src="{{ asset('js/carousel.js') }}"></script>
     <script src="{{ asset('js/follow-handler.js') }}"></script>
-     <script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.8/clipboard.min.js"></script>
+    <script>
         document.addEventListener('alpine:init', () => {
             Alpine.data('progress', () => ({
                 message: '',
@@ -513,5 +538,42 @@
 
             return toast;
         }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            // Xử lý sao chép liên kết profile
+            var profileClipboard = new ClipboardJS('.copy-profile-link');
+            
+            profileClipboard.on('success', function(e) {
+                alert('Đã sao chép liên kết vào bộ nhớ tạm');
+                e.clearSelection();
+            });
+            
+            // Xử lý nút báo cáo
+            $('.report-profile').on('click', function() {
+                alert('Chức năng báo cáo đang được phát triển');
+            });
+        });
     </script>
+    
+    <!-- Modal chia sẻ profile -->
+    <div class="modal fade" id="shareProfileModal" tabindex="-1" aria-labelledby="shareProfileModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="shareProfileModalLabel">Chia sẻ trang cá nhân</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body text-center">
+                    <p class="mb-3">Chia sẻ trang cá nhân của {{ $user->name }} qua mạng xã hội</p>
+                    
+                    @php
+                        $profileUrl = route('profile.show', $user->id);
+                        $profileTitle = $user->name . ' - trang cá nhân trên ' . config('app.name', 'Laravel');
+                    @endphp
+                    
+                    <x-social-share :url="$profileUrl" :title="$profileTitle" />
+                </div>
+            </div>
+        </div>
+    </div>
 @endsection

@@ -17,6 +17,7 @@ return new class extends Migration
             $table->foreignId('vendor_id')->constrained('users')->comment('ID của người bán được xem');
             $table->string('ip_address', 45)->nullable();
             $table->string('user_agent')->nullable();   
+            $table->string('referrer_platform')->nullable()->comment('Nền tảng/nguồn truy cập: facebook, instagram, twitter, tiktok, google, khác');
             $table->timestamps();
         });
     }

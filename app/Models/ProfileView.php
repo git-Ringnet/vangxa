@@ -14,6 +14,7 @@ class ProfileView extends Model
         'vendor_id',
         'ip_address',
         'user_agent',
+        'referrer_platform',
     ];
 
     /**
