@@ -318,6 +318,7 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="{{ asset('js/like-handler.js') }}"></script>
     <script src="{{ asset('js/trustlist-handler.js') }}"></script>
+    <script src="{{ asset('js/comment-handler.js') }}"></script>
 
     <script>
         // Rankings Modal Control

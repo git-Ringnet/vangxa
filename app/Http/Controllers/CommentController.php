@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\CommentEvent;
 use App\Models\Comment;
+use App\Models\Post;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -35,9 +37,11 @@ class CommentController extends Controller
             'parent_id' => 'nullable|exists:comments,id'
         ]);
 
+        $user = Auth::user();
+        
         $comment = new Comment([
             'post_id' => $request->post_id,
-            'user_id' => Auth::id() ?? 1,
+            'user_id' => $user->id ?? 1,
             'content' => $request->content
         ]);
 
@@ -46,6 +50,14 @@ class CommentController extends Controller
             $parent->appendNode($comment);
         } else {
             $comment->save(); // comment gốc
+        }
+
+        // Lấy thông tin post để phát sự kiện
+        $post = Post::find($request->post_id);
+        
+        // Phát sự kiện comment mới
+        if ($post && $post->user_id != $user->id) {
+            event(new CommentEvent($comment, $post, $user));
         }
 
         return back();

@@ -4012,3 +4012,20 @@ a {
     font-size: 18px;
     margin-right: 8px;
 }
+
+/* Highlight new comment */
+.highlight-new-comment {
+    animation: highlight-comment 5s ease-in-out;
+}
+
+@keyframes highlight-comment {
+    0% {
+        background-color: rgba(86, 204, 242, 0.2);
+    }
+    70% {
+        background-color: rgba(86, 204, 242, 0.2);
+    }
+    100% {
+        background-color: transparent;
+    }
+}
