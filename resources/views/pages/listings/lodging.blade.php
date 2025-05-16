@@ -24,7 +24,7 @@
             </div>
 
             <div class="load-more">
-                <button class="load-more-button" id="loadMoreButton">
+                <button class="load-more-button" id="loadMoreButton" style="display: none;">
                     Hiển thị thêm
                 </button>
             </div>

@@ -1,7 +1,7 @@
 @foreach ($posts as $post)
     <div class="listing-card custom-card border-post"
         style="background-color: #faf6e9; border-radius: 12px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.05);">
-        <a href="{{ route('detail', $post->id) }}">
+        <a href="{{ route('lodging.detail', $post->id) }}">
             <div class="position-relative">
                 <div class="p-3">
                     <div class="my-3 text-post">

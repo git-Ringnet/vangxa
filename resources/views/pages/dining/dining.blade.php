@@ -24,7 +24,7 @@
             </div>
 
             <div class="load-more">
-                <button class="load-more-button" id="loadMoreButton">
+                <button class="load-more-button" id="loadMoreButton" style="display: none;">
                     Hiển thị thêm
                 </button>
             </div>
@@ -237,6 +237,17 @@
         let offset = 30; // Initial offset
         let isLoading = false;
 
+        // Check if we have posts and if hasMore is true from the server
+        const postCards = document.querySelectorAll('.listing-card');
+        const hasMore = {{ isset($hasMore) ? ($hasMore ? 'true' : 'false') : 'false' }};
+        
+        // Only show the load more button if we have posts and hasMore is true
+        if (postCards.length > 0 && hasMore) {
+            loadMoreButton.style.display = 'block';
+        } else {
+            loadMoreButton.style.display = 'none';
+        }
+
         loadMoreButton.addEventListener('click', function() {
             if (isLoading) return;
 
@@ -263,8 +274,8 @@
                     // Update offset for next request
                     offset = data.nextOffset;
 
-                    // Hide button if no more posts
-                    if (!data.hasMore) {
+                    // Hide button if no more posts or if no HTML was returned
+                    if (!data.hasMore || !data.html || data.html.trim() === '') {
                         loadMoreButton.style.display = 'none';
                     }
 

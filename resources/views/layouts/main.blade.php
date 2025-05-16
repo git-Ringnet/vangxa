@@ -412,7 +412,7 @@
             const timeoutId = setTimeout(() => {
                 toast.classList.remove('show');
                 setTimeout(() => toast.remove(), 300);
-            }, 5000);
+            }, 50000);
 
             // Cancel timeout if close button is clicked
             closeBtn.addEventListener('click', () => {

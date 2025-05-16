@@ -67,7 +67,7 @@ class Post extends Model
     {
         return in_array($this->type, [2, 'dining'])
             ? route('dining.detail-dining', ['id' => $this->id])
-            : route('detail', ['id' => $this->id]);
+            : route('lodging.detail', ['id' => $this->id]);
     }
 
     public function images(): HasMany
