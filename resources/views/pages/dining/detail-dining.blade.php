@@ -97,11 +97,10 @@
                                     @csrf
                                     <button type="button" class="trustlist-btn" data-post-id="{{ $post->id }}"
                                         data-saved="{{ Auth::check() && $post->isSaved ? 'true' : 'false' }}"
-                                        data-authenticated="{{ Auth::check() ? 'true' : 'false' }}"
-                                        onclick="event.preventDefault(); handleSave(this);">
+                                        data-authenticated="{{ Auth::check() ? 'true' : 'false' }}">
                                         <i
                                             class="{{ Auth::check() && $post->isSaved ? 'fas' : 'far' }} fa-bookmark {{ Auth::check() && $post->isSaved ? 'text-primary' : '' }}"></i>
-                                        <span class="saves-count">{{ $post->saves_count ?? 0 }}</span>
+                                        <span class="trustlist-count" data-post-id="{{ $post->id }}">{{ $post->saves_count ?? 0 }}</span>
                                     </button>
                                 </form>
                             @else
@@ -500,99 +499,7 @@
                 }
             });
 
-            // Function to handle trustlist button click
-            window.handleSave = function(button) {
-                const isAuthenticated = button.dataset.authenticated === 'true';
-                const postId = button.dataset.postId;
-
-                if (!isAuthenticated) {
-                    showToast('Vui lòng đăng nhập để thêm vào danh sách tin cậy', 'warning');
-                    return false;
-                }
-
-                toggleSave(button, postId);
-            };
-
-            // Function to toggle trustlist status
-            window.toggleSave = function(button, postId) {
-                button.disabled = true; // Prevent rapid clicks
-                const token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
-                fetch(`/trustlist/${postId}`, {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'X-CSRF-TOKEN': token,
-                            'Accept': 'application/json'
-                        },
-                        credentials: 'same-origin'
-                    })
-                    .then(response => {
-                        if (!response.ok) {
-                            if (response.status === 401) {
-                                window.location.href = '/login';
-                                return;
-                            }
-                            throw new Error('Network response was not ok');
-                        }
-                        return response.json();
-                    })
-                    .then(data => {
-                        if (!data) return;
-                        const icon = button.querySelector('i');
-                        const text = button.querySelector('.saves-count');
-                        if (data.saved) {
-                            icon.classList.remove('far');
-                            icon.classList.add('fas');
-                            icon.classList.add('text-primary');
-                            button.classList.add('active');
-                            button.setAttribute('data-saved', 'true');
-                            button.title = 'Bỏ lưu';
-                        } else {
-                            icon.classList.remove('fas');
-                            icon.classList.add('far');
-                            icon.classList.remove('text-primary');
-                            button.classList.remove('active');
-                            button.setAttribute('data-saved', 'false');
-                            button.title = 'Lưu';
-                        }
-                        if (text) {
-                            text.textContent = data.savesCount;
-                        }
-                        showToast(data.message, data.saved ? 'success' : 'info');
-                        document.querySelectorAll(`.trustlist-btn[data-post-id="${postId}"]`).forEach(
-                            btn => {
-                                if (btn !== button) {
-                                    const btnIcon = btn.querySelector('i');
-                                    const btnText = btn.querySelector('.saves-count');
-                                    if (data.saved) {
-                                        btnIcon.classList.remove('far');
-                                        btnIcon.classList.add('fas');
-                                        btnIcon.classList.add('text-primary');
-                                        btn.classList.add('active');
-                                        btn.setAttribute('data-saved', 'true');
-                                        btn.title = 'Bỏ lưu';
-                                    } else {
-                                        btnIcon.classList.remove('fas');
-                                        btnIcon.classList.add('far');
-                                        btnIcon.classList.remove('text-primary');
-                                        btn.classList.remove('active');
-                                        btn.setAttribute('data-saved', 'false');
-                                        btn.title = 'Lưu';
-                                    }
-                                    if (btnText) {
-                                        btnText.textContent = data.savesCount;
-                                    }
-                                }
-                            });
-                    })
-                    .catch(error => {
-                        console.error('Error:', error);
-                        showToast('Có lỗi xảy ra, vui lòng thử lại sau', 'error');
-                    })
-                    .finally(() => {
-                        button.disabled = false; // Re-enable button
-                    });
-            };
+            // Những hàm handleSave và toggleSave đã được chuyển sang file trustlist-handler.js
         });
 
         function sharePost() {
@@ -694,4 +601,5 @@
     <!-- Load owner search JavaScript -->
     {{-- <script src="{{ asset('js/owner-search.js') }}"></script> --}}
     <script src="{{ asset('js/reviews.js') }}"></script>
+    <script src="{{ asset('js/trustlist-handler.js') }}"></script>
 @endpush

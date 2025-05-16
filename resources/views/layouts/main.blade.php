@@ -209,20 +209,20 @@
     <div class="main-layout">
         <!-- Side Menu -->
         <div class="sidemenu">
-            <!-- Logo -->
+                <!-- Logo -->
             <a href="/" class="navbar-brand p-3"
-                style="display: flex; align-items: center; text-decoration: none;">
+                    style="display: flex; align-items: center; text-decoration: none;">
                 <svg width="38" height="39" viewBox="0 0 38 39" fill="none"
                     xmlns="http://www.w3.org/2000/svg">
                     <path fill-rule="evenodd" clip-rule="evenodd"
                         d="M16.625 6.83244L14.25 7.31994C14.25 5.71296 14.5799 4.12403 15.2182 2.65666L15.2629 2.55372C15.3303 2.39876 15.5447 2.39876 15.6121 2.55372L15.8505 3.10179C16.3611 4.27572 16.625 5.54685 16.625 6.83244ZM11.875 17.0699C11.875 14.1449 8.70834 10.9762 7.125 9.75743L23.75 7.31994L23.8115 7.3409C25.0254 7.75481 27.5662 8.62112 28.5 13.4137C29.2125 17.0699 27.3125 21.5387 26.125 21.9449L7.125 25.6011C8.70834 24.3823 11.875 20.7262 11.875 17.0699ZM3.36727 29.0877C2.79469 29.1856 2.375 29.6941 2.375 30.2898V31.6948C2.375 34.3873 4.50165 36.5698 7.125 36.5698H21.375C29.245 36.5698 35.625 30.0222 35.625 21.9449V19.5074L34.4375 17.0699C35.0932 17.0699 35.625 16.5243 35.625 15.8512C35.625 15.1781 35.0932 14.6324 34.4375 14.6324H34.2912C33.6794 14.6324 33.146 15.0599 32.9975 15.6692L32.3857 18.1807C31.4683 21.9466 28.4618 24.7952 24.7311 25.4334L3.36727 29.0877Z"
                         fill="#7C4D28" />
                 </svg>
-                <span
+                    <span
                     style="margin-left: 8px; font-size: 26px; font-weight: bold; color: #7C4D28; font-family: Verdana, sans-serif;">
-                    Vangxa
-                </span>
-            </a>
+                        Vangxa
+                    </span>
+                </a>
             <a href="{{ route('dining') }}" class="sidemenu-item p-3 {{ request()->is('dining') ? 'active' : '' }}">
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
                     xmlns="http://www.w3.org/2000/svg">
@@ -241,7 +241,7 @@
                 </svg>
                 <span class="pl-3 text-menu">Ở</span>
             </a>
-            <a href="{{ route('groupss.index') }}"
+                    <a href="{{ route('groupss.index') }}"
                 class="sidemenu-item p-3 {{ request()->routeIs('groupss.*') ? 'active' : '' }}">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
                     fill="none">
@@ -252,7 +252,7 @@
                 <span class="pl-3 text-menu">Cộng đồng</span>
             </a>
             <a href="#" class="sidemenu-item p-3">
-                <x-notifications :notifications="auth()->user()->notifications ?? []" />
+                        <x-notifications :notifications="auth()->user()->notifications ?? []" />
             </a>
             <a href="#" class="sidemenu-item menu-button p-3">
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
@@ -266,25 +266,25 @@
                 </svg>
                 <span class="pl-3 text-menu">Tôi</span>
             </a>
-            <div class="user-menu">
-                <div class="dropdown-menu" id="userDropdown">
-                    @auth
-                        <div class="dropdown-section">
-                            <a href="{{ route('profile') }}" class="dropdown-item"><strong>Hồ sơ</strong></a>
-                            <a href="{{ route('trustlist') }}" class="dropdown-item">Danh sách đáng tin cậy</a>
-                        </div>
-                        <div class="dropdown-section">
-                            <form method="POST" action="{{ route('logout') }}">
-                                @csrf
-                                <button type="submit" class="dropdown-item">Đăng xuất</button>
-                            </form>
-                        </div>
-                    @else
-                        <div class="dropdown-section">
-                            <a href="{{ route('register') }}" class="dropdown-item"><strong>Đăng ký</strong></a>
-                            <a href="{{ route('login') }}" class="dropdown-item">Đăng nhập</a>
-                        </div>
-                    @endauth
+                    <div class="user-menu">
+                        <div class="dropdown-menu" id="userDropdown">
+                            @auth
+                                <div class="dropdown-section">
+                                    <a href="{{ route('profile') }}" class="dropdown-item"><strong>Hồ sơ</strong></a>
+                                    <a href="{{ route('trustlist') }}" class="dropdown-item">Danh sách đáng tin cậy</a>
+                                </div>
+                                <div class="dropdown-section">
+                                    <form method="POST" action="{{ route('logout') }}">
+                                        @csrf
+                                        <button type="submit" class="dropdown-item">Đăng xuất</button>
+                                    </form>
+                                </div>
+                            @else
+                                <div class="dropdown-section">
+                                    <a href="{{ route('register') }}" class="dropdown-item"><strong>Đăng ký</strong></a>
+                                    <a href="{{ route('login') }}" class="dropdown-item">Đăng nhập</a>
+                                </div>
+                            @endauth
                 </div>
             </div>
             <div class="position-absolute bottom-0 w-100">
@@ -308,15 +308,16 @@
             </div>
         </div>
 
-        <main class="main-content">
-            @yield('content')
-        </main>
+    <main class="main-content">
+        @yield('content')
+    </main>
     </div>
 
     @stack('scripts')
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="{{ asset('js/like-handler.js') }}"></script>
+    <script src="{{ asset('js/trustlist-handler.js') }}"></script>
 
     <script>
         // Rankings Modal Control
@@ -410,7 +411,7 @@
             const timeoutId = setTimeout(() => {
                 toast.classList.remove('show');
                 setTimeout(() => toast.remove(), 300);
-            }, 60000);
+            }, 5000);
 
             // Cancel timeout if close button is clicked
             closeBtn.addEventListener('click', () => {

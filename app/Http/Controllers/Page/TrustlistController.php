@@ -6,9 +6,12 @@ use App\Http\Controllers\Controller;
 use App\Models\Post;
 use App\Models\Trustlist;
 use App\Models\UserInteraction;
+use App\Events\TrustlistEvent;
+use App\Events\UntrustEvent;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
+
 class TrustlistController extends Controller
 {
     public function index(Request $request)
@@ -34,52 +37,72 @@ class TrustlistController extends Controller
 
     public function toggle(Request $request, $id)
     {
-        if (!Auth::check()) {
+        try {
+            if (!Auth::check()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Vui lòng đăng nhập để thêm vào danh sách tin cậy',
+                    'saved' => false
+                ], 401);
+            }
+
+            $post = Post::with('user')->findOrFail($id);
+            $user = Auth::user();
+            $isSaved = false;
+
+            $trustlist = Trustlist::where('user_id', $user->id)
+                ->where('post_id', $post->id)
+                ->first();
+
+            if ($trustlist) {
+                // Xóa khỏi danh sách tin cậy
+                $trustlist->delete();
+                $message = 'Đã xóa khỏi danh sách tin cậy';
+                
+                // Phát sự kiện UntrustEvent
+                event(new UntrustEvent($post, $user));
+            } else {
+                // Thêm vào danh sách tin cậy
+                Trustlist::create([
+                    'user_id' => $user->id,
+                    'post_id' => $post->id
+                ]);
+                $isSaved = true;
+                $message = 'Đã thêm vào danh sách tin cậy';
+                
+                // Phát sự kiện TrustlistEvent
+                event(new TrustlistEvent($post, $user));
+            }
+
+            // Lấy số lượng lưu hiện tại
+            $savesCount = Trustlist::where('post_id', $post->id)->count();
+
+            // Tạo hoặc cập nhật tương tác người dùng đơn giản
+            UserInteraction::updateOrCreate(
+                [
+                    'user_id' => $user->id,
+                    'interaction_type' => 'trustlist'
+                ],
+                [
+                    'user_id' => $user->id,
+                    'interaction_type' => 'trustlist',
+                    'points' => 1
+                ]
+            );
+
+            return response()->json([
+                'success' => true,
+                'message' => $message,
+                'saved' => $isSaved,
+                'saves_count' => $savesCount
+            ]);
+        } catch (\Exception $e) {
+            Log::error('Trustlist error: ' . $e->getMessage());
             return response()->json([
                 'success' => false,
-                'message' => 'Vui lòng đăng nhập để thêm vào danh sách tin cậy',
+                'message' => 'Đã xảy ra lỗi, vui lòng thử lại sau.',
                 'saved' => false
-            ], 401);
+            ], 500);
         }
-
-        $post = Post::findOrFail($id);
-        $trustlist = Trustlist::where('user_id', Auth::id())
-            ->where('post_id', $id)
-            ->first();
-
-        if ($trustlist) {
-            $trustlist->delete();
-            $message = 'Đã xóa khỏi danh sách tin cậy';
-            $saved = false;
-        } else {
-            Trustlist::create([
-                'user_id' => Auth::id(),
-                'post_id' => $id
-            ]);
-
-            // Ghi nhận tương tác thêm vào trustlist
-            UserInteraction::create([
-                'user_id' => Auth::id(),
-                'interaction_type' => 'trustlist',
-                'points' => 1,
-                'post_id' => $id
-            ]);
-
-            // Kiểm tra thăng hạng sau khi thêm vào trustlist
-            $tierUpgrade = UserInteraction::checkTierUpgrade(Auth::id());
-
-            $message = 'Đã thêm vào danh sách tin cậy';
-            $saved = true;
-        }
-
-        $savesCount = Trustlist::where('post_id', $post->id)->count();
-
-        return response()->json([
-            'success' => true,
-            'message' => $message,
-            'saved' => $saved,
-            'savesCount' => $savesCount,
-            'tier_upgrade' => $tierUpgrade ?? null
-        ]);
     }
 }

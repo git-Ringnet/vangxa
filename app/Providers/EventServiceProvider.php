@@ -6,10 +6,14 @@ use App\Events\FollowEventReverb;
 use App\Events\LikeEvent;
 use App\Events\UnlikeEvent;
 use App\Events\UnfollowEvent;
+use App\Events\TrustlistEvent;
+use App\Events\UntrustEvent;
 use App\Listeners\CreateFollowNotification;
 use App\Listeners\CreateLikeNotification;
 use App\Listeners\CreateUnlikeNotification;
 use App\Listeners\CreateUnfollowNotification;
+use App\Listeners\CreateTrustlistNotification;
+use App\Listeners\CreateUntrustNotification;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
@@ -37,6 +41,12 @@ class EventServiceProvider extends ServiceProvider
         // ],
         // UnlikeEvent::class => [
         //     CreateUnlikeNotification::class,
+        // ],
+        // TrustlistEvent::class => [
+        //     CreateTrustlistNotification::class,
+        // ],
+        // UntrustEvent::class => [
+        //     CreateUntrustNotification::class,
         // ],
     ];
 
