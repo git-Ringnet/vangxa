@@ -192,7 +192,7 @@
                                 countSpan.textContent = currentCount - 1;
                                 this.dataset.liked = 'false';
                             } else {
-                                icon.setAttribute('fill', 'white');
+                                icon.setAttribute('fill', 'red');
                                 countSpan.textContent = currentCount + 1;
                                 this.dataset.liked = 'true';
                             }

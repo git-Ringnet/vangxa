@@ -31,11 +31,18 @@ function setupTrustlistButtons() {
 function toggleTrustlist(postId, button) {
     button.disabled = true; // Ngăn click liên tục
     const token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+    const isSaved = button.dataset.saved === 'true';
+    
+    // Create form data to include the is_saved parameter
+    const formData = new FormData();
+    formData.append('_token', token);
+    formData.append('is_saved', isSaved);
     
     fetch(`/trustlist/${postId}`, {
         method: 'POST',
+        body: formData,
         headers: {
-            'Content-Type': 'application/json',
+            'X-Requested-With': 'XMLHttpRequest',
             'X-CSRF-TOKEN': token,
         },
         credentials: 'same-origin'
@@ -107,16 +114,19 @@ function updateTrustlistButton(button, isSaved, savesCount) {
     // Find the icon and text elements
     const icon = button.querySelector('i');
     
+    // Update the data-saved attribute
+    button.dataset.saved = isSaved ? 'true' : 'false';
+    
     if (isSaved) {
         button.classList.add('active');
         if (icon) {
             icon.classList.remove('far');
-            icon.classList.add('fas');
+            icon.classList.add('fas', 'text-primary');
         }
     } else {
         button.classList.remove('active');
         if (icon) {
-            icon.classList.remove('fas');
+            icon.classList.remove('fas', 'text-primary');
             icon.classList.add('far');
         }
     }

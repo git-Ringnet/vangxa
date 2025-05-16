@@ -71,10 +71,11 @@
                                                                 <b>{{ $post->user->name }}</b>
                                                             </span>
                                                             @if ($post->taggedVendors->count() > 0)
+                                                                <span class="mx-2">></span>
                                                                 <span>
                                                                     @foreach ($post->taggedVendors as $vendor)
                                                                         <a href="{{ route('profile.show', $vendor->id) }}"
-                                                                            class="text-decoration-none text-white">
+                                                                            class="text-decoration-none">
                                                                             {{ $vendor->name }}
                                                                         </a>
                                                                     @endforeach
@@ -177,7 +178,7 @@
                                                         <div class="d-flex gap-2 align-items-center">
                                                             <svg xmlns="http://www.w3.org/2000/svg" width="20"
                                                                 height="20" viewBox="0 0 20 20"
-                                                                fill="{{ $post->likes->contains(auth()->id()) ? 'white' : 'none' }}"
+                                                                fill="{{ $post->likes->contains(auth()->id()) ? 'red' : 'none' }}"
                                                                 class="like-icon">
                                                                 <path
                                                                     d="M1.49316 8.36806V8.37826C1.49315 8.93568 1.49313 9.73662 1.84578 10.7287C2.19955 11.724 2.88929 12.8643 4.19656 14.1716C6.21425 16.1893 8.4235 17.8017 9.25996 18.3886C9.70594 18.7014 10.2954 18.7014 10.7413 18.3884C11.5776 17.8014 13.7861 16.1892 15.8037 14.1716C17.1109 12.8643 17.8007 11.724 18.1544 10.7287C18.5071 9.73663 18.5071 8.93568 18.507 8.37826V8.36806C18.507 5.81629 16.7611 3.61111 14.0626 3.61111C12.8017 3.61111 11.826 4.20271 11.1026 4.94974C10.6558 5.41125 10.293 5.94345 10.0001 6.46148C9.70728 5.94345 9.34445 5.41125 8.89758 4.94974C8.17424 4.20271 7.19856 3.61111 5.93761 3.61111C3.23911 3.61111 1.49316 5.81629 1.49316 8.36806Z"
@@ -188,7 +189,8 @@
                                                         </div>
                                                     </button>
                                                     @if (!$post->group || ($post->group && $post->group->members->contains(auth()->id())))
-                                                        <button class="btn btn-link text-decoration-none p-0 comment-toggle"
+                                                        <button
+                                                            class="btn btn-link text-decoration-none p-0 comment-toggle"
                                                             data-post-id="{{ $post->id }}">
                                                             <div class="d-flex gap-2 align-items-center">
                                                                 <svg xmlns="http://www.w3.org/2000/svg" width="20"
@@ -219,8 +221,9 @@
                                                             <path d="M11.8901 5.38889L8.00119 1.5L4.1123 5.38889"
                                                                 stroke="#7c4d28" stroke-width="1.51095"
                                                                 stroke-linecap="round" stroke-linejoin="round" />
-                                                            <path d="M8 1.5V10.8333" stroke="#7c4d28" stroke-width="1.51095"
-                                                                stroke-linecap="round" stroke-linejoin="round" />
+                                                            <path d="M8 1.5V10.8333" stroke="#7c4d28"
+                                                                stroke-width="1.51095" stroke-linecap="round"
+                                                                stroke-linejoin="round" />
                                                         </svg>
                                                         <span class="text-post">Chia sẻ</span>
                                                     </div>
@@ -317,13 +320,13 @@
 
                         @if (!$hasViewablePosts)
                             <div class="shadow-sm text-center py-5 border rounded-3">
-                                <i class="fas fa-newspaper fa-3x text-white mb-3"></i>
-                                <h3 class="h4 text-white">Không có bài viết</h3>
+                                <i class="fas fa-newspaper fa-3x mb-3"></i>
+                                <h3 class="h4">Không có bài viết</h3>
                                 @if (auth()->check())
                                     <p class="text-white-50">Hãy tham gia các nhóm để xem bài viết hoặc tạo bài viết mới!
                                     </p>
                                 @else
-                                    <p class="text-white-50">Vui lòng đăng nhập để xem và tương tác với bài viết!</p>
+                                    <p>Vui lòng đăng nhập để xem và tương tác với bài viết!</p>
                                 @endif
                             </div>
                         @endif

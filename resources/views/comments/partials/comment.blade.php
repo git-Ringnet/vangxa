@@ -2,13 +2,13 @@
     <div class="d-flex">
         <div class="flex-grow-1">
             <div class="rounded p-2">
-                <strong class="text-white">{{ $comment->user->name }}</strong>
-                <p class="mb-0 text-white">{{ $comment->content }}</p>
+                <strong>{{ $comment->user->name }}</strong>
+                <p class="mb-0">{{ $comment->content }}</p>
             </div>
             <div class="d-flex align-items-center mt-1">
                 <small class="text-white-blur me-2">{{ $comment->created_at->diffForHumans() }}</small>
                 @if (Auth::check())
-                    <button class="btn btn-link text-decoration-none p-0 reply-toggle text-white"
+                    <button class="btn btn-link text-decoration-none p-0 reply-toggle"
                         data-comment-id="{{ $comment->id }}">
                         <i class="far fa-comment me-1"></i> Phản hồi
                     </button>
