@@ -167,9 +167,17 @@
             left: 50%;
             transform: translate(-50%, -50%);
             max-width: 100%;
-            animation: floatBoat 5s ease-in-out infinite;
             filter: drop-shadow(0 5px 15px rgba(0, 0, 0, 0.4));
             z-index: 2;
+        }
+        
+        /* Hình ảnh cho mobile ở mỗi phần */
+        .section-image-mobile {
+            display: none;
+            width: 100%;
+            max-width: 300px;
+            margin: 0 auto 2rem auto;
+            filter: drop-shadow(0 5px 15px rgba(0, 0, 0, 0.4));
         }
         
       
@@ -211,13 +219,7 @@
             100% { transform: translateX(360px); }
         }
         
-        @keyframes floatBoat {
-            0% { transform: translate(-50%, -50%) rotate(0deg); }
-            25% { transform: translate(-50%, -52%) rotate(1deg); }
-            50% { transform: translate(-50%, -50%) rotate(0deg); }
-            75% { transform: translate(-50%, -48%) rotate(-1deg); }
-            100% { transform: translate(-50%, -50%) rotate(0deg); }
-        }
+      
         
         #loading {
             position: fixed;
@@ -488,26 +490,19 @@
             }
             
             #boat-container {
-                position: fixed !important;
-                top: 40% !important;
-                left: 50% !important;
-                width: 100%;
-                height: 50vh;
-                z-index: 5;
+                display: none; /* Ẩn thuyền cố định trên mobile */
             }
             
-            /* #intro {
-                margin-top: -60vh;
-            } */
+            /* Hiển thị hình ảnh cho mỗi phần trên mobile */
+            .section-image-mobile {
+                display: block;
+                margin-bottom: 1.5rem;
+            }
             
             section {
                 position: relative;
                 z-index: 10;
-            }
-            
-            #boat-image {
-                max-width: 120%;
-                transform: translate(-50%, -50%) scale(1.3);
+                padding-top: 1rem;
             }
             
             .content-container h1,
@@ -565,9 +560,15 @@
             header .container {
                 padding: 0.6rem 1rem;
             }
-main{
-    left: 0;
-}
+            main{
+                left: 0;
+            }
+            
+            /* Tối ưu hình ảnh trên mobile */
+            .section-image-mobile {
+                max-width: 220px;
+                margin-top: 1rem;
+            }
             header nav {
                 display: none;
             }
@@ -1082,14 +1083,7 @@ main{
             pointer-events: none;
         }
         
-        /* Thêm hiệu ứng lấp lánh cho các phần tử */
-        .sparkle {
-            position: absolute;
-            background-color: white;
-            border-radius: 50%;
-            opacity: 0;
-            pointer-events: none;
-        }
+        /* Hiệu ứng lấp lánh đã bỏ để tối ưu GPU */
         
         /* Ẩn nội dung ban đầu trước khi hiệu ứng chạy */
         body.loading-intro main,
@@ -1136,19 +1130,7 @@ main{
             filter: drop-shadow(0 5px 15px rgba(255, 180, 0, 0.8)) brightness(1.2);
         }
 
-        /* Hiệu ứng sóng nước */
-        .ripple-effect {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: radial-gradient(circle at center, transparent, #000 75%);
-            z-index: 950;
-            opacity: 0;
-            transform: scale(0);
-            pointer-events: none;
-        }
+        /* Hiệu ứng sóng nước - đã bỏ để tối ưu GPU */
 
     </style>
 </head>
@@ -1228,9 +1210,9 @@ main{
         </div>
         <div class="mobile-menu">
             <a href="#intro" class="header-nav-link text-white hover:text-amber-300 transition-colors">Giới thiệu</a>
-            <a href="#part1" class="header-nav-link text-white hover:text-amber-300 transition-colors">Phần I</a>
-            <a href="#part2" class="header-nav-link text-white hover:text-amber-300 transition-colors">Phần II</a>
-            <a href="#part3" class="header-nav-link text-white hover:text-amber-300 transition-colors">Phần III</a>
+            <a href="{{ route('lodging') }}"  {{ request()->is('lodging') ? 'active' : '' }}" class="header-nav-link text-white hover:text-amber-300 transition-colors">Lưu Trú</a>
+            <a href="{{ route('dining') }}"  {{ request()->is('dining') ? 'active' : '' }}" class="header-nav-link text-white hover:text-amber-300 transition-colors">Ăn Uống</a>
+            <a href="{{ route('groupss.index') }}" {{ request()->routeIs('groupss.*') ? 'active' : '' }}" class="header-nav-link text-white hover:text-amber-300 transition-colors">Cộng Đồng</a>
             <div class="flex justify-center mt-4 space-x-6">
                 <div class="dropdown" id="mobileSettingsDropdown">
                     <div class="dropdown-trigger">
@@ -1246,11 +1228,12 @@ main{
     </header>
     
     <div id="boat-container">
-        <img id="boat-image" src="/image/long den.png" alt="Thuyền buồm" />
+        <img id="boat-image" src="/image/longden.png" alt="Thuyền buồm" />
     </div>
     
     <main class="relative text-white">
         <section id="intro" class="flex flex-col justify-center items-center text-center">
+            <img src="/image/longden.png" alt="Đèn lồng" class="section-image-mobile" />
             <div class="content-container">
                 <h1 class="text-8xl font-bold mb-8 gradient-text fade-up" style="line-height: 1.2;">Đây không phải là một bài giới thiệu.</h1>
                 <p class="text-xl mb-4 fade-up">Cũng chẳng phải một kế hoạch bí mật.</p>
@@ -1263,6 +1246,7 @@ main{
         </section>
         
         <section id="part1" class="pt-24">
+            <img src="/image/longden2.png" alt="Đèn lồng 2" class="section-image-mobile" />
             <div class="content-container">
                 <h3 class="text-3xl font-bold mb-4 gradient-text fade-up">Phần I</h3>
                 <h2 class="text-8xl font-bold mb-4 gradient-text fade-up" style="line-height: 1.2;">Khi phép màu vụt tắt</h2>
@@ -1297,6 +1281,7 @@ main{
         </section>
         
         <section id="part2" class="pt-24">
+            <img src="/image/longden2.png" alt="Đèn lồng 2" class="section-image-mobile" />
             <div class="content-container">
                 <h3 class="text-3xl font-bold mb-4 gradient-text fade-up">Phần II</h3>
                 <h2 class="text-8xl font-bold mb-4 gradient-text fade-up" style="line-height: 1.2;">Ngọn lửa được nhóm lên</h2>
@@ -1319,6 +1304,7 @@ main{
         </section>
         
         <section id="part3" class="pt-24">
+            <img src="/image/thuyen.png" alt="Thuyền" class="section-image-mobile" />
             <div class="content-container">
                 <h3 class="text-3xl font-bold mb-4 gradient-text fade-up">Phần III</h3>
                 <h2 class="text-8xl font-bold mb-4 gradient-text fade-up" style="line-height: 1.2;">Phép màu quay trở lại</h2>
@@ -1664,11 +1650,6 @@ main{
         document.getElementById('loading').style.display = 'none';
     }});
     
-    // Thêm hiệu ứng sóng nước
-    const ripple = document.createElement('div');
-    ripple.className = 'ripple-effect';
-    document.body.appendChild(ripple);
-    
     // Tạo timeline cho intro animation
     const introTimeline = gsap.timeline({
         onComplete: () => {
@@ -1680,7 +1661,7 @@ main{
         }
     });
     
-    // Thêm intro title animation - rút ngắn toàn bộ thời gian
+    // Thêm intro title animation với hiệu ứng fade out nhẹ nhàng
     introTimeline
         .to("#intro-title", {
             opacity: 1,
@@ -1689,25 +1670,10 @@ main{
             ease: "power2.out"
         })
         .to("#intro-title", {
-            scale: 10,
             opacity: 0,
-            duration: 0.5,
-            ease: "power1.in"
-        })
-        
-        // Hiệu ứng sóng nước - rút ngắn
-        .to(ripple, {
-            opacity: 0.9,
-            scale: 5,
-            duration: 0.5,
-            ease: "sine.out"
-        }, "-=0.3")
-        .to(ripple, {
-            opacity: 0,
-            scale: 15,
-            duration: 0.8,
+            duration: 1.0,
             ease: "power2.out"
-        }, "-=0.9")
+        })
         
         // Hiện các phần chính của trang ngay lập tức, không stagger
         .fromTo([
@@ -1749,142 +1715,168 @@ main{
             "-=0.1"
         );
     
-    // Thêm hiệu ứng tỏa sáng nhưng giảm thời gian
-    createSparkleEffect();
+    // Đã loại bỏ hiệu ứng tỏa sáng để tối ưu GPU
 }
         
         
-        // Tạo hiệu ứng tỏa sáng
-        function createSparkleEffect() {
-    // Tạo ít đốm sáng hơn và giảm thời gian
-    const container = document.body;
-    
-    for (let i = 0; i < 4; i++) {
-        const sparkle = document.createElement('div');
-        sparkle.className = 'sparkle';
-        
-        // Random kích thước
-        const size = 3 + Math.random() * 8;
-        
-        // Vị trí ngẫu nhiên xung quanh center
-        const centerX = window.innerWidth / 2;
-        const centerY = window.innerHeight / 2;
-        const angle = Math.random() * Math.PI * 2;
-        const distance = 100 + Math.random() * 150;
-        
-        const x = centerX + Math.cos(angle) * distance;
-        const y = centerY + Math.sin(angle) * distance;
-        
-        // Set style
-        Object.assign(sparkle.style, {
-            width: `${size}px`,
-            height: `${size}px`,
-            left: `${x}px`,
-            top: `${y}px`,
-            boxShadow: `0 0 ${size * 2}px ${size/2}px rgba(255, 180, 0, 0.8)`
-        });
-        
-        container.appendChild(sparkle);
-        
-        // Animate nhanh hơn
-        gsap.to(sparkle, {
-            opacity: Math.random() * 0.7 + 0.3,
-            duration: 0.2,
-            delay: 0.1,
-            onComplete: () => {
-                gsap.to(sparkle, {
-                    opacity: 0,
-                    duration: 0.2,
-                    delay: 0.4,
-                    onComplete: () => sparkle.remove()
-                });
-            }
-        });
-        
-        // Di chuyển nhanh hơn
-        gsap.to(sparkle, {
-            x: Math.random() * 100 - 50,
-            y: Math.random() * 100 - 50,
-            duration: 0.3,
-            delay: 0.5,
-            ease: "power1.out"
-        });
-    }
-}
+        // Tạo hiệu ứng tỏa sáng - đã loại bỏ để tối ưu GPU
         // Khởi tạo GSAP animations
         function initGSAPAnimations() {
             // Đăng ký ScrollTrigger plugin
             gsap.registerPlugin(ScrollTrigger);
+            
+            // Kiểm tra thiết bị có hiệu năng thấp
+            const isLowPerformance = window.innerWidth < 768 || navigator.hardwareConcurrency <= 4;
             
             // Cấu hình hiệu suất ScrollTrigger
             ScrollTrigger.config({
                 limitCallbacks: true, // Giới hạn callbacks để tăng hiệu suất
                 ignoreMobileResize: true, // Bỏ qua resize trên mobile
                 refreshPriority: -10, // Giảm độ ưu tiên refresh để tối ưu hiệu suất
+                autoRefreshEvents: "visibilitychange,DOMContentLoaded,load", // Giảm số lần refresh
             });
             
-            // Tạo batching cho elements giúp tăng hiệu suất
-            // Batch tất cả các fade-up elements trong mỗi section
-            domElements.sections.forEach(section => {
-                const elements = section.querySelectorAll('.fade-up');
+            // Giảm số lượng animation và đơn giản hóa hiệu ứng cho thiết bị yếu
+            if (isLowPerformance) {
+                // Đơn giản hóa: chỉ áp dụng cho các phần tử hiện tại trong viewport khi tải trang
+                const visibleElements = Array.from(document.querySelectorAll('.fade-up'))
+                    .filter(el => {
+                        const rect = el.getBoundingClientRect();
+                        return rect.top < window.innerHeight && rect.bottom > 0;
+                    });
                 
-                // Sử dụng GSAP batch để giảm thiểu reflows
-                gsap.set(elements, { opacity: 0, y: 30 });
-                
-                ScrollTrigger.batch(elements, {
-                    batchMax: 4, // Giảm số lượng phần tử animate cùng lúc
-                    onEnter: batch => gsap.to(batch, {
-                        opacity: 1, 
-                        y: 0, 
-                        stagger: { 
-                            each: 0.05,  // Giảm thời gian stagger
-                            grid: [1, 2] // Giảm grid size
-                        },
-                        duration: 0.5,
-                        ease: "power1.out", // Sử dụng ease function nhẹ hơn
-                        overwrite: true, // Ngăn animations xung đột
-                    }),
-                    start: "top 85%", // Bắt đầu animation sớm hơn một chút
-                    once: true, // Chỉ chạy animation một lần
+                // Chỉ animate những phần tử đang hiển thị
+                gsap.to(visibleElements, {
+                    opacity: 1,
+                    y: 0,
+                    duration: 0.3,
+                    stagger: 0.02,
+                    ease: "power1.out"
                 });
-            });
+                
+                // Tối ưu: chỉ set opacity cho các phần tử còn lại, hiển thị khi scroll tới
+                const observer = new IntersectionObserver((entries) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            gsap.to(entry.target, {
+                                opacity: 1,
+                                y: 0,
+                                duration: 0.2,
+                                ease: "none"
+                            });
+                            observer.unobserve(entry.target);
+                        }
+                    });
+                }, { threshold: 0.1 });
+                
+                // Áp dụng cho tất cả fade-up còn lại
+                document.querySelectorAll('.fade-up').forEach(el => {
+                    if (!visibleElements.includes(el)) {
+                        gsap.set(el, { opacity: 0, y: 15 });
+                        observer.observe(el);
+                    }
+                });
+            } else {
+                // Chỉ cho thiết bị có hiệu năng tốt: Batch với số lượng lớn hơn
+                // Chia sections thành nhóm để xử lý từng phần, giảm tải cho CPU
+                const sectionGroups = [];
+                let currentGroup = [];
+                
+                domElements.sections.forEach((section, index) => {
+                    currentGroup.push(section);
+                    if (index % 2 === 1 || index === domElements.sections.length - 1) {
+                        sectionGroups.push([...currentGroup]);
+                        currentGroup = [];
+                    }
+                });
+                
+                // Xử lý từng nhóm section
+                sectionGroups.forEach(group => {
+                    group.forEach(section => {
+                        const elements = section.querySelectorAll('.fade-up');
+                        if (elements.length === 0) return;
+                        
+                        // Sử dụng GSAP batch với số lượng lớn hơn
+                        gsap.set(elements, { opacity: 0, y: 20 });
+                        
+                        ScrollTrigger.batch(elements, {
+                            batchMax: 8, // Tăng số lượng phần tử animate cùng lúc để giảm số lượng batches
+                            onEnter: batch => gsap.to(batch, {
+                                opacity: 1, 
+                                y: 0, 
+                                stagger: 0.03, // Giảm stagger delay
+                                duration: 0.3, // Giảm thời gian animation
+                                ease: "power1.out",
+                                overwrite: "auto", // Cho phép GSAP tự quyết định
+                            }),
+                            start: "top 90%", // Bắt đầu sớm hơn khi phần tử gần đến viewport
+                            once: true,
+                        });
+                    });
+                });
+                
+                // Xử lý đặc biệt cho các tiêu đề - giảm số lượng batch
+                const allTitles = document.querySelectorAll('h1.fade-up, h2.fade-up, h3.fade-up');
+                
+                if (allTitles.length > 0) {
+                    gsap.set(allTitles, { opacity: 0, y: 30 });
+                    
+                    ScrollTrigger.batch(allTitles, {
+                        batchMax: 3, // Giảm số lượng batches cho titles
+                        onEnter: batch => gsap.to(batch, {
+                            opacity: 1, 
+                            y: 0, 
+                            duration: 0.4,
+                            ease: "power1.out",
+                        }),
+                        start: "top 85%",
+                        once: true,
+                    });
+                }
+            }
             
-            // Xử lý đặc biệt cho các tiêu đề
-            const titles = document.querySelectorAll('h1.fade-up, h2.fade-up, h3.fade-up');
-            
-            gsap.set(titles, { opacity: 0, y: 50 });
-            
-            ScrollTrigger.batch(titles, {
-                onEnter: batch => gsap.to(batch, {
-                    opacity: 1, 
-                    y: 0, 
-                    duration: 0.6,
-                    ease: "power1.out",
-                }),
-                start: "top 85%",
-                once: true,
-            });
-            
-            // Cleanup và invalidate để tối ưu bộ nhớ
-            ScrollTrigger.addEventListener("refresh", () => {
-                // Force garbage collection khi refresh ScrollTrigger
-                if (window.gc) window.gc();
-            });
-            
-            // Tối ưu hiệu suất bằng cách giảm mức chi tiết khi scroll nhanh
-            // Sử dụng throttle để giảm số lượng event handler calls
+            // Khóa tất cả ScrollTriggers khi người dùng cuộn nhanh
             const throttledScrollHandler = throttle(() => {
                 isScrolling = true;
-                document.body.classList.add('fast-scrolling');
+                
+                // Tạm dừng tất cả animations khi cuộn nhanh
+                if (!document.body.classList.contains('fast-scrolling')) {
+                    document.body.classList.add('fast-scrolling');
+                    ScrollTrigger.getAll().forEach(st => {
+                        st.disable(false); // Vô hiệu hóa tạm thời, không xóa
+                    });
+                }
                 
                 clearTimeout(scrollTimeout);
                 scrollTimeout = setTimeout(() => {
                     document.body.classList.remove('fast-scrolling');
                     isScrolling = false;
-                }, 150);
-            }, 50); // Throttle ở 50ms
+                    
+                    // Kích hoạt lại animations sau khi người dùng dừng cuộn
+                    ScrollTrigger.getAll().forEach(st => {
+                        st.enable(false); // Kích hoạt lại, không cần update
+                    });
+                    
+                    // Chỉ refresh ScrollTrigger khi cần thiết
+                    ScrollTrigger.refresh();
+                }, 200);
+            }, 100); // Tăng throttle delay để giảm số lần gọi
             
             window.addEventListener("scroll", throttledScrollHandler, { passive: true });
+            
+            // Giảm tải khi tab không hiển thị
+            document.addEventListener('visibilitychange', () => {
+                if (document.hidden) {
+                    // Tắt tất cả ScrollTriggers khi tab không hiển thị
+                    ScrollTrigger.getAll().forEach(st => st.disable());
+                } else {
+                    // Chỉ kích hoạt lại khi tab hiển thị trở lại
+                    setTimeout(() => {
+                        ScrollTrigger.getAll().forEach(st => st.enable());
+                        ScrollTrigger.refresh();
+                    }, 300);
+                }
+            });
         }
         
         // Tách biệt việc thiết lập event listeners để quản lý tốt hơn
@@ -1997,7 +1989,7 @@ main{
         function createFireflies() {
     const container = document.getElementById('firefliesContainer');
     const isMobile = window.innerWidth <= 768;
-    const count = isMobile ? 10 : Math.min(20, Math.floor(window.innerWidth / 60));
+    const count = isMobile ? 10 : Math.min(10, Math.floor(window.innerWidth / 60));
     const fragment = document.createDocumentFragment();
 
     for (let i = 0; i < count; i++) {
