@@ -2,14 +2,28 @@
 
 @section('content')
     <div class="container-custom detail-dining-page">
+        {{-- emmbed tiktok --}}
+        <blockquote class="tiktok-embed" cite="https://www.tiktok.com/@vangxavn/video/7505765607565036808"
+            data-video-id="7505765607565036808" style="max-width: 605px;min-width: 325px;">
+            <section> <a target="_blank" title="@vangxavn" href="https://www.tiktok.com/@vangxavn?refer=embed">@vangxavn</a>
+                Pizza nướng trong lò củi có mùi đặc trưng lắm 🥰 <a title="vangxa" target="_blank"
+                    href="https://www.tiktok.com/tag/vangxa?refer=embed">#Vangxa</a> <a title="saigonfood" target="_blank"
+                    href="https://www.tiktok.com/tag/saigonfood?refer=embed">#saigonfood</a> <a title="fyp"
+                    target="_blank" href="https://www.tiktok.com/tag/fyp?refer=embed">#fyp</a> <a title="quan10"
+                    target="_blank" href="https://www.tiktok.com/tag/quan10?refer=embed">#quan10</a> <a target="_blank"
+                    title="♬ nhạc nền  - Vangxa"
+                    href="https://www.tiktok.com/music/nhạc-nền-Vangxa-7505765805570575105?refer=embed">♬ nhạc nền -
+                    Vangxa</a> </section>
+        </blockquote>
+        <script async src="https://www.tiktok.com/embed.js"></script>
         <!-- Image Gallery -->
         <div class="detail-gallery">
-            <div class="gallery-main" onclick="openPreview(0)">
+            {{-- <div class="gallery-main" onclick="openPreview(0)">
                 @if ($post->images->isNotEmpty())
                     <img src="{{ asset($post->images->first()->image_path) }}" alt="{{ $post->title }}" class="main-image">
                 @endif
-            </div>
-            <div class="gallery-grid">
+            </div> --}}
+            {{-- <div class="gallery-grid">
                 @foreach ($post->images->skip(1)->take(4) as $index => $image)
                     <div class="detail-page__gallery-item" onclick="openPreview({{ $index + 1 }})">
                         <img src="{{ asset($image->image_path) }}" class="img-fluid rounded" alt="Post image">
@@ -17,7 +31,7 @@
                         <i class="fas fa-search-plus zoom-icon"></i>
                     </div>
                 @endforeach
-            </div>
+            </div> --}}
             @if ($post->images->count() > 5)
                 <button class="view-all-photos" data-bs-toggle="modal" data-bs-target="#imageGalleryModal">
                     <i class="fas fa-th"></i>
@@ -100,7 +114,8 @@
                                         data-authenticated="{{ Auth::check() ? 'true' : 'false' }}">
                                         <i
                                             class="{{ Auth::check() && $post->isSaved ? 'fas' : 'far' }} fa-bookmark {{ Auth::check() && $post->isSaved ? 'text-primary' : '' }}"></i>
-                                        <span class="trustlist-count" data-post-id="{{ $post->id }}">{{ $post->saves_count ?? 0 }}</span>
+                                        <span class="trustlist-count"
+                                            data-post-id="{{ $post->id }}">{{ $post->saves_count ?? 0 }}</span>
                                     </button>
                                 </form>
                             @else
@@ -182,10 +197,10 @@
                             <p class="text-muted mb-2"><small>Thành viên từ
                                     {{ $vendor->created_at->format('d/m/Y') }}</small></p>
                             <!-- <div>
-                                                        <a href="{{ route('profile.show', ['id' => $vendor->id]) }}" class="btn btn-sm btn-outline-primary">
-                                                            <i class="fas fa-user me-1"></i> Xem hồ sơ
-                                                        </a>
-                                                    </div> -->
+                                                            <a href="{{ route('profile.show', ['id' => $vendor->id]) }}" class="btn btn-sm btn-outline-primary">
+                                                                <i class="fas fa-user me-1"></i> Xem hồ sơ
+                                                            </a>
+                                                        </div> -->
                         </div>
                     </div>
                 </div>

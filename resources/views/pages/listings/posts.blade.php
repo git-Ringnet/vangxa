@@ -197,7 +197,6 @@
                             latitude: position.coords.latitude,
                             longitude: position.coords.longitude
                         };
-                        console.log('Got user position:', userPosition);
                         resolve(userPosition);
                     },
                     (error) => {

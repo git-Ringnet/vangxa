@@ -1,27 +1,29 @@
-// Comment handler
+// Comment handler - create namespace to avoid variable conflicts
+window.CommentHandler = window.CommentHandler || {};
+
 document.addEventListener('DOMContentLoaded', function() {
     // Nếu không có user đăng nhập, không cần thiết lập các event
     const userId = document.body.dataset.userId;
     if (!userId) return;
 
     // Thiết lập lắng nghe sự kiện realtime
-    setupRealtimeListeners();
+    window.CommentHandler.setupRealtimeListeners();
 });
 
-// Biến để kiểm tra đã đăng ký event listeners chưa
-let eventListenersRegistered = false;
+// Initialize properties in the namespace
+window.CommentHandler.eventListenersRegistered = false;
 
 /**
  * Thiết lập lắng nghe sự kiện realtime
  */
-function setupRealtimeListeners() {
+window.CommentHandler.setupRealtimeListeners = function() {
     // Kiểm tra xem đã đăng ký event listeners chưa
-    if (eventListenersRegistered) {
+    if (window.CommentHandler.eventListenersRegistered) {
         return;
     }
     
     // Đánh dấu đã đăng ký
-    eventListenersRegistered = true;
+    window.CommentHandler.eventListenersRegistered = true;
     
     // Lắng nghe sự kiện thêm comment
     if (window.Echo) {
@@ -32,7 +34,7 @@ function setupRealtimeListeners() {
                 
                 // Cập nhật UI nếu cần thiết, ví dụ: highlight comment mới
                 if (window.location.pathname.includes('/posts/' + e.post_id)) {
-                    highlightNewComment(e.comment_id);
+                    window.CommentHandler.highlightNewComment(e.comment_id);
                 }
             });
     }
@@ -41,7 +43,7 @@ function setupRealtimeListeners() {
 /**
  * Hàm highlight comment mới nếu người dùng đang ở trang đó
  */
-function highlightNewComment(commentId) {
+window.CommentHandler.highlightNewComment = function(commentId) {
     const commentElement = document.getElementById('comment-' + commentId);
     if (commentElement) {
         commentElement.classList.add('highlight-new-comment');
@@ -54,7 +56,7 @@ function highlightNewComment(commentId) {
 /**
  * Hiển thị thông báo
  */
-function showNotification(message, type = 'success') {
+window.CommentHandler.showNotification = function(message, type = 'success') {
     if (typeof window.showToast === 'function') {
         // Sử dụng hàm showToast global nếu có
         window.showToast(message, type);

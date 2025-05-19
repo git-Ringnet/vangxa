@@ -102,11 +102,11 @@ class DiningController extends Controller
         if ($request->has('price')) {
             $price = $request->input('price');
             if ($price == '50') {
-                $query->where('price', '<', 50000);
+                $query->where('min_price', '<', 50000);
             } elseif ($price == '100') {
-                $query->whereBetween('price', [50000, 100000]);
+                $query->whereBetween('min_price', [50000, 100000]);
             } elseif ($price == '101') {
-                $query->where('price', '>', 100000);
+                $query->where('min_price', '>', 100000);
             }
         }
         
@@ -116,9 +116,8 @@ class DiningController extends Controller
             if (!empty($styles)) {
                 $query->where(function($q) use ($styles) {
                     foreach ($styles as $style) {
-                        // Assuming style values are stored in tags or attributes
-                        $q->orWhere('tags', 'like', "%{$style}%")
-                          ->orWhere('attributes', 'like', "%{$style}%");
+                        // Search in JSON array
+                        $q->orWhereRaw('JSON_CONTAINS(styles, ?)', ['"' . $style . '"']);
                     }
                 });
             }
@@ -134,16 +133,16 @@ class DiningController extends Controller
                     // This would require geolocation data
                     break;
                 case 'cheap':
-                    $query->where('price', '<', 50000);
+                    $query->where('min_price', '<', 50000);
                     break;
                 case 'snack':
-                    $query->where('tags', 'like', '%snack%');
+                    $query->whereRaw('JSON_CONTAINS(styles, ?)', ['"snack"']);
                     break;
                 case 'stylish':
-                    $query->where('tags', 'like', '%stylish%');
+                    $query->whereRaw('JSON_CONTAINS(styles, ?)', ['"stylish"']);
                     break;
                 case 'cool':
-                    $query->where('tags', 'like', '%cool%');
+                    $query->whereRaw('JSON_CONTAINS(styles, ?)', ['"cool"']);
                     break;
             }
         }
@@ -153,10 +152,10 @@ class DiningController extends Controller
             $sort = $request->input('sort');
             switch($sort) {
                 case 'price_asc':
-                    $query->orderBy('price', 'asc');
+                    $query->orderBy('min_price', 'asc');
                     break;
                 case 'price_desc':
-                    $query->orderBy('price', 'desc');
+                    $query->orderBy('min_price', 'desc');
                     break;
                 case 'rating_desc':
                     $query->orderBy('rating', 'desc');

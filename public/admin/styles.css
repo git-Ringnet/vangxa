@@ -791,3 +791,10 @@ body {
 .w-50px{
     width: 50px;
 }
+.text-overflow-ellipsis{
+    font-size: 16px;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 500px;
+}

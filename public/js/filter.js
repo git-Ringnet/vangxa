@@ -23,6 +23,10 @@ document.addEventListener('DOMContentLoaded', function() {
     const isDining = window.location.pathname.includes('/dining');
     const isLodging = window.location.pathname.includes('/lodging');
     
+    // Global variables for load more functionality
+    window.isLoading = false;
+    window.offset = 30; // Initial offset for load more
+    
     // Active filters
     let activeFilters = {
         search: '',
@@ -115,36 +119,55 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Close filter sidebar
     function closeFilter() {
-        // Start sidebar closing animation
-        filterSidebar.classList.remove('show');
-        
-        // Fade out overlay
-        if (filterOverlay) {
-            filterOverlay.classList.remove('show');
-            setTimeout(() => {
-                filterOverlay.style.display = 'none';
-            }, 300);
+        try {
+            // Start sidebar closing animation
+            if (filterSidebar) {
+                filterSidebar.classList.remove('show');
+            }
+            
+            // Fade out overlay
+            if (filterOverlay) {
+                filterOverlay.classList.remove('show');
+                setTimeout(() => {
+                    filterOverlay.style.display = 'none';
+                }, 300);
+            }
+            
+            // Remove special body class
+            document.body.classList.remove('no-scroll-but-keep-bar');
+            
+            // Ensure all scroll locking styles are cleared
+            document.body.style.position = '';
+            document.body.style.paddingRight = '';
+            document.body.style.top = '';
+            document.body.style.width = '';
+            document.body.style.overflow = '';
+            
+            // Reset padding on navbar
+            const navbar = document.querySelector('.navbar-custom');
+            if (navbar) {
+                navbar.style.paddingRight = '';
+            }
+            
+            // Reset padding on filter controls
+            const filterControls = document.querySelector('.filter-controls');
+            if (filterControls) {
+                filterControls.style.paddingRight = '';
+            }
+            
+            // Capture current scroll position to restore
+            const scrollY = parseInt(document.body.style.top || '0') * -1;
+            
+            // Restore scroll position if needed
+            window.scrollTo(0, scrollY);
+        } catch (error) {
+            console.error('Error in closeFilter:', error);
+            // Ensure body scroll is restored even if there's an error
+            document.body.style.position = '';
+            document.body.style.overflow = '';
+            document.body.style.top = '';
+            document.body.style.paddingRight = '';
         }
-        
-        // Remove special body class
-        document.body.classList.remove('no-scroll-but-keep-bar');
-        document.body.style.paddingRight = '';
-        document.body.style.top = '';
-        
-        // Reset padding on navbar
-        const navbar = document.querySelector('.navbar-custom');
-        if (navbar) {
-            navbar.style.paddingRight = '';
-        }
-        
-        // Reset padding on filter controls
-        const filterControls = document.querySelector('.filter-controls');
-        if (filterControls) {
-            filterControls.style.paddingRight = '';
-        }
-        
-        // Restore scroll position
-        window.scrollTo(0, scrollY);
     }
     
     if (filterClose) {
@@ -338,6 +361,14 @@ document.addEventListener('DOMContentLoaded', function() {
         // Close filter sidebar
         closeFilter();
         
+        // Make sure body scroll is properly restored
+        document.body.classList.remove('no-scroll-but-keep-bar');
+        document.body.style.position = '';
+        document.body.style.top = '';
+        document.body.style.width = '';
+        document.body.style.overflow = '';
+        document.body.style.paddingRight = '';
+        
         // Update active filters one last time
         updateActiveFilters();
         
@@ -420,6 +451,11 @@ document.addEventListener('DOMContentLoaded', function() {
             // Update DOM with new results
             if (postList) {
                 if (data.html && data.html.trim() !== '') {
+                    // Remove any existing result count messages first
+                    const existingResultCounts = document.querySelectorAll('.result-count');
+                    existingResultCounts.forEach(el => el.remove());
+                    
+                    // Update post list with new results
                     postList.innerHTML = data.html;
                     
                     // Show result count if available
@@ -429,12 +465,6 @@ document.addEventListener('DOMContentLoaded', function() {
                         resultCount.innerHTML = `<span>Tìm thấy ${data.count} kết quả</span>`;
                         postList.insertAdjacentElement('beforebegin', resultCount);
                         
-                        // Remove previous result count if exists
-                        setTimeout(() => {
-                            const oldCounts = document.querySelectorAll('.result-count:not(:first-child)');
-                            oldCounts.forEach(el => el.remove());
-                        }, 100);
-                        
                         // Show load more button if there are more results
                         if (data.count > 30 && data.hasMore) {
                             loadMoreButton.style.display = 'block';
@@ -443,14 +473,17 @@ document.addEventListener('DOMContentLoaded', function() {
                         }
                     }
                 } else {
+                    // Remove any existing result count messages first
+                    const existingResultCounts = document.querySelectorAll('.result-count');
+                    existingResultCounts.forEach(el => el.remove());
+                    
+                    // Show no results message
                     postList.innerHTML = '<div class="no-results"><i class="fas fa-search"></i> Không tìm thấy kết quả phù hợp với bộ lọc của bạn.</div>';
                     
-                    // Remove any result count
-                    const resultCounts = document.querySelectorAll('.result-count');
-                    resultCounts.forEach(el => el.remove());
-                    
                     // Hide load more button when no results
-                    loadMoreButton.style.display = 'none';
+                    if (loadMoreButton) {
+                        loadMoreButton.style.display = 'none';
+                    }
                 }
             }
             
@@ -484,28 +517,55 @@ document.addEventListener('DOMContentLoaded', function() {
     function resetLoadMore() {
         const loadMoreButton = document.getElementById('loadMoreButton');
         if (loadMoreButton) {
-            // Reset to initial state
-            loadMoreButton.style.display = 'block';
+            // Get post list and check if it has actual posts
+            const postList = document.getElementById('post-list');
+            const noResultsElement = postList ? postList.querySelector('.no-results') : null;
+            
+            // Only show load more button if we have actual results and no "no results" message
+            if (postList && !noResultsElement && postList.children.length > 0) {
+                loadMoreButton.style.display = 'block';
+            } else {
+                loadMoreButton.style.display = 'none';
+                return; // Don't set up the click handler if there are no results
+            }
+            
             loadMoreButton.classList.remove('loading');
             
-            // Get current endpoint based on page
-            let loadMoreEndpoint;
-            if (isDining) {
-                loadMoreEndpoint = '/dining/load-more';
-            } else if (isLodging) {
-                loadMoreEndpoint = '/lodging/load-more';
+            // Get current endpoint based on what's used in the blade templates
+            let loadMoreEndpoint = '/load-more'; // Default endpoint from lodging.blade.php
+            
+            // Check if we're on the dining page
+            if (isDining || window.location.pathname.includes('/dining')) {
+                // In dining.blade.php, the route helper is used
+                const diningLoadMoreElement = document.querySelector('[data-dining-load-more]');
+                if (diningLoadMoreElement) {
+                    // Get the pre-rendered route from a data attribute if available
+                    loadMoreEndpoint = diningLoadMoreElement.getAttribute('data-dining-load-more');
+                } else {
+                    // Fallback to a standard path
+                    loadMoreEndpoint = '/dining/load-more';
+                }
             }
             
             // Update click handler
             loadMoreButton.onclick = function() {
                 // Your existing load more logic
-                if (this.classList.contains('loading')) return;
+                if (this.classList.contains('loading') || window.isLoading) return;
                 
+                window.isLoading = true;
                 this.classList.add('loading');
                 
                 // Build query with active filters
                 const params = new URLSearchParams();
-                params.append('offset', '30'); // Reset to first page of additional results
+                
+                // Use the global offset value or default to 30
+                // Try to get the current offset from the DOM if it exists
+                const offsetElement = document.querySelector('[data-load-more-offset]');
+                if (offsetElement) {
+                    window.offset = parseInt(offsetElement.getAttribute('data-load-more-offset')) || 30;
+                }
+                
+                params.append('offset', window.offset.toString());
                 
                 // Add current filters to load more request
                 if (activeFilters.search) {
@@ -548,21 +608,65 @@ document.addEventListener('DOMContentLoaded', function() {
                     params.append('quickFilter', activeFilters.quickFilter);
                 }
                 
-                fetch(`${loadMoreEndpoint}?${params.toString()}`)
-                    .then(response => response.json())
+                // Log the endpoint we're using for debugging
+                console.log('Using load more endpoint:', loadMoreEndpoint);
+                
+                fetch(`${loadMoreEndpoint}?${params.toString()}`, {
+                    method: 'GET',
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest',
+                        'Accept': 'application/json'
+                    }
+                })
+                    .then(response => {
+                        if (!response.ok) {
+                            console.error('Load more request failed:', response.status, response.statusText);
+                            throw new Error(`Network response was not ok: ${response.status} ${response.statusText}`);
+                        }
+                        return response.json();
+                    })
                     .then(data => {
                         this.classList.remove('loading');
+                        window.isLoading = false;
+                        
+                        // Update the DOM
+                        const postList = document.getElementById('post-list');
                         
                         // Check if there are results
                         if (data.html && data.html.trim() !== '') {
-                            const postList = document.getElementById('post-list');
                             if (postList) {
                                 postList.insertAdjacentHTML('beforeend', data.html);
                             }
                             
-                            // Hide button if no more results
+                            // Update offset for next request if provided
+                            if (data.nextOffset) {
+                                // Store offset for next load in global variable
+                                window.offset = data.nextOffset;
+                                
+                                // Update offset in DOM if element exists
+                                const offsetElement = document.querySelector('[data-load-more-offset]');
+                                if (offsetElement) {
+                                    offsetElement.setAttribute('data-load-more-offset', data.nextOffset);
+                                }
+                            }
+                            
+                            // Hide button if no more results or data says hasMore is false
                             if (!data.hasMore) {
                                 this.style.display = 'none';
+                            }
+                            
+                            // Reinitialize carousels for new posts if the function exists
+                            if (typeof initializeCarousels === 'function') {
+                                setTimeout(() => {
+                                    initializeCarousels();
+                                }, 100);
+                            }
+                            
+                            // Update distances for new posts if the function exists
+                            if (typeof updateDistances === 'function') {
+                                setTimeout(() => {
+                                    updateDistances();
+                                }, 500);
                             }
                         } else {
                             // No more results
@@ -584,8 +688,26 @@ document.addEventListener('DOMContentLoaded', function() {
                         }
                     })
                     .catch(error => {
-                        console.error('Error loading more:', error);
+                        console.error('Error loading more posts:', error);
                         this.classList.remove('loading');
+                        window.isLoading = false; // Reset loading state on error
+                        
+                        // Show detailed console error to help debug
+                        console.log('Load more URL was:', `${loadMoreEndpoint}?${params.toString()}`);
+                        
+                        // Show error message to user
+                        const errorMessage = document.createElement('div');
+                        errorMessage.className = 'load-more-error';
+                        errorMessage.innerHTML = 'Có lỗi xảy ra khi tải thêm kết quả. Vui lòng thử lại sau.';
+                        this.parentNode.insertBefore(errorMessage, this);
+                        
+                        // Remove error message after 5 seconds
+                        setTimeout(() => {
+                            errorMessage.style.opacity = '0';
+                            setTimeout(() => {
+                                errorMessage.remove();
+                            }, 500);
+                        }, 5000);
                     });
             };
         }

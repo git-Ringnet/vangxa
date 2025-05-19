@@ -103,11 +103,11 @@ class LodgingController extends Controller
         if ($request->has('price')) {
             $price = $request->input('price');
             if ($price == 'budget') {
-                $query->where('price', '<', 500000); // Under 500k VND per night
+                $query->where('min_price', '<', 500000); // Under 500k VND per night
             } elseif ($price == 'mid') {
-                $query->whereBetween('price', [500000, 1500000]); // 500k-1.5M VND
+                $query->whereBetween('min_price', [500000, 1500000]); // 500k-1.5M VND
             } elseif ($price == 'luxury') {
-                $query->where('price', '>', 1500000); // Over 1.5M VND
+                $query->where('min_price', '>', 1500000); // Over 1.5M VND
             }
         }
         
@@ -117,9 +117,8 @@ class LodgingController extends Controller
             if (!empty($styles)) {
                 $query->where(function($q) use ($styles) {
                     foreach ($styles as $style) {
-                        // Assuming style values are stored in tags or attributes
-                        $q->orWhere('tags', 'like', "%{$style}%")
-                          ->orWhere('attributes', 'like', "%{$style}%");
+                        // Search in JSON array
+                        $q->orWhereRaw('JSON_CONTAINS(styles, ?)', ['"' . $style . '"']);
                     }
                 });
             }
@@ -147,16 +146,16 @@ class LodgingController extends Controller
                     // This would require geolocation data
                     break;
                 case 'homestay':
-                    $query->where('tags', 'like', '%homestay%');
+                    $query->whereRaw('JSON_CONTAINS(styles, ?)', ['"homestay"']);
                     break;
                 case 'hotel':
-                    $query->where('tags', 'like', '%hotel%');
+                    $query->whereRaw('JSON_CONTAINS(styles, ?)', ['"hotel"']);
                     break;
                 case 'apartment':
-                    $query->where('tags', 'like', '%apartment%');
+                    $query->whereRaw('JSON_CONTAINS(styles, ?)', ['"apartment"']);
                     break;
                 case 'view':
-                    $query->where('tags', 'like', '%view%');
+                    $query->whereRaw('JSON_CONTAINS(styles, ?)', ['"view"']);
                     break;
             }
         }
@@ -166,10 +165,10 @@ class LodgingController extends Controller
             $sort = $request->input('sort');
             switch($sort) {
                 case 'price_asc':
-                    $query->orderBy('price', 'asc');
+                    $query->orderBy('min_price', 'asc');
                     break;
                 case 'price_desc':
-                    $query->orderBy('price', 'desc');
+                    $query->orderBy('min_price', 'desc');
                     break;
                 case 'rating_desc':
                     $query->orderBy('rating', 'desc');

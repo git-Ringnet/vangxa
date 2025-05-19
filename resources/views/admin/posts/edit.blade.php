@@ -542,6 +542,9 @@
                     });
                 }
             });
+
+            // Trigger change event for post type
+            $('#post-type').trigger('change');
         });
     </script>
 @endpush
