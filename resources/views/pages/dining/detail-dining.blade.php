@@ -17,7 +17,7 @@
 
                 <div class="mobile-tiktok-container">
                     <div class="tiktok-video-container">
-                        <video controls autoplay loop class="tiktok-video">
+                        <video controls autoplay loop class="tiktok-video" id="vidauto">
                             <source src="{{ asset('image/tiktok/tiktok.mp4') }}" type="video/mp4">
                             Trình duyệt của bạn không hỗ trợ video.
                         </video>
@@ -251,6 +251,7 @@
                     overflow: hidden;
                 }
             }
+
             @media (max-width: 768px) {
                 .mobile-detail-content {
                     max-width: 420px;
@@ -444,10 +445,10 @@
                             <p class="text-muted mb-2"><small>Thành viên từ
                                     {{ $vendor->created_at->format('d/m/Y') }}</small></p>
                             <!-- <div>
-                                                                                                                        <a href="{{ route('profile.show', ['id' => $vendor->id]) }}" class="btn btn-sm btn-outline-primary">
-                                                                                                                            <i class="fas fa-user me-1"></i> Xem hồ sơ
-                                                                                                                        </a>
-                                                                                                                    </div> -->
+                                                                                                                                        <a href="{{ route('profile.show', ['id' => $vendor->id]) }}" class="btn btn-sm btn-outline-primary">
+                                                                                                                                            <i class="fas fa-user me-1"></i> Xem hồ sơ
+                                                                                                                                        </a>
+                                                                                                                                    </div> -->
                         </div>
                     </div>
                 </div>
@@ -704,6 +705,16 @@
 @push('scripts')
     <script>
         document.addEventListener('DOMContentLoaded', function() {
+
+            const video = document.getElementById("vidauto");
+
+            // Phát có âm thanh sau tương tác (nhấn card)
+            video.play().then(() => {
+                console.log("Video đã phát có tiếng.");
+            }).catch((err) => {
+                console.warn("Không phát được video:", err);
+            });
+
             // Add mobile-view class to body if mobile detail content exists
             if (document.querySelector('.mobile-detail-content')) {
                 document.body.classList.add('mobile-view');
