@@ -11,31 +11,164 @@ use Illuminate\Support\Facades\Auth;
 
 class DiningController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $posts = Post::where('type', 2)->with('images')->limit(30)->get();
-        $userTrustlist = Trustlist::where('user_id', Auth::id())
-            ->pluck('post_id')
-            ->toArray();
+        $query = Post::where('type', 2)->with('images');
+        
+        // Apply any filters from URL parameters
+        $query = $this->applyFilters($request, $query);
+        
+        // Get total count with these filters
+        $totalFilteredCount = $query->count();
+        
+        // Get posts with pagination
+        $posts = $query->limit(30)->get();
+        
+        $userTrustlist = [];
+        if (Auth::check()) {
+            $userTrustlist = Trustlist::where('user_id', Auth::id())
+                ->pluck('post_id')
+                ->toArray();
+        }
 
         foreach ($posts as $post) {
             $post->isSaved = in_array($post->id, $userTrustlist);
         }
+        
+        // Check if there are more posts to load
+        $hasMore = $totalFilteredCount > 30;
 
-        return view('pages.dining.dining', compact('posts'));
+        return view('pages.dining.dining', compact('posts', 'hasMore'));
     }
 
     public function search(Request $request)
     {
-        $query = $request->input('search');
-        $posts = Post::where('type', 2)
-            ->where('title', 'like', "%{$query}%")
-            ->with('images')
-            ->get();
+        $query = Post::where('type', 2)->with('images');
+        
+        // Apply filters
+        $query = $this->applyFilters($request, $query);
+        
+        // Get total count with these filters
+        $totalFilteredCount = $query->count();
+        
+        // Get first 30 posts
+        $posts = $query->limit(30)->get();
+        
+        // Check for saved posts if user is logged in
+        if (Auth::check()) {
+            $userTrustlist = Trustlist::where('user_id', Auth::id())
+                ->pluck('post_id')
+                ->toArray();
+
+            foreach ($posts as $post) {
+                $post->isSaved = in_array($post->id, $userTrustlist);
+            }
+        } else {
+            foreach ($posts as $post) {
+                $post->isSaved = false;
+            }
+        }
+        
+        $html = '';
+        if ($posts->count() > 0) {
+            $html = view('pages.dining.posts', compact('posts'))->render();
+        }
+        
+        // Determine if there are more posts
+        $hasMore = $totalFilteredCount > 30;
 
         return response()->json([
-            'html' => view('pages.dining.posts', compact('posts'))->render()
+            'html' => $html,
+            'count' => $totalFilteredCount,
+            'hasMore' => $hasMore
         ]);
+    }
+    
+    /**
+     * Apply filters to the query
+     */
+    private function applyFilters(Request $request, $query)
+    {
+        // Search by name/title
+        if ($request->has('search') && !empty($request->input('search'))) {
+            $search = $request->input('search');
+            $query->where(function($q) use ($search) {
+                $q->where('title', 'like', "%{$search}%")
+                  ->orWhere('description', 'like', "%{$search}%");
+            });
+        }
+        
+        // Filter by price range
+        if ($request->has('price')) {
+            $price = $request->input('price');
+            if ($price == '50') {
+                $query->where('min_price', '<', 50000);
+            } elseif ($price == '100') {
+                $query->whereBetween('min_price', [50000, 100000]);
+            } elseif ($price == '101') {
+                $query->where('min_price', '>', 100000);
+            }
+        }
+        
+        // Filter by style
+        if ($request->has('style') && is_array($request->input('style'))) {
+            $styles = $request->input('style');
+            if (!empty($styles)) {
+                $query->where(function($q) use ($styles) {
+                    foreach ($styles as $style) {
+                        // Search in JSON array
+                        $q->orWhereRaw('JSON_CONTAINS(styles, ?)', ['"' . $style . '"']);
+                    }
+                });
+            }
+        }
+        
+        // Quick filter
+        if ($request->has('quickFilter') && $request->input('quickFilter') != 'all') {
+            $filter = $request->input('quickFilter');
+            
+            switch($filter) {
+                case 'nearby':
+                    // Implement location-based filtering logic
+                    // This would require geolocation data
+                    break;
+                case 'cheap':
+                    $query->where('min_price', '<', 50000);
+                    break;
+                case 'snack':
+                    $query->whereRaw('JSON_CONTAINS(styles, ?)', ['"snack"']);
+                    break;
+                case 'stylish':
+                    $query->whereRaw('JSON_CONTAINS(styles, ?)', ['"stylish"']);
+                    break;
+                case 'cool':
+                    $query->whereRaw('JSON_CONTAINS(styles, ?)', ['"cool"']);
+                    break;
+            }
+        }
+        
+        // Sort results
+        if ($request->has('sort')) {
+            $sort = $request->input('sort');
+            switch($sort) {
+                case 'price_asc':
+                    $query->orderBy('min_price', 'asc');
+                    break;
+                case 'price_desc':
+                    $query->orderBy('min_price', 'desc');
+                    break;
+                case 'rating_desc':
+                    $query->orderBy('rating', 'desc');
+                    break;
+                default:
+                    $query->latest();
+                    break;
+            }
+        } else {
+            $query->latest();
+        }
+        
+        return $query;
     }
 
     public function detail($id)
@@ -72,30 +205,34 @@ class DiningController extends Controller
     public function loadMore(Request $request)
     {
         $offset = $request->input('offset', 30);
-        $totalPosts = Post::where('type', 2)->count();
         
-        Log::info('Load more request - Dining', [
+        // Get base query with type = 2 (dining)
+        $query = Post::where('type', 2);
+        
+        // Apply all filters from request
+        $query = $this->applyFilters($request, $query);
+        
+        // Get total count with these filters
+        $totalFilteredCount = $query->count();
+        
+        Log::info('Load more request - Dining (filtered)', [
             'offset' => $offset,
-            'totalPosts' => $totalPosts
+            'totalFilteredCount' => $totalFilteredCount,
+            'filters' => $request->except(['offset'])
         ]);
         
-        // Tính số lượng bài viết còn lại
-        $remainingPosts = $totalPosts - $offset;
-        // Nếu còn ít hơn 30 bài, chỉ lấy số lượng còn lại
-        $takeCount = min(30, $remainingPosts);
+        // Calculate remaining posts with applied filters
+        $remainingPosts = $totalFilteredCount - $offset;
+        // Take up to 30 more posts
+        $takeCount = min(30, max(0, $remainingPosts));
         
-        Log::info('Calculated values - Dining', [
-            'remainingPosts' => $remainingPosts,
-            'takeCount' => $takeCount
-        ]);
-        
-        $posts = Post::with('images')
-            ->where('type', 2) // Type 2 for dining
+        // Get posts with applied filters, skipping offset
+        $posts = $query->with('images')
             ->skip($offset)
             ->take($takeCount)
             ->get();
             
-        // Kiểm tra trạng thái yêu thích cho mỗi bài viết
+        // Check for saved posts
         if (Auth::check()) {
             $userTrustlist = Trustlist::where('user_id', Auth::id())
                 ->pluck('post_id')
@@ -110,19 +247,24 @@ class DiningController extends Controller
             }
         }
 
-        // Kiểm tra xem còn bài viết nào nữa không
-        $hasMore = ($offset + $takeCount) < $totalPosts;
+        // Determine if there are more posts with these filters
+        $hasMore = ($offset + $takeCount) < $totalFilteredCount;
         
-        Log::info('Response data - Dining', [
+        $html = '';
+        if ($posts->count() > 0) {
+            $html = view('pages.dining.posts', compact('posts'))->render();
+        }
+        
+        Log::info('Load more response - Dining (filtered)', [
             'postsCount' => count($posts),
             'hasMore' => $hasMore,
             'nextOffset' => $offset + $takeCount
         ]);
 
         return response()->json([
-            'html' => view('pages.dining.posts', compact('posts'))->render(),
+            'html' => $html,
             'hasMore' => $hasMore,
-            'total' => $totalPosts,
+            'total' => $totalFilteredCount,
             'nextOffset' => $offset + $takeCount
         ]);
     }

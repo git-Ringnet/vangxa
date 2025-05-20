@@ -16,7 +16,7 @@ class PostController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Post::with('user')->latest();
+        $query = Post::with('user')->where('type', '!=', 3)->latest();
 
         // Lọc theo type nếu có
         if ($request->has('type')) {
@@ -374,7 +374,7 @@ class PostController extends Controller
                     }
                 }
                 // Xóa các section cũ không còn trong request
-                $post->sections()->whereNotIn('id', $sectionIdsInRequest)->each(function($section) {
+                $post->sections()->whereNotIn('id', $sectionIdsInRequest)->each(function ($section) {
                     // Xóa ảnh của section
                     foreach ($section->images as $image) {
                         if (file_exists(public_path($image->image_path))) {

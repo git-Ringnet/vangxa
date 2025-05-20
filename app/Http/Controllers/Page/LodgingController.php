@@ -11,35 +11,177 @@ use Illuminate\Support\Facades\Auth;
 
 class LodgingController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $posts = Post::where('type', 1)->with('images')->limit(30)->get();
-        $userTrustlist = Trustlist::where('user_id', Auth::id())
-            ->pluck('post_id')
-            ->toArray();
+        $query = Post::where('type', 1)->with('images');
+        
+        // Apply any filters from URL parameters
+        $query = $this->applyFilters($request, $query);
+        
+        // Get total count with these filters
+        $totalFilteredCount = $query->count();
+        
+        // Get posts with pagination
+        $posts = $query->limit(30)->get();
+        
+        $userTrustlist = [];
+        if (Auth::check()) {
+            $userTrustlist = Trustlist::where('user_id', Auth::id())
+                ->pluck('post_id')
+                ->toArray();
+        }
 
         foreach ($posts as $post) {
             $post->isSaved = in_array($post->id, $userTrustlist);
         }
+        
+        // Check if there are more posts to load
+        $hasMore = $totalFilteredCount > 30;
 
-        return view('pages.listings.lodging', compact('posts'));
+        return view('pages.listings.lodging', compact('posts', 'hasMore'));
     }
 
     public function search(Request $request)
     {
-        $posts = Post::where('type', 1)
-            ->with('images');
+        $query = Post::where('type', 1)->with('images');
+        
+        // Apply filters
+        $query = $this->applyFilters($request, $query);
+        
+        // Get total count with these filters
+        $totalFilteredCount = $query->count();
+        
+        // Get first 30 posts
+        $posts = $query->limit(30)->get();
+        
+        // Check for saved posts if user is logged in
+        if (Auth::check()) {
+            $userTrustlist = Trustlist::where('user_id', Auth::id())
+                ->pluck('post_id')
+                ->toArray();
 
-        if ($request->has('search')) {
-            $search = $request->input('search');
-            $posts->where('title', 'like', "%{$search}%");
+            foreach ($posts as $post) {
+                $post->isSaved = in_array($post->id, $userTrustlist);
+            }
+        } else {
+            foreach ($posts as $post) {
+                $post->isSaved = false;
+            }
         }
-
-        $posts = $posts->get();
+        
+        $html = '';
+        if ($posts->count() > 0) {
+            $html = view('pages.listings.posts', compact('posts'))->render();
+        }
+        
+        // Determine if there are more posts
+        $hasMore = $totalFilteredCount > 30;
 
         return response()->json([
-            'html' => view('pages.listings.posts', compact('posts'))->render()
+            'html' => $html,
+            'count' => $totalFilteredCount,
+            'hasMore' => $hasMore
         ]);
+    }
+    
+    /**
+     * Apply filters to the query
+     */
+    private function applyFilters(Request $request, $query)
+    {
+        // Search by name/title and description
+        if ($request->has('search') && !empty($request->input('search'))) {
+            $search = $request->input('search');
+            $query->where(function($q) use ($search) {
+                $q->where('title', 'like', "%{$search}%")
+                  ->orWhere('description', 'like', "%{$search}%")
+                  ->orWhere('address', 'like', "%{$search}%");
+            });
+        }
+        
+        // Filter by price range
+        if ($request->has('price')) {
+            $price = $request->input('price');
+            if ($price == 'budget') {
+                $query->where('min_price', '<', 500000); // Under 500k VND per night
+            } elseif ($price == 'mid') {
+                $query->whereBetween('min_price', [500000, 1500000]); // 500k-1.5M VND
+            } elseif ($price == 'luxury') {
+                $query->where('min_price', '>', 1500000); // Over 1.5M VND
+            }
+        }
+        
+        // Filter by accommodation type/style
+        if ($request->has('style') && is_array($request->input('style'))) {
+            $styles = $request->input('style');
+            if (!empty($styles)) {
+                $query->where(function($q) use ($styles) {
+                    foreach ($styles as $style) {
+                        // Search in JSON array
+                        $q->orWhereRaw('JSON_CONTAINS(styles, ?)', ['"' . $style . '"']);
+                    }
+                });
+            }
+        }
+        
+        // Filter by amenities/facilities
+        if ($request->has('amenities') && is_array($request->input('amenities'))) {
+            $amenities = $request->input('amenities');
+            if (!empty($amenities)) {
+                $query->where(function($q) use ($amenities) {
+                    foreach ($amenities as $amenity) {
+                        $q->orWhere('amenities', 'like', "%{$amenity}%");
+                    }
+                });
+            }
+        }
+        
+        // Quick filter
+        if ($request->has('quickFilter') && $request->input('quickFilter') != 'all') {
+            $filter = $request->input('quickFilter');
+            
+            switch($filter) {
+                case 'nearby':
+                    // Implement location-based filtering logic
+                    // This would require geolocation data
+                    break;
+                case 'homestay':
+                    $query->whereRaw('JSON_CONTAINS(styles, ?)', ['"homestay"']);
+                    break;
+                case 'hotel':
+                    $query->whereRaw('JSON_CONTAINS(styles, ?)', ['"hotel"']);
+                    break;
+                case 'apartment':
+                    $query->whereRaw('JSON_CONTAINS(styles, ?)', ['"apartment"']);
+                    break;
+                case 'view':
+                    $query->whereRaw('JSON_CONTAINS(styles, ?)', ['"view"']);
+                    break;
+            }
+        }
+        
+        // Sort results
+        if ($request->has('sort')) {
+            $sort = $request->input('sort');
+            switch($sort) {
+                case 'price_asc':
+                    $query->orderBy('min_price', 'asc');
+                    break;
+                case 'price_desc':
+                    $query->orderBy('min_price', 'desc');
+                    break;
+                case 'rating_desc':
+                    $query->orderBy('rating', 'desc');
+                    break;
+                default:
+                    $query->latest();
+                    break;
+            }
+        } else {
+            $query->latest();
+        }
+        
+        return $query;
     }
 
     public function detail($id)
@@ -74,35 +216,39 @@ class LodgingController extends Controller
     public function loadMore(Request $request)
     {
         $offset = $request->input('offset', 30);
-        $totalPosts = Post::where('type', 1)->count();
         
-        Log::info('Load more request', [
+        // Get base query with type = 1 (lodging)
+        $query = Post::where('type', 1);
+        
+        // Apply all filters from request
+        $query = $this->applyFilters($request, $query);
+        
+        // Get total count with these filters
+        $totalFilteredCount = $query->count();
+        
+        Log::info('Load more request - Lodging (filtered)', [
             'offset' => $offset,
-            'totalPosts' => $totalPosts
+            'totalFilteredCount' => $totalFilteredCount,
+            'filters' => $request->except(['offset'])
         ]);
         
-        // Tính số lượng bài viết còn lại
-        $remainingPosts = $totalPosts - $offset;
-        // Nếu còn ít hơn 30 bài, chỉ lấy số lượng còn lại
-        $takeCount = min(30, $remainingPosts);
+        // Calculate remaining posts with applied filters
+        $remainingPosts = $totalFilteredCount - $offset;
+        // Take up to 30 more posts
+        $takeCount = min(30, max(0, $remainingPosts));
         
-        Log::info('Calculated values', [
-            'remainingPosts' => $remainingPosts,
-            'takeCount' => $takeCount
-        ]);
-        
-        $posts = Post::with('images')
-            ->where('type', 1) // Type 1 for accommodations
+        // Get posts with applied filters, skipping offset
+        $posts = $query->with('images')
             ->skip($offset)
             ->take($takeCount)
             ->get();
-
-        // Kiểm tra trạng thái yêu thích cho mỗi bài viết
+            
+        // Check for saved posts
         if (Auth::check()) {
             $userTrustlist = Trustlist::where('user_id', Auth::id())
                 ->pluck('post_id')
                 ->toArray();
-
+                
             foreach ($posts as $post) {
                 $post->isSaved = in_array($post->id, $userTrustlist);
             }
@@ -112,19 +258,24 @@ class LodgingController extends Controller
             }
         }
 
-        // Kiểm tra xem còn bài viết nào nữa không
-        $hasMore = ($offset + $takeCount) < $totalPosts;
+        // Determine if there are more posts with these filters
+        $hasMore = ($offset + $takeCount) < $totalFilteredCount;
         
-        Log::info('Response data', [
+        $html = '';
+        if ($posts->count() > 0) {
+            $html = view('pages.listings.posts', compact('posts'))->render();
+        }
+        
+        Log::info('Load more response - Lodging (filtered)', [
             'postsCount' => count($posts),
             'hasMore' => $hasMore,
             'nextOffset' => $offset + $takeCount
         ]);
 
         return response()->json([
-            'html' => view('pages.listings.posts', compact('posts'))->render(),
+            'html' => $html,
             'hasMore' => $hasMore,
-            'total' => $totalPosts,
+            'total' => $totalFilteredCount,
             'nextOffset' => $offset + $takeCount
         ]);
     }

@@ -37,12 +37,14 @@ Route::get('/test-header', function () {
 // Main routes
 Route::get('/', [MainHomeController::class, 'index'])->name('home');
 Route::get('/lodging', [LodgingController::class, 'index'])->name('lodging');
-Route::get('/search/lodging', [LodgingController::class, 'search'])->name('search.lodging');
+Route::get('/lodging/search', [LodgingController::class, 'search'])->name('lodging.search');
+Route::get('/lodging/load-more', [LodgingController::class, 'loadMore'])->name('lodging.load-more');
+Route::get('/lodging/detail/{id}', [LodgingController::class, 'detail'])->name('lodging.detail');
 
-Route::get('/search/dining', [DiningController::class, 'search'])->name('search.dining');
-
-Route::get('/detail/{id}', [LodgingController::class, 'detail'])->name('detail');
-Route::get('/load-more', [LodgingController::class, 'loadMore'])->name('load-more');
+Route::get('/dining', [DiningController::class, 'index'])->name('dining');
+Route::get('/dining/search', [DiningController::class, 'search'])->name('dining.search');
+Route::get('/dining/detail/{id}', [DiningController::class, 'detail'])->name('dining.detail-dining');
+Route::get('/dining/load-more', [DiningController::class, 'loadMore'])->name('dining.load-more');
 
 // Auth routes
 Route::view('dashboard', 'dashboard')
@@ -98,11 +100,6 @@ Route::prefix('admin')->group(function () {
     Route::get('/analytics/posts-with-engagements', [\App\Http\Controllers\Admin\AnalyticsController::class, 'postsWithEngagements'])->name('admin.analytics.posts_with_engagements');
     Route::get('/analytics/community-posts-with-reactions', [\App\Http\Controllers\Admin\AnalyticsController::class, 'communityPostsWithReactions'])->name('admin.analytics.community_posts_with_reactions');
 })->middleware(['auth', 'role:Admin']);
-
-// Dining routes
-Route::get('/dining', [DiningController::class, 'index'])->name('dining');
-Route::get('/dining/detail/{id}', [DiningController::class, 'detail'])->name('dining.detail-dining');
-Route::get('/dining/load-more', [DiningController::class, 'loadMore'])->name('dining.load-more');
 
 // API routes
 Route::get('/api/users/search', [UserController::class, 'search'])->name('api.users.search');

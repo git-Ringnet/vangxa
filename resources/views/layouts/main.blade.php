@@ -17,7 +17,6 @@
     <script src="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.js"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-    <script src="{{ asset('js/notifications.js') }}"></script>
     <style>
         /* Styles for the side menu */
         .main-layout {
@@ -112,7 +111,6 @@
         .main-content {
             margin-left: 230px;
             width: calc(100% - 230px);
-            padding-top: 70px;
         }
 
         /* Mobile responsive */
@@ -412,7 +410,7 @@
             const timeoutId = setTimeout(() => {
                 toast.classList.remove('show');
                 setTimeout(() => toast.remove(), 300);
-            }, 5000);
+            }, 50000);
 
             // Cancel timeout if close button is clicked
             closeBtn.addEventListener('click', () => {

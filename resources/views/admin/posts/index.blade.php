@@ -35,18 +35,20 @@
                         </a>
                     </li>
                     <li class="nav-item" role="presentation">
-                        <a class="nav-link {{ request('type') == 1 ? 'active' : '' }}" href="{{ route('posts.index', ['type' => 1]) }}" role="tab">
+                        <a class="nav-link {{ request('type') == 1 ? 'active' : '' }}"
+                            href="{{ route('posts.index', ['type' => 1]) }}" role="tab">
                             Du lịch
                         </a>
                     </li>
                     <li class="nav-item" role="presentation">
-                        <a class="nav-link {{ request('type') == 2 ? 'active' : '' }}" href="{{ route('posts.index', ['type' => 2]) }}" role="tab">
+                        <a class="nav-link {{ request('type') == 2 ? 'active' : '' }}"
+                            href="{{ route('posts.index', ['type' => 2]) }}" role="tab">
                             Ẩm thực
                         </a>
                     </li>
                 </ul>
 
-                @if($posts->isEmpty())
+                @if ($posts->isEmpty())
                     <div class="text-center py-4">
                         <p class="text-muted mb-0">Chưa có bài viết nào.</p>
                     </div>
@@ -68,17 +70,17 @@
                                 @php
                                     $stt = 1;
                                 @endphp
-                                @foreach($posts as $post)
+                                @foreach ($posts as $post)
                                     <tr>
                                         <td>{{ $stt++ }}</td>
-                                        <td>{{ $post->title }}</td>
+                                        <td class="text-overflow-ellipsis">{{ $post->title }}</td>
                                         <td>{{ $post->address }}</td>
                                         <td>{{ $post->user->name }}</td>
                                         <td>{{ $post->created_at->format('d/m/Y H:i') }}</td>
                                         <td>
-                                            @if($post->type == 1)
+                                            @if ($post->type == 1)
                                                 <span class="badge bg-primary">Du lịch</span>
-                                            @else
+                                            @elseif ($post->type == 2)
                                                 <span class="badge bg-success">Ẩm thực</span>
                                             @endif
                                         </td>
@@ -89,10 +91,12 @@
                                             <a href="{{ route('posts.edit', $post) }}" class="btn btn-warning btn-sm">
                                                 <i class="fas fa-edit"></i>
                                             </a>
-                                            <form action="{{ route('posts.destroy', $post) }}" method="POST" class="d-inline">
+                                            <form action="{{ route('posts.destroy', $post) }}" method="POST"
+                                                class="d-inline">
                                                 @csrf
                                                 @method('DELETE')
-                                                <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Bạn có chắc chắn muốn xóa bài viết này?')">
+                                                <button type="submit" class="btn btn-danger btn-sm"
+                                                    onclick="return confirm('Bạn có chắc chắn muốn xóa bài viết này?')">
                                                     <i class="fas fa-trash"></i>
                                                 </button>
                                             </form>

@@ -14,26 +14,20 @@
     box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
     border-radius: 0 10px 10px 0;
     will-change: transform;
+    visibility: hidden;
+}
+
+/* Fix for scrollbar issue - special class to prevent scroll but keep scrollbar */
+body.no-scroll-but-keep-bar {
+    position: fixed;
+    width: 100%;
+    overflow-y: scroll;
 }
 
 /* Styles for when filter is open */
-/* html.filter-open body {
-    position: relative;
-} */
-
-/* Fake scrollbar styles */
-/* #fakeScrollbar {
-    background-color: transparent; 
-    pointer-events: none;
-} */
-
-/* Tăng thời gian transition cho margin */
-/* body {
-    transition: margin-right 0.3s ease;
-} */
-
 .filter-sidebar.show {
     transform: translate3d(0, 0, 0);
+    visibility: visible;
 }
 
 .filter-content {
@@ -79,10 +73,10 @@
     align-items: center;
     background-color: #fff;
     border-radius: 25px;
-    padding: 8px 15px;
     border: 1px solid #d9c9a3;
     box-shadow: 0 1px 5px rgba(0, 0, 0, 0.05);
     transition: box-shadow 0.3s ease, border-color 0.3s ease;
+    padding: 8px 15px;
 }
 
 .search-input-wrapper.focused,
@@ -114,46 +108,24 @@
     opacity: 0.5;
 }
 
-.filter-menu-button {
-    background: #c8b790;
-    border: none;
-    border-radius: 50%;
-    width: 30px;
-    height: 30px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: white;
-    cursor: pointer;
-    transition: transform 0.2s ease, background-color 0.2s ease;
-}
-
-.filter-menu-button:hover {
-    transform: scale(1.1);
-    background-color: #b9a677;
-}
-
-/* Loại bỏ các hiệu ứng phụ của filter section */
-.filter-section {
-    margin-bottom: 30px;
-    border-bottom: 1px solid #e0d8c0;
-    padding-bottom: 20px;
-}
-
-.filter-section h4 {
-    color: #5d4037;
-    margin-bottom: 15px;
-    font-weight: 600;
-}
-
-/* Hiệu ứng cơ bản cho các nút */
-.price-range-buttons, .style-buttons, .location-options, .trust-options {
+/* Button Styles */
+.price-range-buttons, 
+.style-buttons, 
+.location-options, 
+.trust-options,
+.amenities-options,
+.sort-options {
     display: flex;
     flex-wrap: wrap;
     gap: 10px;
 }
 
-.price-button, .style-button, .location-button, .trust-button {
+.price-button, 
+.style-button, 
+.location-button, 
+.trust-button,
+.amenity-button,
+.sort-button {
     background-color: #f0e9d2;
     border: 1px solid #d9c9a3;
     border-radius: 20px;
@@ -164,13 +136,23 @@
     transition: all 0.2s ease;
 }
 
-.price-button:hover, .style-button:hover, .location-button:hover, .trust-button:hover {
+.price-button:hover, 
+.style-button:hover, 
+.location-button:hover, 
+.trust-button:hover,
+.amenity-button:hover,
+.sort-button:hover {
     background-color: #e6ddc4;
     transform: translateY(-2px);
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
-.price-button.active, .style-button.active, .location-button.active, .trust-button.active {
+.price-button.active, 
+.style-button.active, 
+.location-button.active, 
+.trust-button.active,
+.amenity-button.active,
+.sort-button.active {
     background-color: #c8b790;
     color: #fff;
     transform: translateY(-2px);
@@ -178,18 +160,29 @@
 }
 
 /* Style buttons with icons */
-.style-button, .location-button[data-location="current"], .trust-button[data-trust] {
+.style-button, 
+.location-button[data-location="current"], 
+.trust-button[data-trust],
+.amenity-button {
     display: flex;
     align-items: center;
     gap: 5px;
 }
 
-.style-button i, .location-button i, .trust-button i {
+.style-button i, 
+.location-button i, 
+.trust-button i,
+.amenity-button i,
+.sort-button i {
     font-size: 14px;
     transition: transform 0.3s ease;
 }
 
-.style-button.active i, .location-button.active i, .trust-button.active i {
+.style-button.active i, 
+.location-button.active i, 
+.trust-button.active i,
+.amenity-button.active i,
+.sort-button.active i {
     transform: scale(1.2);
 }
 
@@ -235,6 +228,19 @@
     box-shadow: 0 3px 8px rgba(0, 0, 0, 0.15);
 }
 
+/* Filter Sections */
+.filter-section {
+    margin-bottom: 30px;
+    border-bottom: 1px solid #e0d8c0;
+    padding-bottom: 20px;
+}
+
+.filter-section h4 {
+    color: #5d4037;
+    margin-bottom: 15px;
+    font-weight: 600;
+}
+
 /* Action buttons */
 .filter-buttons {
     display: flex;
@@ -252,41 +258,87 @@
 
 .filter-clear {
     background-color: transparent;
-    border: 1px solid #c8b790;
-    color: #8d6e63;
+    border: 1px solid #d9c9a3;
+    color: #5d4037;
 }
 
 .filter-apply {
-    background-color: #c8b790;
-    border: none;
-    color: #fff;
-    opacity: 0.8;
+    background-color: #e0d8c0;
+    border: 1px solid #d9c9a3;
+    color: #5d4037;
 }
 
 .filter-apply.active {
-    background-color: #b9a677;
-    transform: translateY(-2px);
-    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.15);
-    opacity: 1;
+    background-color: #7a5c2e;
+    border-color: #7a5c2e;
+    color: #fff;
+    box-shadow: 0 4px 10px rgba(122, 92, 46, 0.3);
 }
 
-/* Overlay when filter is open */
+/* Overlay for filter */
 .filter-overlay {
     position: fixed;
     top: 0;
     left: 0;
-    width: 100%;
-    height: 100%;
+    right: 0;
+    bottom: 0;
     background-color: rgba(0, 0, 0, 0.5);
     z-index: 999;
+    display: none;
     opacity: 0;
     transition: opacity 0.3s ease;
-    display: none;
 }
 
-.filter-overlay.show, 
-.filter-overlay[style*="display: block"] {
+.filter-overlay.show {
     opacity: 1;
+}
+
+/* Loading indicator */
+.loading-indicator {
+    text-align: center;
+    padding: 20px;
+    color: #7a5c2e;
+    font-size: 16px;
+}
+
+.loading-indicator i {
+    margin-right: 8px;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Error message */
+.error-message {
+    text-align: center;
+    padding: 20px;
+    color: #f44336;
+    font-size: 16px;
+    background-color: rgba(244, 67, 54, 0.1);
+    border-radius: 8px;
+    margin: 10px 0;
+}
+
+/* Mobile responsive */
+@media (max-width: 576px) {
+    .filter-sidebar {
+        width: 100%;
+        max-width: none;
+        border-radius: 0;
+    }
+    
+    .filter-buttons {
+        position: sticky;
+        bottom: 0;
+        padding: 15px 0;
+        background-color: #faf6e9;
+        margin-top: 20px;
+        margin-bottom: 0;
+        box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+    }
 }
 
 /* Đơn giản hóa CSS cho body khi filter đang mở */
@@ -325,17 +377,6 @@ html.has-filter-open {
 /* Kỹ thuật này cho phép fixed elements cũng có margin right */
 html.has-filter-open .navbar-custom {
     /* padding-right: var(--scrollbar-width, 15px); */
-}
-
-/* Phương pháp luôn giữ thanh cuộn */
-body.no-scroll-but-keep-bar {
-    overflow-y: scroll !important;
-    /* Vô hiệu hóa cuộn bằng cách bắt events */
-    height: 100% !important;
-    position: fixed !important;
-    width: 100% !important;
-    /* Thêm layer chặn trên body để bắt tất cả các event */
-    pointer-events: none !important;
 }
 
 /* Khôi phục pointer-events cho sidebar và overlay */
@@ -423,4 +464,48 @@ html.filter-open .navbar-custom {
 .filter-sidebar.show .filter-sections {
     opacity: 1;
     transform: translate3d(0, 0, 0);
+}
+
+/* No Results Message */
+.no-results {
+    text-align: center;
+    padding: 40px 20px;
+    margin: 20px 0;
+    background-color: #f9f5e8;
+    border-radius: 10px;
+    color: #7a5c2e;
+    font-size: 16px;
+    border: 1px dashed #d9c9a3;
+}
+
+.no-results i {
+    display: block;
+    font-size: 32px;
+    margin-bottom: 15px;
+    color: #c8b790;
+}
+
+/* Result Count */
+.result-count {
+    background-color: #f1ebd7;
+    color: #7a5c2e;
+    padding: 10px 16px;
+    border-radius: 6px;
+    margin-bottom: 15px;
+    font-size: 15px;
+    display: inline-block;
+}
+
+.result-count span {
+    font-weight: 500;
+}
+
+/* No More Results Message */
+.no-more-results {
+    text-align: center;
+    color: #9b8a6c;
+    padding: 15px;
+    margin: 10px 0;
+    font-style: italic;
+    transition: opacity 0.5s ease;
 } 

@@ -407,6 +407,9 @@
                     $('#cuisine-other-input input').val('');
                 }
             });
+
+            // Trigger change event on page load to set correct visibility
+            $('#post-type').trigger('change');
         });
     </script>
     <!-- Leaflet CSS & JS -->

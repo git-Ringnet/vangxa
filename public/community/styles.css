@@ -12,18 +12,19 @@
     --dining-light: #ecfdf5;
     --dining-accent: #f59e0b;
     --sky-blue: #008cff;
+    --brouwn: #7c4d28;
 }
 .create-post-btn {
     position: fixed;
     right: 0;
     top: 50%;
-    background-color: var(--sky-blue);
-    border-radius: 10px;
+    background-color: var(--brouwn);
+    border-radius: 50%;
     border: none;
     cursor: pointer;
-    padding: 15px 20px;
+    padding: 20px 20px;
     width: 60px;
-    height: 48px;
+    height: 60px;
 }
 
 /* Custom Styles */

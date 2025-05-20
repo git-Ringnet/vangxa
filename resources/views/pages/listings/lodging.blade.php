@@ -20,11 +20,17 @@
         <!-- Listings -->
         <section class="listings-section">
             <div class="listings-grid" id="post-list">
-                @include('pages.listings.posts')
+                @if(count($posts) > 0)
+                    @include('pages.listings.posts')
+                @else
+                    <div class="no-results">
+                        <i class="fas fa-search"></i> Không tìm thấy kết quả phù hợp với bộ lọc của bạn.
+                    </div>
+                @endif
             </div>
 
             <div class="load-more">
-                <button class="load-more-button" id="loadMoreButton">
+                <button class="load-more-button" id="loadMoreButton" style="display: none;" data-load-more-offset="30" data-lodging-load-more="{{ route('lodging.load-more') }}">
                     Hiển thị thêm
                 </button>
             </div>
@@ -225,6 +231,22 @@
     }
     
     document.addEventListener('DOMContentLoaded', function() {
+        // Ensure scrolling is always enabled
+        function restoreScrolling() {
+            document.body.style.position = '';
+            document.body.style.top = '';
+            document.body.style.width = '';
+            document.body.style.overflow = '';
+            document.body.style.paddingRight = '';
+            document.body.classList.remove('no-scroll-but-keep-bar');
+        }
+        
+        // Call immediately when page loads
+        restoreScrolling();
+        
+        // Also call after any AJAX request completes
+        document.addEventListener('ajaxComplete', restoreScrolling);
+        
         // Initialize carousels
         initializeCarousels();
         
@@ -236,19 +258,23 @@
         
         const loadMoreButton = document.getElementById('loadMoreButton');
         const listingsGrid = document.querySelector('.listings-grid');
-        let offset = 30; // Initial offset
-        let isLoading = false;
+        
+        // Define global variables if they don't exist
+        window.isLoading = window.isLoading || false;
+        window.offset = window.offset || 30;
 
         loadMoreButton.addEventListener('click', function() {
-            if (isLoading) return;
+            if (window.isLoading) return;
 
-            isLoading = true;
+            window.isLoading = true;
             this.classList.add('loading');
 
-            fetch(`/load-more?offset=${offset}`, {
+            // Use the correct endpoint for lodging
+            fetch(`/lodging/load-more?offset=${window.offset}`, {
                     method: 'GET',
                     headers: {
                         'Accept': 'application/json',
+                        'X-Requested-With': 'XMLHttpRequest'
                     }
                 })
                 .then(response => {
@@ -263,14 +289,14 @@
                     }
 
                     // Update offset for next request
-                    offset = data.nextOffset;
+                    window.offset = data.nextOffset;
 
                     // Hide button if no more posts
                     if (!data.hasMore) {
                         loadMoreButton.style.display = 'none';
                     }
 
-                    isLoading = false;
+                    window.isLoading = false;
                     loadMoreButton.classList.remove('loading');
 
                     // Reinitialize carousels for new posts
@@ -288,9 +314,35 @@
                 })
                 .catch(error => {
                     console.error('Error loading more posts:', error);
-                    isLoading = false;
+                    window.isLoading = false;
                     loadMoreButton.classList.remove('loading');
+                    
+                    // Log detailed information for debugging
+                    console.log('Fetch URL was:', `/lodging/load-more?offset=${window.offset}`);
+                    
+                    // Display error message to user
+                    const errorMsg = document.createElement('div');
+                    errorMsg.className = 'load-more-error';
+                    errorMsg.innerHTML = 'Có lỗi xảy ra khi tải thêm kết quả. Vui lòng thử lại sau.';
+                    loadMoreButton.parentNode.insertBefore(errorMsg, loadMoreButton);
+                    
+                    // Remove error message after 5 seconds
+                    setTimeout(() => {
+                        errorMsg.style.opacity = '0';
+                        setTimeout(() => errorMsg.remove(), 500);
+                    }, 5000);
                 });
         });
+
+        // Check if there are posts and if hasMore is true
+        const postCards = document.querySelectorAll('.listing-card');
+        const hasMore = {{ isset($hasMore) ? ($hasMore ? 'true' : 'false') : 'false' }};
+        
+        // Only show the load more button if we have posts and hasMore is true
+        if (postCards.length > 0 && hasMore) {
+            loadMoreButton.style.display = 'block';
+        } else {
+            loadMoreButton.style.display = 'none';
+        }
     });
 </script>

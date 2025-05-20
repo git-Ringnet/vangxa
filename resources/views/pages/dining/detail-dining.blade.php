@@ -2,8 +2,271 @@
 
 @section('content')
     <div class="container-custom detail-dining-page">
+        {{-- Mobile Tiktok Player Layout --}}
+        <div class="detail-content">
+            <div class="mobile-detail-content">
+                <div class="mobile-post-header py-2 my-3">
+                    <a href="{{ route('dining') }}" class="back-button">
+                        <i class="fas fa-arrow-left"></i>
+                    </a>
+                    <h3 class="mobile-post-title">Pizza có tâm</h3>
+                    <div class="mobile-more-options">
+                        <i class="fas fa-ellipsis-h"></i>
+                    </div>
+                </div>
+
+                <div class="mobile-tiktok-container">
+                    <div class="tiktok-video-container">
+                        <video controls autoplay loop class="tiktok-video" id="vidauto">
+                            <source src="{{ asset('image/tiktok/tiktok.mp4') }}" type="video/mp4">
+                            Trình duyệt của bạn không hỗ trợ video.
+                        </video>
+                    </div>
+                </div>
+
+                <div class="mobile-interaction-bar">
+                    <div class="mobile-interaction-item">
+                        <button class="mobile-interaction-btn">
+                            <i class="far fa-bookmark"></i>
+                        </button>
+                        <span class="mobile-count">4,2K</span>
+                    </div>
+                    <div class="mobile-interaction-item">
+                        <button class="mobile-interaction-btn">
+                            <i class="far fa-comment-dots"></i>
+                        </button>
+                        <span class="mobile-count">4,2K</span>
+                    </div>
+                    <div class="mobile-interaction-item">
+                        <button class="mobile-interaction-btn">
+                            <i class="far fa-share-square"></i>
+                        </button>
+                        <span class="mobile-count">4,2K</span>
+                    </div>
+                    <a href="https://www.google.com/maps/search/?api=1&query={{ urlencode($post->address) }}"
+                        target="_blank" class="btn-map rounded-pill">
+                        <button class="mobile-map-btn">
+                            <svg width="50" height="24" viewBox="0 0 24 24" fill="none"
+                                xmlns="http://www.w3.org/2000/svg">
+                                <path d="M15 6V21M15 6L21 3V18L15 21M15 6L9 3M15 21L9 18M9 18L3 21V6L9 3M9 18V3"
+                                    stroke="#7C4D28" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                            </svg>
+                            <span>Bản đồ</span>
+                        </button>
+                    </a>
+                </div>
+            </div>
+        </div>
+        <div class="bookWrap">
+            <div class="book">
+                <div class="cover">
+                    <img src="{{ asset('image/book.png') }}" style="width: 100%; height: 100%; object-fit: cover;">
+                    <div class="circleImage">
+                        <img src="{{ asset('image/default/default-group-avatar.jpg') }}" alt="Avatar">
+                    </div>
+                </div>
+                <div class="spine"></div>
+            </div>
+        </div>
+
+        <style>
+            /* Mobile Layout Styles */
+            html,
+            body {
+                scrollbar-width: none;
+                -ms-overflow-style: none;
+                overflow-y: auto;
+            }
+
+            html::-webkit-scrollbar,
+            body::-webkit-scrollbar {
+                display: none;
+                width: 0;
+            }
+
+            .mobile-detail-content {
+                padding: 0;
+                padding-bottom: 80px;
+                /* Add padding to prevent content being hidden behind fixed bar */
+                position: relative;
+                max-width: 100%;
+                overflow-y: auto;
+                /* Allow vertical scrolling */
+                scrollbar-width: none;
+                /* Hide scrollbar - Firefox */
+                -ms-overflow-style: none;
+                /* Hide scrollbar - IE/Edge */
+            }
+
+            /* Hide scrollbar for Chrome, Safari and Opera */
+            .mobile-detail-content::-webkit-scrollbar {
+                display: none;
+            }
+
+            /* Hide scrollbars on body when mobile view is active */
+            body.mobile-view {
+                scrollbar-width: none;
+                -ms-overflow-style: none;
+                overflow-y: auto;
+            }
+
+            body.mobile-view::-webkit-scrollbar {
+                display: none;
+            }
+
+            .mobile-post-header {
+                display: flex;
+                align-items: center;
+                padding: 15px 15px 5px;
+                position: relative;
+            }
+
+            .back-button {
+                color: #7a5c2e;
+                font-size: 18px;
+                margin-right: 15px;
+            }
+
+            .mobile-post-title {
+                font-size: 18px;
+                font-weight: bold;
+                color: #7a5c2e;
+                margin: 0;
+                flex-grow: 1;
+            }
+
+            .mobile-more-options {
+                color: #7a5c2e;
+                font-size: 18px;
+            }
+
+            .mobile-tiktok-container {
+                position: relative;
+                margin: 0;
+                width: 100%;
+            }
+
+            .tiktok-video-container {
+                width: 100%;
+                height: 650px;
+                background-color: #f08d7e;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                color: white;
+                font-size: 24px;
+                position: relative;
+                overflow: hidden;
+            }
+
+            .tiktok-video {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+            }
+
+            .mobile-book-avatar {
+                position: absolute;
+                bottom: 20px;
+                left: 20px;
+                z-index: 10;
+            }
+
+            .bookWrap {
+                height: 90px;
+                width: 80px;
+                left: 5px;
+                bottom: 110px;
+                /* Position above the bottom bar */
+                position: fixed;
+                /* Fixed position instead of absolute */
+                -webkit-perspective: 1200px;
+                -moz-perspective: 1200px;
+                perspective: 1200px;
+                z-index: 90;
+                /* Higher than content but lower than bottom bar */
+                border-radius: 10px;
+            }
+
+            .mobile-interaction-bar {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                padding: 15px 20px;
+                border-top: 1px solid rgba(0, 0, 0, 0.05);
+                position: fixed;
+                bottom: 0;
+                left: 0;
+                right: 0;
+                background-color: #f8f3e2;
+                z-index: 100;
+            }
+
+            .mobile-interaction-item {
+                display: flex;
+                align-items: center;
+            }
+
+            .mobile-interaction-btn {
+                background: none;
+                border: none;
+                color: #7a5c2e;
+                font-size: 20px;
+                padding: 5px;
+                cursor: pointer;
+            }
+
+            .mobile-count {
+                font-size: 14px;
+                color: #7a5c2e;
+                margin-top: 2px;
+            }
+
+            .mobile-map-btn {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                background-color: transparent;
+                border: 1px solid #7a5c2e;
+                border-radius: 30px;
+                color: #7a5c2e;
+                padding: 8px 10px;
+                font-size: 14px;
+            }
+
+            .mobile-map-btn i {
+                margin-right: 5px;
+            }
+
+            .mobile-interaction-bar {
+                display: none;
+            }
+
+            /* Media query để hiển thị giao diện mobile chỉ trên màn hình lớn hơn */
+            @media (min-width: 768px) {
+                .mobile-detail-content {
+                    max-width: 420px;
+                    margin: 0 auto;
+                    border-radius: 15px;
+                    overflow: hidden;
+                }
+            }
+
+            @media (max-width: 768px) {
+                .mobile-detail-content {
+                    max-width: 420px;
+                    margin: 0 auto;
+                    border-radius: 15px;
+                    overflow: hidden;
+                }
+
+                .mobile-interaction-bar {
+                    display: flex;
+                }
+            }
+        </style>
         <!-- Image Gallery -->
-        <div class="detail-gallery">
+        {{-- <div class="detail-gallery">
             <div class="gallery-main" onclick="openPreview(0)">
                 @if ($post->images->isNotEmpty())
                     <img src="{{ asset($post->images->first()->image_path) }}" alt="{{ $post->title }}" class="main-image">
@@ -24,10 +287,10 @@
                     Xem tất cả {{ $post->images->count() }} ảnh
                 </button>
             @endif
-        </div>
+        </div> --}}
 
         <!-- Image Preview Modal -->
-        <div class="modal fade" id="imagePreviewModal" tabindex="-1" aria-hidden="true">
+        {{-- <div class="modal fade" id="imagePreviewModal" tabindex="-1" aria-hidden="true">
             <div class="modal-dialog modal-fullscreen">
                 <div class="modal-content bg-black">
                     <div class="modal-header border-0">
@@ -48,10 +311,10 @@
                     </div>
                 </div>
             </div>
-        </div>
+        </div> --}}
 
         <!-- Image Gallery Modal -->
-        <div class="modal fade" id="imageGalleryModal" tabindex="-1" aria-labelledby="imageGalleryModalLabel"
+        {{-- <div class="modal fade" id="imageGalleryModal" tabindex="-1" aria-labelledby="imageGalleryModalLabel"
             aria-hidden="true">
             <div class="modal-dialog modal-xl modal-dialog-centered">
                 <div class="modal-content">
@@ -78,7 +341,7 @@
                     </div>
                 </div>
             </div>
-        </div>
+        </div> --}}
 
         <!-- Detail Content -->
         <div class="detail-content">
@@ -100,7 +363,8 @@
                                         data-authenticated="{{ Auth::check() ? 'true' : 'false' }}">
                                         <i
                                             class="{{ Auth::check() && $post->isSaved ? 'fas' : 'far' }} fa-bookmark {{ Auth::check() && $post->isSaved ? 'text-primary' : '' }}"></i>
-                                        <span class="trustlist-count" data-post-id="{{ $post->id }}">{{ $post->saves_count ?? 0 }}</span>
+                                        <span class="trustlist-count"
+                                            data-post-id="{{ $post->id }}">{{ $post->saves_count ?? 0 }}</span>
                                     </button>
                                 </form>
                             @else
@@ -174,18 +438,17 @@
                         </a>
                         <div class="vendor-info">
                             <h5 class="mb-1">
-                                <a href="{{ route('profile.show', ['id' => $vendor->id]) }}"
-                                    class="text-decoration-none">
+                                <a href="{{ route('profile.show', ['id' => $vendor->id]) }}" class="text-decoration-none">
                                     {{ $vendor->name }}
                                 </a>
                             </h5>
                             <p class="text-muted mb-2"><small>Thành viên từ
                                     {{ $vendor->created_at->format('d/m/Y') }}</small></p>
                             <!-- <div>
-                                                        <a href="{{ route('profile.show', ['id' => $vendor->id]) }}" class="btn btn-sm btn-outline-primary">
-                                                            <i class="fas fa-user me-1"></i> Xem hồ sơ
-                                                        </a>
-                                                    </div> -->
+                                                                                                                                        <a href="{{ route('profile.show', ['id' => $vendor->id]) }}" class="btn btn-sm btn-outline-primary">
+                                                                                                                                            <i class="fas fa-user me-1"></i> Xem hồ sơ
+                                                                                                                                        </a>
+                                                                                                                                    </div> -->
                         </div>
                     </div>
                 </div>
@@ -398,7 +661,7 @@
         </div>
 
         <!-- Share Modal -->
-        <div class="modal" id="shareModal">
+        {{-- <div class="modal" id="shareModal">
             <div class="share-modal-content">
                 <div class="share-header">
                     <h3>Chia sẻ</h3>
@@ -432,7 +695,7 @@
                     <p>Chia sẻ trang này với bạn bè của bạn</p>
                 </div>
             </div>
-        </div>
+        </div> --}}
 
         <!-- Include modal chủ sở hữu từ partial view -->
         @include('partials.owner-modal', ['post' => $post])
@@ -442,6 +705,21 @@
 @push('scripts')
     <script>
         document.addEventListener('DOMContentLoaded', function() {
+
+            const video = document.getElementById("vidauto");
+
+            // Phát có âm thanh sau tương tác (nhấn card)
+            video.play().then(() => {
+                console.log("Video đã phát có tiếng.");
+            }).catch((err) => {
+                console.warn("Không phát được video:", err);
+            });
+
+            // Add mobile-view class to body if mobile detail content exists
+            if (document.querySelector('.mobile-detail-content')) {
+                document.body.classList.add('mobile-view');
+            }
+
             const images = @json($post->images->pluck('image_path'));
             let currentImageIndex = 0;
             const previewModal = new bootstrap.Modal(document.getElementById('imagePreviewModal'));
