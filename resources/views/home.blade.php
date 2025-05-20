@@ -47,7 +47,7 @@
         }
         
         /* Chế độ hiệu suất - giảm hiệu ứng khi tab ẩn hoặc FPS thấp */
-        body.performance-mode .particles,
+        body.performance-mode
         body.performance-mode .firefly,
         body.performance-mode .light-rays,
         body.performance-mode .mystical-light {
@@ -296,38 +296,24 @@
             opacity: 0;
         }
         
-        .particles {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            background-image: radial-gradient(circle, rgba(255,255,255,0.8) 1px, transparent 1px);
-            background-size: 20px 20px;
-            animation: particlesMove 5s linear infinite;
-            opacity: 0.3;
-            z-index: 0;
-        }
-        
-        @keyframes particlesMove {
-            0% { background-position: 0 0; }
-            100% { background-position: 100px 100px; }
-        }
+        /* Hiệu ứng particles đã bỏ để tối ưu hiệu suất */
         
         header {
-            background-color: rgba(10, 25, 47, 0.8);
-            transition: transform 0.3s ease, background-color 0.3s ease, box-shadow 0.3s ease;
+            background: linear-gradient(to right, rgba(42, 21, 10, 0.95), rgba(77, 38, 17, 0.95), rgba(60, 32, 15, 0.95));
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             z-index: 50;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         }
         
         header.scrolled {
-            background-color: rgba(10, 25, 47, 0.95);
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            background: linear-gradient(to right, rgba(42, 21, 10, 0.98), rgba(77, 38, 17, 0.98), rgba(60, 32, 15, 0.98));
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
         }
         
         header.header-hidden {
@@ -423,12 +409,14 @@
             top: 70px;
             left: 0;
             width: 100%;
-            background-color: rgba(10, 25, 47, 0.95);
+            background: linear-gradient(to right, rgba(42, 21, 10, 0.97), rgba(77, 38, 17, 0.97), rgba(60, 32, 15, 0.97));
             padding: 1rem;
             flex-direction: column;
             align-items: center;
             gap: 1rem;
             z-index: 40;
+            border-bottom: 1px solid rgba(255, 215, 170, 0.1);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
         }
         
         .mobile-menu.active {
@@ -437,10 +425,12 @@
 
         /* Footer styles */
         footer {
-            background-color: rgba(10, 25, 47, 0.95);
+            background: linear-gradient(to right, rgba(50, 25, 10, 0.95), rgba(90, 45, 15, 0.95), rgba(70, 35, 10, 0.95));
+            border-top: 1px solid rgba(255, 215, 170, 0.1);
             color: white;
             padding: 2rem 1rem;
             text-align: center;
+            box-shadow: 0 -5px 20px rgba(0, 0, 0, 0.2);
         }
         
         footer .content-container {
@@ -580,10 +570,10 @@
             .mobile-menu {
                 top: 60px;
                 padding: 1rem 0;
-                background-color: rgba(10, 25, 47, 0.98);
+                background: linear-gradient(to right, rgba(42, 21, 10, 0.98), rgba(77, 38, 17, 0.98), rgba(60, 32, 15, 0.98));
                 backdrop-filter: blur(10px);
                 -webkit-backdrop-filter: blur(10px);
-                border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+                border-bottom: 1px solid rgba(255, 215, 170, 0.15);
             }
 
             .mobile-menu a {
@@ -611,7 +601,7 @@
             .mobile-menu .dropdown-content {
                 position: static;
                 width: 100%;
-                background-color: rgba(17, 24, 39, 0.95);
+                background-color: rgba(60, 30, 10, 0.95);
                 box-shadow: none;
                 border-radius: 0;
                 transform: none;
@@ -726,7 +716,7 @@
             position: absolute;
             top: 100%;
             right: 0;
-            background-color: rgba(17, 24, 39, 0.95);
+            background-color: rgba(60, 30, 10, 0.95);
             min-width: 180px;
             box-shadow: 0px 8px 24px rgba(0,0,0,0.3);
             z-index: 60;
@@ -737,7 +727,7 @@
             transition: transform 0.3s ease, opacity 0.3s ease;
             backdrop-filter: blur(10px);
             -webkit-backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 215, 170, 0.15);
             will-change: transform, opacity;
         }
         
@@ -817,7 +807,7 @@
         .floating-lanterns {
             display: none; /* Vô hiệu hóa đèn lồng để tăng hiệu suất */
         }
-        
+        /* 2 cái qq này tốn nhiều nhất */
         /* Light rays */
         .light-rays {
             position: fixed;
@@ -866,19 +856,7 @@
             z-index: 3;
         }
         
-        /* Vignette effect for vintage feel */
-        .vignette {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: radial-gradient(ellipse at center, transparent 35%, rgba(10, 6, 2, 0.7) 100%);
-            pointer-events: none;
-            z-index: 3;
-            opacity: 0.8;
-        }
-        
+     
         /* Fireflies effect */
         .fireflies-container {
             position: fixed;
@@ -999,14 +977,7 @@
             background-color: rgba(10, 25, 47, 0.95);
         }
         
-        /* Hiệu ứng float ngắn hơn cho thuyền */
-        @keyframes floatBoat {
-            0% { transform: translate(-50%, -50%) rotate(0deg); }
-            25% { transform: translate(-50%, -52%) rotate(1deg); }
-            50% { transform: translate(-50%, -50%) rotate(0deg); }
-            75% { transform: translate(-50%, -48%) rotate(-1deg); }
-            100% { transform: translate(-50%, -50%) rotate(0deg); }
-        }
+        /* Hiệu ứng float thuyền đã loại bỏ để tối ưu hiệu năng */
         
         /* Thiết lập keyframes animation cho hiệu ứng flash sáng */
         @keyframes flash-light {
@@ -1232,7 +1203,7 @@
     </div>
     
     <main class="relative text-white">
-        <section id="intro" class="flex flex-col justify-center items-center text-center">
+        <section id="intro" class="flex flex-col justify-center items-center text-stars">
             <img src="/image/longden.png" alt="Đèn lồng" class="section-image-mobile" />
             <div class="content-container">
                 <h1 class="text-8xl font-bold mb-8 gradient-text fade-up" style="line-height: 1.2;">Đây không phải là một bài giới thiệu.</h1>
@@ -1681,7 +1652,6 @@
             "#boat-container", 
             "#intro .content-container", 
             ".light-rays",
-            ".vignette",
             ".border-effect"], 
             { opacity: 0, y: (i) => i === 1 ? 10 : -30 },
             { 
@@ -1989,7 +1959,7 @@
         function createFireflies() {
     const container = document.getElementById('firefliesContainer');
     const isMobile = window.innerWidth <= 768;
-    const count = isMobile ? 10 : Math.min(10, Math.floor(window.innerWidth / 60));
+    const count = isMobile ? 10 : Math.min(5, Math.floor(window.innerWidth / 40));
     const fragment = document.createDocumentFragment();
 
     for (let i = 0; i < count; i++) {
