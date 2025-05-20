@@ -26,6 +26,7 @@ use App\Http\Controllers\LikeController;
 use App\Http\Controllers\ShareController;
 use App\Http\Controllers\FollowerController;
 use App\Http\Controllers\LeaderboardController;
+use App\Http\Controllers\VendorStoryController;
 
 Route::get('/test-scheme', function () {
     return request()->getScheme(); // Nó nên trả về 'https'
@@ -187,5 +188,13 @@ Route::get('/analytics/posts-with-engagements', [\App\Http\Controllers\Admin\Ana
 Route::get('/analytics/community-posts-with-reactions', [\App\Http\Controllers\Admin\AnalyticsController::class, 'communityPostsWithReactions'])->name('analytics.community-posts-with-reactions');
 Route::get('/analytics/posts-with-tagged-vendors', [\App\Http\Controllers\Admin\AnalyticsController::class, 'postsWithTaggedVendors'])->name('analytics.posts-with-tagged-vendors');
 Route::post('/analytics/record-activity', [\App\Http\Controllers\Admin\AnalyticsController::class, 'recordActivity'])->name('analytics.record-activity');
+
+// Vendor Stories routes
+Route::middleware(['auth', 'role:vendor'])->prefix('vendor')->name('vendor.')->group(function () {
+    Route::resource('stories', VendorStoryController::class);
+});
+
+// Public vendor stories route
+Route::get('/vendor/{id}/stories', [VendorStoryController::class, 'vendorStories'])->name('vendor.public.stories');
 
 require __DIR__ . '/auth.php';

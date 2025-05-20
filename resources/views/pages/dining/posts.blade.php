@@ -38,8 +38,8 @@
                             <div class="cover">
                                 <img src="image/book.png" style="width: 100%; height: 100%; object-fit: cover;">
                                 <div class="circleImage">
-                                    <img src="https://img.tripi.vn/cdn-cgi/image/width=700,height=700/https://gcs.tripi.vn/public-tripi/tripi-feed/img/474090Ypg/hinh-anh-girl-xinh-dep-de-thuong_025104504.jpg"
-                                        alt="Avatar">
+                                    <img src="{{ asset($post->user->avatar ?? 'image/default/default-avatar.jpg') }}"
+                                        alt="User Avatar" style="width: 100%; height: 100%; object-fit: cover;">
                                 </div>
                             </div>
                             <div class="spine"></div>

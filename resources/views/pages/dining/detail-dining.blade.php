@@ -2,277 +2,12 @@
 
 @section('content')
     <div class="container-custom detail-dining-page">
-        {{-- Mobile Tiktok Player Layout --}}
-        <div class="detail-content">
-            <div class="mobile-detail-content">
-                <div class="mobile-post-header py-2 my-3">
-                    <a href="{{ route('dining') }}" class="back-button">
-                        <i class="fas fa-arrow-left"></i>
-                    </a>
-                    <h3 class="mobile-post-title">Pizza có tâm</h3>
-                    <div class="mobile-more-options">
-                        <i class="fas fa-ellipsis-h"></i>
-                    </div>
+        <div class="container-custom">
+            <div class="detail-page__gallery">
+                <div class="detail-page__main-image" onclick="openPreview(0)">
+                    <img src="{{ $post->images->isNotEmpty() ? asset($post->images->first()->image_path) : asset('default-image.jpg') }}"
+                        alt="{{ $post->title }}">
                 </div>
-
-                <div class="mobile-tiktok-container">
-                    <div class="tiktok-video-container">
-                        <video controls autoplay loop class="tiktok-video" id="vidauto">
-                            <source src="{{ asset('image/tiktok/tiktok.mp4') }}" type="video/mp4">
-                            Trình duyệt của bạn không hỗ trợ video.
-                        </video>
-                    </div>
-                </div>
-
-                <div class="mobile-interaction-bar">
-                    <div class="mobile-interaction-item">
-                        <button class="mobile-interaction-btn">
-                            <i class="far fa-bookmark"></i>
-                        </button>
-                        <span class="mobile-count">4,2K</span>
-                    </div>
-                    <div class="mobile-interaction-item">
-                        <button class="mobile-interaction-btn">
-                            <i class="far fa-comment-dots"></i>
-                        </button>
-                        <span class="mobile-count">4,2K</span>
-                    </div>
-                    <div class="mobile-interaction-item">
-                        <button class="mobile-interaction-btn">
-                            <i class="far fa-share-square"></i>
-                        </button>
-                        <span class="mobile-count">4,2K</span>
-                    </div>
-                    <a href="https://www.google.com/maps/search/?api=1&query={{ urlencode($post->address) }}"
-                        target="_blank" class="btn-map rounded-pill">
-                        <button class="mobile-map-btn">
-                            <svg width="50" height="24" viewBox="0 0 24 24" fill="none"
-                                xmlns="http://www.w3.org/2000/svg">
-                                <path d="M15 6V21M15 6L21 3V18L15 21M15 6L9 3M15 21L9 18M9 18L3 21V6L9 3M9 18V3"
-                                    stroke="#7C4D28" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-                            </svg>
-                            <span>Bản đồ</span>
-                        </button>
-                    </a>
-                </div>
-            </div>
-        </div>
-        <div class="bookWrap">
-            <div class="book">
-                <div class="cover">
-                    <img src="{{ asset('image/book.png') }}" style="width: 100%; height: 100%; object-fit: cover;">
-                    <div class="circleImage">
-                        <img src="{{ asset('image/default/default-group-avatar.jpg') }}" alt="Avatar">
-                    </div>
-                </div>
-                <div class="spine"></div>
-            </div>
-        </div>
-
-        <style>
-            /* Mobile Layout Styles */
-            html,
-            body {
-                scrollbar-width: none;
-                -ms-overflow-style: none;
-                overflow-y: auto;
-            }
-
-            html::-webkit-scrollbar,
-            body::-webkit-scrollbar {
-                display: none;
-                width: 0;
-            }
-
-            .mobile-detail-content {
-                padding: 0;
-                padding-bottom: 80px;
-                /* Add padding to prevent content being hidden behind fixed bar */
-                position: relative;
-                max-width: 100%;
-                overflow-y: auto;
-                /* Allow vertical scrolling */
-                scrollbar-width: none;
-                /* Hide scrollbar - Firefox */
-                -ms-overflow-style: none;
-                /* Hide scrollbar - IE/Edge */
-            }
-
-            /* Hide scrollbar for Chrome, Safari and Opera */
-            .mobile-detail-content::-webkit-scrollbar {
-                display: none;
-            }
-
-            /* Hide scrollbars on body when mobile view is active */
-            body.mobile-view {
-                scrollbar-width: none;
-                -ms-overflow-style: none;
-                overflow-y: auto;
-            }
-
-            body.mobile-view::-webkit-scrollbar {
-                display: none;
-            }
-
-            .mobile-post-header {
-                display: flex;
-                align-items: center;
-                padding: 15px 15px 5px;
-                position: relative;
-            }
-
-            .back-button {
-                color: #7a5c2e;
-                font-size: 18px;
-                margin-right: 15px;
-            }
-
-            .mobile-post-title {
-                font-size: 18px;
-                font-weight: bold;
-                color: #7a5c2e;
-                margin: 0;
-                flex-grow: 1;
-            }
-
-            .mobile-more-options {
-                color: #7a5c2e;
-                font-size: 18px;
-            }
-
-            .mobile-tiktok-container {
-                position: relative;
-                margin: 0;
-                width: 100%;
-            }
-
-            .tiktok-video-container {
-                width: 100%;
-                height: 650px;
-                background-color: #f08d7e;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                color: white;
-                font-size: 24px;
-                position: relative;
-                overflow: hidden;
-            }
-
-            .tiktok-video {
-                width: 100%;
-                height: 100%;
-                object-fit: cover;
-            }
-
-            .mobile-book-avatar {
-                position: absolute;
-                bottom: 20px;
-                left: 20px;
-                z-index: 10;
-            }
-
-            .bookWrap {
-                height: 90px;
-                width: 80px;
-                left: 5px;
-                bottom: 110px;
-                /* Position above the bottom bar */
-                position: fixed;
-                /* Fixed position instead of absolute */
-                -webkit-perspective: 1200px;
-                -moz-perspective: 1200px;
-                perspective: 1200px;
-                z-index: 90;
-                /* Higher than content but lower than bottom bar */
-                border-radius: 10px;
-            }
-
-            .mobile-interaction-bar {
-                display: flex;
-                align-items: center;
-                justify-content: space-between;
-                padding: 15px 20px;
-                border-top: 1px solid rgba(0, 0, 0, 0.05);
-                position: fixed;
-                bottom: 0;
-                left: 0;
-                right: 0;
-                background-color: #f8f3e2;
-                z-index: 100;
-            }
-
-            .mobile-interaction-item {
-                display: flex;
-                align-items: center;
-            }
-
-            .mobile-interaction-btn {
-                background: none;
-                border: none;
-                color: #7a5c2e;
-                font-size: 20px;
-                padding: 5px;
-                cursor: pointer;
-            }
-
-            .mobile-count {
-                font-size: 14px;
-                color: #7a5c2e;
-                margin-top: 2px;
-            }
-
-            .mobile-map-btn {
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                background-color: transparent;
-                border: 1px solid #7a5c2e;
-                border-radius: 30px;
-                color: #7a5c2e;
-                padding: 8px 10px;
-                font-size: 14px;
-            }
-
-            .mobile-map-btn i {
-                margin-right: 5px;
-            }
-
-            .mobile-interaction-bar {
-                display: none;
-            }
-
-            /* Media query để hiển thị giao diện mobile chỉ trên màn hình lớn hơn */
-            @media (min-width: 768px) {
-                .mobile-detail-content {
-                    max-width: 420px;
-                    margin: 0 auto;
-                    border-radius: 15px;
-                    overflow: hidden;
-                }
-            }
-
-            @media (max-width: 768px) {
-                .mobile-detail-content {
-                    max-width: 420px;
-                    margin: 0 auto;
-                    border-radius: 15px;
-                    overflow: hidden;
-                }
-
-                .mobile-interaction-bar {
-                    display: flex;
-                }
-            }
-        </style>
-        <!-- Image Gallery -->
-        {{-- <div class="detail-gallery">
-            <div class="gallery-main" onclick="openPreview(0)">
-                @if ($post->images->isNotEmpty())
-                    <img src="{{ asset($post->images->first()->image_path) }}" alt="{{ $post->title }}" class="main-image">
-                @endif
-            </div>
-            <div class="gallery-grid">
                 @foreach ($post->images->skip(1)->take(4) as $index => $image)
                     <div class="detail-page__gallery-item" onclick="openPreview({{ $index + 1 }})">
                         <img src="{{ asset($image->image_path) }}" class="img-fluid rounded" alt="Post image">
@@ -280,250 +15,113 @@
                         <i class="fas fa-search-plus zoom-icon"></i>
                     </div>
                 @endforeach
-            </div>
-            @if ($post->images->count() > 5)
                 <button class="view-all-photos" data-bs-toggle="modal" data-bs-target="#imageGalleryModal">
                     <i class="fas fa-th"></i>
                     Xem tất cả {{ $post->images->count() }} ảnh
                 </button>
-            @endif
-        </div> --}}
-
-        <!-- Image Preview Modal -->
-        {{-- <div class="modal fade" id="imagePreviewModal" tabindex="-1" aria-hidden="true">
-            <div class="modal-dialog modal-fullscreen">
-                <div class="modal-content bg-black">
-                    <div class="modal-header border-0">
-                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
-                            aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body d-flex align-items-center justify-content-center position-relative">
-                        <img src="" alt="" class="preview-image">
-                        <button class="nav-button prev" onclick="prevImage()">
-                            <i class="fas fa-chevron-left"></i>
-                        </button>
-                        <button class="nav-button next" onclick="nextImage()">
-                            <i class="fas fa-chevron-right"></i>
-                        </button>
-                    </div>
-                    <div class="modal-footer border-0 justify-content-center">
-                        <span class="text-white image-counter"></span>
-                    </div>
-                </div>
             </div>
-        </div> --}}
 
-        <!-- Image Gallery Modal -->
-        {{-- <div class="modal fade" id="imageGalleryModal" tabindex="-1" aria-labelledby="imageGalleryModalLabel"
-            aria-hidden="true">
-            <div class="modal-dialog modal-xl modal-dialog-centered">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="imageGalleryModalLabel">Tất cả ảnh ({{ $post->images->count() }})</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                        <div class="row g-3">
-                            @foreach ($post->images as $index => $image)
-                                <div class="col-6 col-md-4 col-lg-3">
-                                    <div class="gallery-item" onclick="openPreview({{ $index }})">
-                                        <img src="{{ asset($image->image_path) }}" alt="{{ $post->title }}"
-                                            class="img-fluid rounded modal-image">
-                                        <div class="gallery-item-overlay">
-                                            <span
-                                                class="image-number">{{ $index + 1 }}/{{ $post->images->count() }}</span>
-                                            <i class="fas fa-search-plus"></i>
-                                        </div>
-                                    </div>
-                                </div>
-                            @endforeach
+            <!-- Image Preview Modal -->
+            <div class="modal fade" id="previewModal" tabindex="-1" aria-hidden="true">
+                <div class="modal-dialog modal-fullscreen">
+                    <div class="modal-content bg-black">
+                        <div class="modal-header border-0">
+                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                                aria-label="Close"></button>
                         </div>
-                    </div>
-                </div>
-            </div>
-        </div> --}}
-
-        <!-- Detail Content -->
-        <div class="detail-content">
-            <div class="content-main">
-                <!-- Restaurant Title -->
-                <div class="detail-header">
-                    <h1 class="detail-title">{{ $post->title }}</h1>
-                    <div class="detail-badges">
-                        {{-- <span class="badge-item"><i class="fas fa-award"></i> Đạt chứng nhận vệ sinh an toàn thực
-                        phẩm</span>
-                    <span class="badge-item"><i class="fas fa-check-circle"></i> Đã xác minh</span> --}}
-                        <div class="action-buttons">
-                            @auth
-                                <form action="{{ route('trustlist.toggle', ['id' => $post->id]) }}" method="POST"
-                                    class="trustlist-form" data-post-id="{{ $post->id }}">
-                                    @csrf
-                                    <button type="button" class="trustlist-btn" data-post-id="{{ $post->id }}"
-                                        data-saved="{{ Auth::check() && $post->isSaved ? 'true' : 'false' }}"
-                                        data-authenticated="{{ Auth::check() ? 'true' : 'false' }}">
-                                        <i
-                                            class="{{ Auth::check() && $post->isSaved ? 'fas' : 'far' }} fa-bookmark {{ Auth::check() && $post->isSaved ? 'text-primary' : '' }}"></i>
-                                        <span class="trustlist-count"
-                                            data-post-id="{{ $post->id }}">{{ $post->saves_count ?? 0 }}</span>
-                                    </button>
-                                </form>
-                            @else
-                                <a href="{{ route('login') }}" class="btn-trustlist" title="Thêm vào danh sách tin cậy"
-                                    onclick="showToast('Vui lòng đăng nhập để thêm vào danh sách tin cậy', 'warning'); return false;">
-                                    <i class="far fa-bookmark"></i>
-                                    <span class="trustlist-count">{{ $post->saves_count ?? 0 }}</span>
-                                </a>
-                            @endauth
-                            <button class="btn-share" onclick="sharePost()" title="Chia sẻ">
-                                <i class="fas fa-share-alt"></i>
+                        <div class="modal-body d-flex align-items-center justify-content-center position-relative">
+                            <img src="" alt="" id="previewImage">
+                            <button class="nav-button prev" onclick="prevImage()">
+                                <i class="fas fa-chevron-left"></i>
+                            </button>
+                            <button class="nav-button next" onclick="nextImage()">
+                                <i class="fas fa-chevron-right"></i>
                             </button>
                         </div>
-                    </div>
-                </div>
-
-                <!-- Restaurant Info -->
-                {{-- <div class="detail-info">
-                <div class="info-item">
-                    <span class="info-icon"><i class="fas fa-map-marker-alt"></i></span>
-                    <span>{{ $post->location }}</span>
-                </div>
-                <div class="info-item">
-                    <span class="info-icon"><i class="fas fa-utensils"></i></span>
-                    <span>Ẩm thực Việt Nam, Buffet Hải sản</span>
-                </div>
-                <div class="info-item">
-                    <span class="info-icon"><i class="fas fa-clock"></i></span>
-                    <span>Giờ mở cửa: 11:00 - 14:00, 17:30 - 22:00</span>
-                </div>
-
-                <!-- Thêm phần thông tin chủ sở hữu/vendor -->
-                <div class="info-item">
-                    <span class="info-icon"><i class="fas fa-user-tie"></i></span>
-                    <span>
-                        Chủ sở hữu/Vendor:
-                        @if (isset($post->owner) && $post->owner)
-                            <a href="{{ route('profile.show', $post->owner->id) }}">{{ $post->owner->name }}</a>
-                        @else
-                            Chưa có thông tin
-                        @endif
-                        @auth
-                            @if (Auth::user()->hasRole('Admin') || Auth::user()->id == $post->user_id)
-                                <button class="btn btn-sm btn-outline-primary ml-2" data-bs-toggle="modal" data-bs-target="#addOwnerModal">
-                                    <i class="fas fa-plus-circle"></i> Thêm/Chỉnh sửa
-                                </button>
-                            @endif
-                        @endauth
-                    </span>
-                </div>
-            </div> --}}
-
-                <!-- Thông tin người bán/chủ sở hữu -->
-                <div class="vendor-profile mb-4">
-                    <h2 class="mb-3">Thông tin chủ sở hữu</h2>
-                    <div class="vendor-card d-flex align-items-center p-3"
-                        style="background-color: #f8f9fa; border-radius: 10px;">
-                        @php
-                            // Lấy người bán/chủ sở hữu
-                            $vendor = $post->user;
-                            // Nếu bài đăng có owner_id riêng
-                            if ($post->owner_id) {
-                                $vendor = \App\Models\User::find($post->owner_id);
-                            }
-                        @endphp
-
-                        <a href="{{ route('profile.show', ['id' => $vendor->id]) }}" class="vendor-avatar me-3">
-                            <img src="{{ $vendor->avatar ? asset('image/avatars/' . basename($vendor->avatar)) : 'https://ui-avatars.com/api/?name=' . urlencode($vendor->name) }}"
-                                alt="{{ $vendor->name }}"
-                                style="width: 70px; height: 70px; border-radius: 50%; object-fit: cover;">
-                        </a>
-                        <div class="vendor-info">
-                            <h5 class="mb-1">
-                                <a href="{{ route('profile.show', ['id' => $vendor->id]) }}" class="text-decoration-none">
-                                    {{ $vendor->name }}
-                                </a>
-                            </h5>
-                            <p class="text-muted mb-2"><small>Thành viên từ
-                                    {{ $vendor->created_at->format('d/m/Y') }}</small></p>
-                            <!-- <div>
-                                                                                                                                        <a href="{{ route('profile.show', ['id' => $vendor->id]) }}" class="btn btn-sm btn-outline-primary">
-                                                                                                                                            <i class="fas fa-user me-1"></i> Xem hồ sơ
-                                                                                                                                        </a>
-                                                                                                                                    </div> -->
+                        <div class="modal-footer border-0 justify-content-center">
+                            <span class="text-white image-counter"></span>
                         </div>
                     </div>
                 </div>
+            </div>
 
-                {{-- Hiển thị các section dạng box + slide --}}
-                @foreach ($post->sections as $section)
-                    <div class="section-box mb-4 p-4"
-                        style="background: #f9f6ef; border-radius: 18px; border: 2px solid #eee3d0;">
-                        <h2 class="section-title mb-2" style="font-weight:bold; color:#7c5c2b;">{{ $section->title }}
-                        </h2>
-                        <div class="section-description mb-3" style="color:#444;">{!! $section->content !!}</div>
-                        @php
-                            $images = $section->images->all();
-                            $chunks = array_chunk($images, 3);
-                        @endphp
-                        <div id="sectionCarousel{{ $section->id }}" class="carousel slide mb-2"
-                            data-bs-ride="carousel">
-                            <div class="carousel-inner">
-                                @foreach ($chunks as $idx => $chunk)
-                                    <div class="carousel-item {{ $idx == 0 ? 'active' : '' }}">
-                                        <div class="row g-2">
-                                            @foreach ($chunk as $img)
-                                                <div class="col-4">
-                                                    <img src="{{ asset($img->image_path) }}"
-                                                        class="d-block w-100 rounded"
-                                                        style="height: 180px; object-fit: cover;" alt="Ảnh section">
-                                                </div>
-                                            @endforeach
-                                        </div>
-                                    </div>
-                                @endforeach
+            <div class="detail-content">
+                <div class="content-main">
+                    <!-- Restaurant Title -->
+                    <div class="detail-header">
+                        <h1 class="detail-title">{{ $post->title }}</h1>
+                        <div class="detail-badges">
+                            <div class="action-buttons">
+                                @auth
+                                    <form action="{{ route('trustlist.toggle', ['id' => $post->id]) }}" method="POST"
+                                        class="trustlist-form" data-post-id="{{ $post->id }}">
+                                        @csrf
+                                        <button type="button" class="trustlist-btn" data-post-id="{{ $post->id }}"
+                                            data-saved="{{ Auth::check() && $post->isSaved ? 'true' : 'false' }}"
+                                            data-authenticated="{{ Auth::check() ? 'true' : 'false' }}">
+                                            <i
+                                                class="{{ Auth::check() && $post->isSaved ? 'fas' : 'far' }} fa-bookmark {{ Auth::check() && $post->isSaved ? 'text-primary' : '' }}"></i>
+                                            <span class="trustlist-count"
+                                                data-post-id="{{ $post->id }}">{{ $post->saves_count ?? 0 }}</span>
+                                        </button>
+                                    </form>
+                                @else
+                                    <a href="{{ route('login') }}" class="btn-trustlist" title="Thêm vào danh sách tin cậy"
+                                        onclick="showToast('Vui lòng đăng nhập để thêm vào danh sách tin cậy', 'warning'); return false;">
+                                        <i class="far fa-bookmark"></i>
+                                        <span class="trustlist-count">{{ $post->saves_count ?? 0 }}</span>
+                                    </a>
+                                @endauth
+                                <button class="btn-share" onclick="sharePost()" title="Chia sẻ">
+                                    <i class="fas fa-share-alt"></i>
+                                </button>
                             </div>
-                            @if (count($chunks) > 1)
-                                <button class="carousel-control-prev" type="button"
-                                    data-bs-target="#sectionCarousel{{ $section->id }}" data-bs-slide="prev">
-                                    <span class="carousel-control-prev-icon"></span>
-                                </button>
-                                <button class="carousel-control-next" type="button"
-                                    data-bs-target="#sectionCarousel{{ $section->id }}" data-bs-slide="next">
-                                    <span class="carousel-control-next-icon"></span>
-                                </button>
-                            @endif
                         </div>
-                        @if ($section->embed_type && $section->embed_url)
-                            <div class="section-embed mt-2">
-                                @if ($section->embed_type == 'youtube')
-                                    {!! $section->embed_url !!}
-                                @elseif($section->embed_type == 'tiktok')
-                                    {!! $section->embed_url !!}
-                                @elseif($section->embed_type == 'map')
-                                    {!! $section->embed_url !!}
-                                @endif
+                    </div>
+
+                    <!-- Thông tin người bán/chủ sở hữu -->
+                    <div class="vendor-profile mb-4">
+                        <h2 class="mb-3">Thông tin chủ sở hữu</h2>
+                        <div class="vendor-card d-flex align-items-center p-3"
+                            style="background-color: #f8f9fa; border-radius: 10px;">
+                            @php
+                                // Lấy người bán/chủ sở hữu
+                                $vendor = $post->user;
+                                // Nếu bài đăng có owner_id riêng
+                                if ($post->owner_id) {
+                                    $vendor = \App\Models\User::find($post->owner_id);
+                                }
+                            @endphp
+
+                            <a href="{{ route('profile.show', ['id' => $vendor->id]) }}" class="vendor-avatar me-3">
+                                <img src="{{ $vendor->avatar ? asset('image/avatars/' . basename($vendor->avatar)) : asset('images/default-avatar.png') }}"
+                                    alt="{{ $vendor->name }}"
+                                    style="width: 70px; height: 70px; border-radius: 50%; object-fit: cover;">
+                            </a>
+                            <div class="vendor-info">
+                                <h5 class="mb-1">
+                                    <a href="{{ route('profile.show', ['id' => $vendor->id]) }}"
+                                        class="text-decoration-none">
+                                        {{ $vendor->name }}
+                                    </a>
+                                </h5>
+                                <p class="text-muted mb-2"><small>Thành viên từ
+                                        {{ $vendor->created_at->format('d/m/Y') }}</small></p>
+                                <div>
+                                    <a href="{{ route('profile.show', ['id' => $vendor->id]) }}"
+                                        class="btn btn-sm btn-outline-primary">
+                                        <i class="fas fa-user me-1"></i> Xem hồ sơ
+                                    </a>
+                                </div>
                             </div>
-                        @endif
-                    </div>
-                @endforeach
-
-                <!-- Menu Highlights -->
-                {{-- <div class="menu-highlights">
-                <h2>Món ăn đặc trưng</h2>
-                <div class="highlight-grid">
-                    @foreach ($post->images->take(3) as $image)
-                    <div class="highlight-item">
-                        <img src="{{ asset($image->image_path) }}" alt="{{ $post->title }}"
-                            class="highlight-image">
-                        <div class="highlight-info">
-                            <h3>{{ $post->title }}</h3>
-                            <p>{!! $post->description !!}</p>
-                            <span class="highlight-price">350,000₫</span>
                         </div>
                     </div>
-                    @endforeach
-                </div>
-            </div> --}}
 
+                    <div class="detail-description">
+                        <h2>Giới thiệu</h2>
+                        <p>{!! $post->description !!}</p>
+                    </div>
+                </div>
                 <!-- Rating & Reviews -->
                 @auth
                     <div class="rating-section" id="ratingSection">
@@ -591,8 +189,6 @@
                                     <div class="error-message" id="commentError"></div>
                                 </div>
 
-                                <div class="error-message" id="generalError"></div>
-
                                 <button type="submit" class="submit-review-green">Gửi đánh giá</button>
                             </form>
                         </div>
@@ -648,58 +244,97 @@
                         </div>
                     </div>
                 @endauth
+            </div>
+        </div>
+    </div>
 
-                <!-- Location Map -->
-                <div class="location-section">
-                    <h2>Vị trí</h2>
-                    <div class="location-address">
-                        <p><i class="fas fa-map-marker-alt"></i> 57-59 Láng Hạ, Quận Ba Đình, Hà Nội</p>
-                        <button class="get-directions-btn"><i class="fas fa-directions"></i> Chỉ đường</button>
+    <!-- Image Gallery Modal -->
+    <div class="modal fade" id="imageGalleryModal" tabindex="-1" aria-labelledby="imageGalleryModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-xl modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="imageGalleryModalLabel">Tất cả ảnh ({{ $post->images->count() }})</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row g-3">
+                        @foreach ($post->images as $index => $image)
+                            <div class="col-6 col-md-4 col-lg-3">
+                                <div class="gallery-item" onclick="openPreview({{ $index }})">
+                                    <img src="{{ asset($image->image_path) }}" alt="{{ $post->title }}"
+                                        class="img-fluid rounded modal-image">
+                                    <div class="gallery-item-overlay">
+                                        <span
+                                            class="image-number">{{ $index + 1 }}/{{ $post->images->count() }}</span>
+                                        <i class="fas fa-search-plus"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        @endforeach
                     </div>
                 </div>
             </div>
         </div>
+    </div>
 
-        <!-- Share Modal -->
-        {{-- <div class="modal" id="shareModal">
-            <div class="share-modal-content">
-                <div class="share-header">
-                    <h3>Chia sẻ</h3>
-                    <button class="close-button" onclick="closeShareModal()">&times;</button>
+    <!-- Share Modal -->
+    <div class="share-modal" id="shareModal">
+        <div class="share-content">
+            <div class="share-header">
+                <h3>Chia sẻ</h3>
+                <button class="share-close" onclick="closeShareModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="share-body">
+                <div class="share-url-container">
+                    <input type="text" class="share-url-input" id="shareUrl" readonly>
+                    <button class="share-copy-btn" onclick="copyShareUrl()">Sao chép</button>
                 </div>
-                <div class="share-body">
-                    <div class="social-buttons">
-                        <a href="#" class="share-social-btn facebook" onclick="shareToFacebook()">
-                            <i class="fab fa-facebook-f"></i>
-                            <span>Facebook</span>
-                        </a>
-                        <a href="#" class="share-social-btn twitter" onclick="shareToTwitter()">
-                            <i class="fab fa-twitter"></i>
-                            <span>Twitter</span>
-                        </a>
-                        <a href="#" class="share-social-btn messenger" onclick="shareToMessenger()">
-                            <i class="fab fa-facebook-messenger"></i>
-                            <span>Messenger</span>
-                        </a>
-                        <a href="#" class="share-social-btn line" onclick="shareToLine()">
-                            <i class="fab fa-line"></i>
-                            <span>Line</span>
-                        </a>
-                        <a href="#" class="share-social-btn zalo" onclick="shareToZalo()">
-                            <i class="fas fa-comment"></i>
-                            <span>Zalo</span>
-                        </a>
-                    </div>
-                </div>
-                <div class="share-footer">
-                    <p>Chia sẻ trang này với bạn bè của bạn</p>
+                <div class="share-social">
+                    <a href="#" class="share-social-btn facebook" onclick="shareToFacebook()">
+                        <i class="fab fa-facebook"></i>
+                        <span>Facebook</span>
+                    </a>
+                    <a href="#" class="share-social-btn twitter" onclick="shareToTwitter()">
+                        <i class="fab fa-twitter"></i>
+                        <span>Twitter</span>
+                    </a>
+                    <a href="#" class="share-social-btn telegram" onclick="shareToTelegram()">
+                        <i class="fab fa-telegram"></i>
+                        <span>Telegram</span>
+                    </a>
+                    <a href="#" class="share-social-btn whatsapp" onclick="shareToWhatsApp()">
+                        <i class="fab fa-whatsapp"></i>
+                        <span>WhatsApp</span>
+                    </a>
+                    <a href="#" class="share-social-btn email" onclick="shareToEmail()">
+                        <i class="fas fa-envelope"></i>
+                        <span>Email</span>
+                    </a>
+                    <a href="#" class="share-social-btn messenger" onclick="shareToMessenger()">
+                        <i class="fab fa-facebook-messenger"></i>
+                        <span>Messenger</span>
+                    </a>
+                    <a href="#" class="share-social-btn line" onclick="shareToLine()">
+                        <i class="fab fa-line"></i>
+                        <span>Line</span>
+                    </a>
+                    <a href="#" class="share-social-btn zalo" onclick="shareToZalo()">
+                        <i class="fas fa-comment"></i>
+                        <span>Zalo</span>
+                    </a>
                 </div>
             </div>
-        </div> --}}
-
-        <!-- Include modal chủ sở hữu từ partial view -->
-        @include('partials.owner-modal', ['post' => $post])
+            <div class="share-footer">
+                <p>Chia sẻ trang này với bạn bè của bạn</p>
+            </div>
+        </div>
     </div>
+
+    <!-- Include partial view modal chủ sở hữu -->
+    @include('partials.owner-modal', ['post' => $post])
 @endsection
 
 @push('scripts')

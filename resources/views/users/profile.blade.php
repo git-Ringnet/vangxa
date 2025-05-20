@@ -94,7 +94,7 @@
             <div class="main-profile w-full">
                 <div class="profile-header flex items-center justify-center space-x-8">
                     <div class="avatar-container">
-                        <img src="{{ $user->avatar ?? 'https://ui-avatars.com/api/?name=' . urlencode($user->name) }}"
+                        <img src="{{ $user->avatar ? asset($user->avatar) : 'https://ui-avatars.com/api/?name=' . urlencode($user->name) }}"
                             class="avatar-image" alt="Avatar" />
                         <!-- Chỉ hiển thị nút cập nhật ảnh đại diện nếu là profile của chính mình -->
                         @if ($isOwnProfile)
@@ -123,6 +123,17 @@
                                     <i class="fas fa-ellipsis-h"></i>
                                 </button>
                                 <ul class="dropdown-menu" aria-labelledby="profileActionDropdown">
+                                    @if ($user->hasRole('vendor'))
+                                        <li>
+                                            <a class="dropdown-item"
+                                                href="{{ route('vendor.public.stories', $user->id) }}">
+                                                <i class="fas fa-book mr-2"></i> Xem câu chuyện
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <hr class="dropdown-divider">
+                                        </li>
+                                    @endif
                                     <li>
                                         <a class="dropdown-item share-profile-btn" href="#" data-bs-toggle="modal"
                                             data-bs-target="#shareProfileModal">
@@ -165,6 +176,11 @@
                             :class="tab === 'trusted' ? 'tab-link active' : 'tab-link'">Danh sách tin cậy</a>
                         <a href="#" @click.prevent="tab = 'reviews'"
                             :class="tab === 'reviews' ? 'tab-link active' : 'tab-link'">Bài đánh giá</a>
+                        @if ($isOwnProfile && $user->hasRole('vendor'))
+                            <a href="{{ route('vendor.stories.index') }}" class="tab-link">
+                                <i class="fas fa-book me-1"></i>Quản lý câu chuyện
+                            </a>
+                        @endif
                     </div>
 
                     <div class="tab-content">
