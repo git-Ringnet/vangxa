@@ -85,10 +85,6 @@
                         <i class="far fa-comment-dots"></i>
                         <span>4,2K</span>
                     </button>
-                    <button class="btn-action">
-                        <i class="fas fa-share"></i>
-                        <span>4,2K</span>
-                    </button>
                 </div>
             </div>
         </a>
