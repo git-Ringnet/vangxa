@@ -61,7 +61,8 @@
                                             data-authenticated="{{ Auth::check() ? 'true' : 'false' }}">
                                             <i
                                                 class="{{ Auth::check() && $post->isSaved ? 'fas' : 'far' }} fa-bookmark {{ Auth::check() && $post->isSaved ? 'text-primary' : '' }}"></i>
-                                            <span class="trustlist-count" data-post-id="{{ $post->id }}">{{ $post->saves_count ?? 0 }}</span>
+                                            <span class="trustlist-count"
+                                                data-post-id="{{ $post->id }}">{{ $post->saves_count ?? 0 }}</span>
                                         </button>
                                     </form>
                                 @else
@@ -81,7 +82,7 @@
                     <!-- Thông tin người bán/chủ sở hữu -->
                     <div class="vendor-profile mb-4">
                         <h2 class="mb-3">Thông tin chủ sở hữu</h2>
-                        <div class="vendor-card d-flex align-items-center p-3" style="background-color: #f8f9fa; border-radius: 10px;">
+                        <div class="vendor-card d-flex align-items-center p-3 border" style="border-radius: 10px;">
                             @php
                                 // Lấy người bán/chủ sở hữu
                                 $vendor = $post->user;
@@ -90,28 +91,31 @@
                                     $vendor = \App\Models\User::find($post->owner_id);
                                 }
                             @endphp
-                            
+
                             <a href="{{ route('profile.show', ['id' => $vendor->id]) }}" class="vendor-avatar me-3">
-                                <img src="{{ $vendor->avatar ? asset('image/avatars/' . basename($vendor->avatar)) : asset('images/default-avatar.png') }}" 
-                                    alt="{{ $vendor->name }}" 
+                                <img src="{{ $vendor->avatar ? asset('image/avatars/' . basename($vendor->avatar)) : asset('images/default-avatar.png') }}"
+                                    alt="{{ $vendor->name }}"
                                     style="width: 70px; height: 70px; border-radius: 50%; object-fit: cover;">
                             </a>
                             <div class="vendor-info">
                                 <h5 class="mb-1">
-                                    <a href="{{ route('profile.show', ['id' => $vendor->id]) }}" class="text-decoration-none">
+                                    <a href="{{ route('profile.show', ['id' => $vendor->id]) }}"
+                                        class="text-decoration-none">
                                         {{ $vendor->name }}
                                     </a>
                                 </h5>
-                                <p class="text-muted mb-2"><small>Thành viên từ {{ $vendor->created_at->format('d/m/Y') }}</small></p>
+                                <p class="text-muted mb-2"><small>Thành viên từ
+                                        {{ $vendor->created_at->format('d/m/Y') }}</small></p>
                                 <div>
-                                    <a href="{{ route('profile.show', ['id' => $vendor->id]) }}" class="btn btn-sm btn-outline-primary">
+                                    <a href="{{ route('profile.show', ['id' => $vendor->id]) }}"
+                                        class="btn btn-sm btn-outline-primary">
                                         <i class="fas fa-user me-1"></i> Xem hồ sơ
                                     </a>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    
+
                     <div class="detail-description">
                         <h2>Giới thiệu</h2>
                         <p>{!! $post->description !!}</p>

@@ -32,19 +32,21 @@
                             </div>
                         @endif
                     </div>
-                    <div class="bookWrap"
-                        onclick="event.preventDefault(); event.stopPropagation(); showStoryModal({{ $post->id }})">
-                        <div class="book">
-                            <div class="cover">
-                                <img src="image/book.png" style="width: 100%; height: 100%; object-fit: cover;">
-                                <div class="circleImage">
-                                    <img src="{{ asset($post->user->avatar ?? 'image/default/default-avatar.jpg') }}"
-                                        alt="User Avatar" style="width: 100%; height: 100%; object-fit: cover;">
+                    @if (count($post->user->stories) > 0)
+                        <div class="bookWrap"
+                            onclick="event.preventDefault(); event.stopPropagation(); showStoryModal({{ $post->id }})">
+                            <div class="book">
+                                <div class="cover">
+                                    <img src="image/book.png" style="width: 100%; height: 100%; object-fit: cover;">
+                                    <div class="circleImage">
+                                        <img src="{{ asset($post->user->avatar ?? 'image/default/default-avatar.jpg') }}"
+                                            alt="User Avatar" style="width: 100%; height: 100%; object-fit: cover;">
+                                    </div>
                                 </div>
+                                <div class="spine"></div>
                             </div>
-                            <div class="spine"></div>
                         </div>
-                    </div>
+                    @endif
                 </div>
             </div>
             <div class="listing-content">
@@ -77,10 +79,25 @@
                 </div>
                 <hr class="my-2">
                 <div class="d-flex justify-content-between post-actions">
-                    <button class="btn-action">
-                        <i class="far fa-bookmark"></i>
-                        <span>4,2K</span>
-                    </button>
+                    @auth <form action="{{ route('trustlist.toggle', ['id' => $post->id]) }}" method="POST"
+                            class="trustlist-form btn-action m-0 p-0" data-post-id="{{ $post->id }}">
+                            @csrf
+                            <button type="button" class="trustlist-btn bg-transparent" data-post-id="{{ $post->id }}"
+                                data-saved="{{ Auth::check() && $post->isSaved ? 'true' : 'false' }}"
+                                data-authenticated="{{ Auth::check() ? 'true' : 'false' }}">
+                                <i
+                                    class="{{ Auth::check() && $post->isSaved ? 'fas' : 'far' }} fa-bookmark {{ Auth::check() && $post->isSaved ? 'text-primary' : '' }}"></i>
+                                <span class="trustlist-count"
+                                    data-post-id="{{ $post->id }}">{{ $post->saves_count ?? 0 }}</span>
+                            </button>
+                        </form>
+                    @else
+                        <a href="{{ route('login') }}" class="btn-trustlist" title="Thêm vào danh sách tin cậy"
+                            onclick="showToast('Vui lòng đăng nhập để thêm vào danh sách tin cậy', 'warning'); return false;">
+                            <i class="far fa-bookmark"></i>
+                            <span class="trustlist-count">{{ $post->saves_count ?? 0 }}</span>
+                        </a>
+                    @endauth
                     <button class="btn-action">
                         <i class="far fa-comment-dots"></i>
                         <span>4,2K</span>

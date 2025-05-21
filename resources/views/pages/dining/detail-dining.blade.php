@@ -22,7 +22,7 @@
             </div>
 
             <!-- Image Preview Modal -->
-            <div class="modal fade" id="previewModal" tabindex="-1" aria-hidden="true">
+            <div class="modal fade" id="imagePreviewModal" tabindex="-1" aria-hidden="true">
                 <div class="modal-dialog modal-fullscreen">
                     <div class="modal-content bg-black">
                         <div class="modal-header border-0">
@@ -30,7 +30,7 @@
                                 aria-label="Close"></button>
                         </div>
                         <div class="modal-body d-flex align-items-center justify-content-center position-relative">
-                            <img src="" alt="" id="previewImage">
+                            <img src="" alt="" id="previewImage" class="preview-image">
                             <button class="nav-button prev" onclick="prevImage()">
                                 <i class="fas fa-chevron-left"></i>
                             </button>
@@ -82,8 +82,7 @@
                     <!-- Thông tin người bán/chủ sở hữu -->
                     <div class="vendor-profile mb-4">
                         <h2 class="mb-3">Thông tin chủ sở hữu</h2>
-                        <div class="vendor-card d-flex align-items-center p-3"
-                            style="background-color: #f8f9fa; border-radius: 10px;">
+                        <div class="vendor-card d-flex align-items-center p-3 border" style="border-radius: 10px;">
                             @php
                                 // Lấy người bán/chủ sở hữu
                                 $vendor = $post->user;
@@ -342,13 +341,14 @@
         document.addEventListener('DOMContentLoaded', function() {
 
             const video = document.getElementById("vidauto");
-
-            // Phát có âm thanh sau tương tác (nhấn card)
-            video.play().then(() => {
-                console.log("Video đã phát có tiếng.");
-            }).catch((err) => {
-                console.warn("Không phát được video:", err);
-            });
+            if (video) {
+                // Phát có âm thanh sau tương tác (nhấn card)
+                video.play().then(() => {
+                    console.log("Video đã phát có tiếng.");
+                }).catch((err) => {
+                    console.warn("Không phát được video:", err);
+                });
+            }
 
             // Add mobile-view class to body if mobile detail content exists
             if (document.querySelector('.mobile-detail-content')) {
@@ -358,7 +358,7 @@
             const images = @json($post->images->pluck('image_path'));
             let currentImageIndex = 0;
             const previewModal = new bootstrap.Modal(document.getElementById('imagePreviewModal'));
-            const previewImage = document.querySelector('.preview-image');
+            const previewImage = document.getElementById('previewImage');
             const imageCounter = document.querySelector('.image-counter');
             const modalElement = document.getElementById('imagePreviewModal');
 
@@ -383,25 +383,34 @@
 
             // Update preview image and counter
             function updatePreviewImage() {
-                previewImage.src = images[currentImageIndex];
-                imageCounter.textContent = `${currentImageIndex + 1}/${images.length}`;
+                if (previewImage && images[currentImageIndex]) {
+                    previewImage.src = "{{ asset('') }}" + images[currentImageIndex];
+                    if (imageCounter) {
+                        imageCounter.textContent = `${currentImageIndex + 1}/${images.length}`;
+                    }
+                }
             }
 
             // Close modal when clicking outside
-            modalElement.addEventListener('click', function(e) {
-                if (e.target === modalElement) {
-                    previewModal.hide();
-                }
-            });
+            if (modalElement) {
+                modalElement.addEventListener('click', function(e) {
+                    if (e.target === modalElement) {
+                        previewModal.hide();
+                    }
+                });
+            }
 
             // Close modal when clicking close button
-            document.querySelector('.btn-close').addEventListener('click', function() {
-                previewModal.hide();
-            });
+            const closeButton = document.querySelector('.btn-close');
+            if (closeButton) {
+                closeButton.addEventListener('click', function() {
+                    previewModal.hide();
+                });
+            }
 
             // Keyboard navigation
             document.addEventListener('keydown', function(e) {
-                if (modalElement.classList.contains('show')) {
+                if (modalElement && modalElement.classList.contains('show')) {
                     if (e.key === 'ArrowLeft') {
                         prevImage();
                     } else if (e.key === 'ArrowRight') {
