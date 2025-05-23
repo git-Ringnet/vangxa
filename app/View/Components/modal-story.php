@@ -6,7 +6,7 @@ use Closure;
 use Illuminate\Contracts\View\View;
 use Illuminate\View\Component;
 
-class modal-story extends Component
+class ModalStory extends Component
 {
     public $post;
     /**
