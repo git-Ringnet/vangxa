@@ -26,6 +26,7 @@ use App\Http\Controllers\LikeController;
 use App\Http\Controllers\ShareController;
 use App\Http\Controllers\FollowerController;
 use App\Http\Controllers\LeaderboardController;
+use App\Http\Controllers\VendorStoryController;
 
 Route::get('/test-scheme', function () {
     return request()->getScheme(); // Nó nên trả về 'https'
@@ -103,6 +104,7 @@ Route::prefix('admin')->group(function () {
 
 // API routes
 Route::get('/api/users/search', [UserController::class, 'search'])->name('api.users.search');
+Route::get('/api/check-post-type/{id}', [PostController::class, 'checkPostType'])->name('api.check-post-type');
 Route::post('/post/{id}/update-owner', [PostController::class, 'updateOwner'])->name('post.update-owner')->middleware('auth');
 Route::post('/post/{id}/add-owner', [PostController::class, 'addOwner'])->name('post.add-owner')->middleware('auth');
 Route::delete('/post/{postId}/remove-owner/{userId}', [PostController::class, 'removeOwner'])->name('post.remove-owner')->middleware('auth');
@@ -142,6 +144,8 @@ Route::middleware(['auth'])->group(function () {
         $count = Auth::user()->unreadNotifications->count();
         return response()->json(['count' => $count]);
     });
+    // Route trang thông báo đầy đủ
+    Route::get('/notifications', [NotificationController::class, 'index'])->name('notifications.index');
 });
 
 // Community routes
@@ -187,5 +191,13 @@ Route::get('/analytics/posts-with-engagements', [\App\Http\Controllers\Admin\Ana
 Route::get('/analytics/community-posts-with-reactions', [\App\Http\Controllers\Admin\AnalyticsController::class, 'communityPostsWithReactions'])->name('analytics.community-posts-with-reactions');
 Route::get('/analytics/posts-with-tagged-vendors', [\App\Http\Controllers\Admin\AnalyticsController::class, 'postsWithTaggedVendors'])->name('analytics.posts-with-tagged-vendors');
 Route::post('/analytics/record-activity', [\App\Http\Controllers\Admin\AnalyticsController::class, 'recordActivity'])->name('analytics.record-activity');
+
+// Vendor Stories routes
+Route::middleware(['auth', 'role:vendor'])->prefix('vendor')->name('vendor.')->group(function () {
+    Route::resource('stories', VendorStoryController::class);
+});
+
+// Public vendor stories route
+Route::get('/vendor/{id}/stories', [VendorStoryController::class, 'vendorStories'])->name('vendor.public.stories');
 
 require __DIR__ . '/auth.php';

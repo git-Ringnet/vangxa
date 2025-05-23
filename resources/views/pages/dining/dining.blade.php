@@ -5,7 +5,7 @@
     <div class="container-custom">
         <!-- Search Bar & Filter Pills -->
         <div class="filter-controls">
-            <button class="filter-button" id="filterButton" onclick="openFilter()">
+            <button class="filter-button my-2" id="filterButton" onclick="openFilter()">
                 <i class="fas fa-sliders"></i>
                 <span>Bộ lọc</span>
             </button>

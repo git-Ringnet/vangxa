@@ -181,8 +181,6 @@ class DiningController extends Controller
                 ->where('type', 2) // Type 2 for dining
                 ->findOrFail($id);
 
-            Log::info('Dining detail loaded', ['post_id' => $id, 'post' => $post]);
-
             // Kiểm tra xem người dùng đã đăng nhập chưa và đã yêu thích bài viết chưa
             $isFavorited = false;
             if (Auth::check()) {

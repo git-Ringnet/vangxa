@@ -69,13 +69,13 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         return Str::of($this->name)
             ->explode(' ')
-            ->map(fn (string $name) => Str::of($name)->substr(0, 1))
+            ->map(fn(string $name) => Str::of($name)->substr(0, 1))
             ->implode('');
     }
 
     public function getAvatarAttribute($value)
     {
-        return $value ? asset('storage/' . $value) : asset('image/default/default-group-avatar.jpg');
+        return $value ? asset($value) : asset('image/default/default-group-avatar.jpg');
     }
 
     public function trustlists()
@@ -143,5 +143,13 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->belongsToMany(Post::class, 'post_owners', 'user_id', 'post_id')
             ->withPivot('role')
             ->withTimestamps();
+    }
+
+    /**
+     * Get the stories that belong to the vendor.
+     */
+    public function stories()
+    {
+        return $this->hasMany(VendorStory::class);
     }
 }

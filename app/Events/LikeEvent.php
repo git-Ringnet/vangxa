@@ -50,6 +50,14 @@ class LikeEvent implements ShouldBroadcast
      */
     public function broadcastWith(): array
     {
+        // Determine the correct URL based on post type
+        $link = match ($this->post->type) {
+            1 => "/lodging/detail/{$this->post->id}",
+            2 => "/dining/detail/{$this->post->id}",
+            3 => "/communities/{$this->post->id}",
+            default => "/posts/{$this->post->id}",
+        };
+
         return [
             'post_id' => $this->post->id,
             'post_title' => $this->post->title ?? 'Bài viết',
@@ -57,8 +65,9 @@ class LikeEvent implements ShouldBroadcast
             'liker_name' => $this->liker->name,
             'created_at' => now(),
             'message' => "{$this->liker->name} đã thích bài viết của bạn",
-            'link' => "/posts/{$this->post->id}", // Link đến bài viết
-            'type' => 'like'
+            'link' => $link, // Updated link based on post type
+            'type' => 'like',
+            'post_type' => $this->post->type // Include post type in the event data
         ];
     }
 

@@ -1,10 +1,14 @@
 <!DOCTYPE html>
 <html lang="vi">
+
 <head>
-<meta charset="UTF-8"> <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>VANGXA – Khám phá Việt Nam qua ẩm thực và du lịch</title> 
-<meta name="description" content="Đặt tour du lịch Việt Nam, khám phá ẩm thực địa phương. Cộng đồng chia sẻ kinh nghiệm du lịch và ẩm thực Việt Nam. Đặt khách sạn, nhà nghỉ, homestay với giá tốt nhất." /> 
-<meta name="keywords" content="du lịch Việt Nam, ẩm thực Việt Nam, đặt tour du lịch, đặt khách sạn, nhà nghỉ, homestay, kinh nghiệm du lịch, ẩm thực địa phương, cộng đồng du lịch, khám phá Việt Nam" /> 
+    <meta name="description"
+        content="Đặt tour du lịch Việt Nam, khám phá ẩm thực địa phương. Cộng đồng chia sẻ kinh nghiệm du lịch và ẩm thực Việt Nam. Đặt khách sạn, nhà nghỉ, homestay với giá tốt nhất." />
+    <meta name="keywords"
+        content="du lịch Việt Nam, ẩm thực Việt Nam, đặt tour du lịch, đặt khách sạn, nhà nghỉ, homestay, kinh nghiệm du lịch, ẩm thực địa phương, cộng đồng du lịch, khám phá Việt Nam" />
 <meta name="robots" content="index, follow" /> 
 <meta name="author" content="VANGXA" /> 
 <meta name="language" content="vi" /> 
@@ -13,19 +17,23 @@
  <meta property="og:type" content="website" /> 
  <meta property="og:url" content="https://vangxa.vn" /> 
  <meta property="og:title" content="VANGXA – Khám phá Việt Nam qua ẩm thực và du lịch" /> 
- <meta property="og:description" content="Đặt tour du lịch Việt Nam, khám phá ẩm thực địa phương. Cộng đồng chia sẻ kinh nghiệm du lịch và ẩm thực Việt Nam. Đặt khách sạn, nhà nghỉ, homestay với giá tốt nhất." /> 
+    <meta property="og:description"
+        content="Đặt tour du lịch Việt Nam, khám phá ẩm thực địa phương. Cộng đồng chia sẻ kinh nghiệm du lịch và ẩm thực Việt Nam. Đặt khách sạn, nhà nghỉ, homestay với giá tốt nhất." />
  <meta property="og:image" content="https://vangxa.vn/image/og-image.jpg" /> 
  <!-- Twitter --> 
   <meta property="twitter:card" content="summary_large_image" /> 
   <meta property="twitter:url" content="https://vangxa.vn" /> 
   <meta property="twitter:title" content="VANGXA – Khám phá Việt Nam qua ẩm thực và du lịch" /> 
-  <meta property="twitter:description" content="Đặt tour du lịch Việt Nam, khám phá ẩm thực địa phương. Cộng đồng chia sẻ kinh nghiệm du lịch và ẩm thực Việt Nam. Đặt khách sạn, nhà nghỉ, homestay với giá tốt nhất." /> 
+    <meta property="twitter:description"
+        content="Đặt tour du lịch Việt Nam, khám phá ẩm thực địa phương. Cộng đồng chia sẻ kinh nghiệm du lịch và ẩm thực Việt Nam. Đặt khách sạn, nhà nghỉ, homestay với giá tốt nhất." />
   <meta property="twitter:image" content="https://vangxa.vn/image/og-image.jpg" />
   
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Dancing+Script:wght@400;700&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Dancing+Script:wght@400;700&display=swap"
+        rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <!-- Thêm GSAP và ScrollTrigger -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
@@ -47,8 +55,7 @@
         }
         
         /* Chế độ hiệu suất - giảm hiệu ứng khi tab ẩn hoặc FPS thấp */
-        body.performance-mode
-        body.performance-mode .firefly,
+        body.performance-mode body.performance-mode .firefly,
         body.performance-mode .light-rays,
         body.performance-mode .mystical-light {
             opacity: 0.3 !important;
@@ -80,7 +87,9 @@
                 radial-gradient(ellipse at center, rgba(130, 61, 1, 0.9) 0%, rgba(109, 58, 4, 0.85) 70%, rgba(150, 55, 6, 0.9) 100%);
         }
         
-        h1, h2, h3 {
+        h1,
+        h2,
+        h3 {
             font-family: 'Dancing Script', cursive;
             text-shadow: 0 2px 4px rgba(0, 0, 0, 0.6);
         }
@@ -92,7 +101,8 @@
             text-shadow: 0 1px 4px rgba(0, 0, 0, 0.4);
         }
         
-        em, .subscript {
+        em,
+        .subscript {
             font-family: 'Dancing Script', cursive;
             font-size: 1.2em;
         }
@@ -103,7 +113,7 @@
             -webkit-text-fill-color: transparent;
             background-clip: text;
             color: transparent;
-            text-shadow: 0px 2px 4px rgba(0,0,0,0.2);
+            text-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2);
             z-index: 10;
         }
         
@@ -128,7 +138,7 @@
             margin-bottom: 1rem;
             color: #fff8e6;
             font-size: 1.1rem;
-            text-shadow: 0 1px 3px rgba(0,0,0,0.3);
+            text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
         }
         
         .content-container h1,
@@ -139,7 +149,8 @@
         }
         
         #canvas-container {
-            display: none; /* Không cần Three.js nữa */
+            display: none;
+            /* Không cần Three.js nữa */
         }
         
         main {
@@ -179,10 +190,11 @@
             margin: 0 auto 2rem auto;
             filter: drop-shadow(0 5px 15px rgba(0, 0, 0, 0.4));
         }
-        
-      
-        
-        .wave-1, .wave-2 {
+
+
+
+        .wave-1,
+        .wave-2 {
             position: absolute;
             width: 360px;
             height: 180px;
@@ -201,7 +213,8 @@
         }
         
         .wave-3 {
-            display: none; /* Ẩn sóng thứ 3 để tối ưu */
+            display: none;
+            /* Ẩn sóng thứ 3 để tối ưu */
         }
         
         .foam {
@@ -210,16 +223,21 @@
             left: 0;
             width: 100%;
             height: 15px;
-            background: linear-gradient(180deg, rgba(255,255,255,0.3) 0%, transparent 100%);
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.3) 0%, transparent 100%);
             opacity: 0.5;
         }
         
         @keyframes wave-move {
-            0% { transform: translateX(0); }
-            100% { transform: translateX(360px); }
+            0% {
+                transform: translateX(0);
+            }
+
+            100% {
+                transform: translateX(360px);
+            }
         }
-        
-      
+
+
         
         #loading {
             position: fixed;
@@ -247,8 +265,13 @@
         }
         
         @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
         }
         
         .aurora {
@@ -269,9 +292,19 @@
         }
         
         @keyframes aurora {
-            0% { transform: translateY(-20px) translateX(-30px); opacity: 0.3; }
-            50% { opacity: 0.4; }
-            100% { transform: translateY(20px) translateX(30px); opacity: 0.3; }
+            0% {
+                transform: translateY(-20px) translateX(-30px);
+                opacity: 0.3;
+            }
+
+            50% {
+                opacity: 0.4;
+            }
+
+            100% {
+                transform: translateY(20px) translateX(30px);
+                opacity: 0.3;
+            }
         }
         
         .celestial {
@@ -480,9 +513,10 @@
             }
             
             #boat-container {
-                display: none; /* Ẩn thuyền cố định trên mobile */
+                display: none;
+                /* Ẩn thuyền cố định trên mobile */
             }
-            
+
             /* Hiển thị hình ảnh cho mỗi phần trên mobile */
             .section-image-mobile {
                 display: block;
@@ -522,7 +556,8 @@
                 height: 60px;
             }
             
-            .wave-1, .wave-2 {
+            .wave-1,
+            .wave-2 {
                 width: 360px;
                 height: 180px;
                 background-size: 360px 180px;
@@ -550,15 +585,17 @@
             header .container {
                 padding: 0.6rem 1rem;
             }
-            main{
-                left: 0;
-            }
-            
+
+            main {
+    left: 0;
+}
+
             /* Tối ưu hình ảnh trên mobile */
             .section-image-mobile {
                 max-width: 220px;
                 margin-top: 1rem;
             }
+
             header nav {
                 display: none;
             }
@@ -639,7 +676,8 @@
                 padding: 10px 14px;
                 font-size: 0.9rem;
             }
-            #boat-image{
+
+            #boat-image {
                 opacity: 0.3;
             }
         }
@@ -692,6 +730,7 @@
                 font-size: 0.85rem;
             }
         }
+
         .vangxa-highlight {
             font-weight: 700;
             background: linear-gradient(45deg, #ff8f00 0%, #ffb74d 50%, #ffcc80 100%);
@@ -699,7 +738,7 @@
             -webkit-text-fill-color: transparent;
             background-clip: text;
             color: transparent;
-            text-shadow: 0px 1px 2px rgba(0,0,0,0.2);
+            text-shadow: 0px 1px 2px rgba(0, 0, 0, 0.2);
             padding: 0 2px;
         }
 
@@ -718,7 +757,7 @@
             right: 0;
             background-color: rgba(60, 30, 10, 0.95);
             min-width: 180px;
-            box-shadow: 0px 8px 24px rgba(0,0,0,0.3);
+            box-shadow: 0px 8px 24px rgba(0, 0, 0, 0.3);
             z-index: 60;
             border-radius: 8px;
             overflow: hidden;
@@ -800,13 +839,16 @@
        
         /* Fog effect - Vô hiệu hóa / Giảm hiệu ứng sương mù */
         .fog-container {
-            display: none; /* Vô hiệu hóa sương mù để tăng hiệu suất */
+            display: none;
+            /* Vô hiệu hóa sương mù để tăng hiệu suất */
         }
         
         /* Floating lanterns - Vô hiệu hóa / Giảm hiệu ứng đèn lồng */
         .floating-lanterns {
-            display: none; /* Vô hiệu hóa đèn lồng để tăng hiệu suất */
+            display: none;
+            /* Vô hiệu hóa đèn lồng để tăng hiệu suất */
         }
+        
         /* 2 cái qq này tốn nhiều nhất */
         /* Light rays */
         .light-rays {
@@ -856,7 +898,7 @@
             z-index: 3;
         }
         
-     
+        
         /* Fireflies effect */
         .fireflies-container {
             position: fixed;
@@ -881,22 +923,63 @@
         }
         
         @keyframes firefly-float {
-            0% { opacity: 0; transform: translateY(0) translateX(0); }
-            10% { opacity: 0.8; transform: translateY(-10px) translateX(10px); }
-            30% { opacity: 0.3; transform: translateY(-30px) translateX(-15px); }
-            50% { opacity: 0.9; transform: translateY(-50px) translateX(5px); }
-            70% { opacity: 0.5; transform: translateY(-70px) translateX(-10px); }
-            90% { opacity: 0.8; transform: translateY(-90px) translateX(15px); }
-            100% { opacity: 0; transform: translateY(-100px) translateX(0); }
+            0% {
+                opacity: 0;
+                transform: translateY(0) translateX(0);
+            }
+
+            10% {
+                opacity: 0.8;
+                transform: translateY(-10px) translateX(10px);
+            }
+
+            30% {
+                opacity: 0.3;
+                transform: translateY(-30px) translateX(-15px);
+            }
+
+            50% {
+                opacity: 0.9;
+                transform: translateY(-50px) translateX(5px);
+            }
+
+            70% {
+                opacity: 0.5;
+                transform: translateY(-70px) translateX(-10px);
+            }
+
+            90% {
+                opacity: 0.8;
+                transform: translateY(-90px) translateX(15px);
+            }
+
+            100% {
+                opacity: 0;
+                transform: translateY(-100px) translateX(0);
+            }
         }
         
         /* Hiệu ứng rung nhẹ cho hình ảnh kiểu phim cũ */
         @keyframes oldFilmShake {
-            0% { transform: translateX(0) translateY(0); }
-            25% { transform: translateX(-0.5px) translateY(0.5px); }
-            50% { transform: translateX(0.5px) translateY(-0.5px); }
-            75% { transform: translateX(-0.5px) translateY(-0.5px); }
-            100% { transform: translateX(0) translateY(0); }
+            0% {
+                transform: translateX(0) translateY(0);
+            }
+
+            25% {
+                transform: translateX(-0.5px) translateY(0.5px);
+            }
+
+            50% {
+                transform: translateX(0.5px) translateY(-0.5px);
+            }
+
+            75% {
+                transform: translateX(-0.5px) translateY(-0.5px);
+            }
+
+            100% {
+                transform: translateX(0) translateY(0);
+            }
         }
         
         /* Cải thiện hiệu ứng cho các phần tử xuất hiện khi scroll bằng CSS thuần */
@@ -925,17 +1008,49 @@
         }
         
         /* Hiệu ứng xuất hiện tuần tự đơn giản */
-        section .animate-stagger:nth-child(1) { transition-delay: 0s; }
-        section .animate-stagger:nth-child(2) { transition-delay: 0s; }
-        section .animate-stagger:nth-child(3) { transition-delay: 0s; }
-        section .animate-stagger:nth-child(4) { transition-delay: 0s; }
-        section .animate-stagger:nth-child(5) { transition-delay: 0s; }
-        section .animate-stagger:nth-child(6) { transition-delay: 0s; }
-        section .animate-stagger:nth-child(7) { transition-delay: 0s; }
-        section .animate-stagger:nth-child(8) { transition-delay: 0s; }
-        section .animate-stagger:nth-child(9) { transition-delay: 0s; }
-        section .animate-stagger:nth-child(10) { transition-delay: 0s; }
-        section .animate-stagger:nth-child(n+11) { transition-delay: 0s; }
+        section .animate-stagger:nth-child(1) {
+            transition-delay: 0s;
+        }
+
+        section .animate-stagger:nth-child(2) {
+            transition-delay: 0s;
+        }
+
+        section .animate-stagger:nth-child(3) {
+            transition-delay: 0s;
+        }
+
+        section .animate-stagger:nth-child(4) {
+            transition-delay: 0s;
+        }
+
+        section .animate-stagger:nth-child(5) {
+            transition-delay: 0s;
+        }
+
+        section .animate-stagger:nth-child(6) {
+            transition-delay: 0s;
+        }
+
+        section .animate-stagger:nth-child(7) {
+            transition-delay: 0s;
+        }
+
+        section .animate-stagger:nth-child(8) {
+            transition-delay: 0s;
+        }
+
+        section .animate-stagger:nth-child(9) {
+            transition-delay: 0s;
+        }
+
+        section .animate-stagger:nth-child(10) {
+            transition-delay: 0s;
+        }
+
+        section .animate-stagger:nth-child(n+11) {
+            transition-delay: 0s;
+        }
         
         /* Smooth scroll behavior using native CSS */
         html {
@@ -981,9 +1096,17 @@
         
         /* Thiết lập keyframes animation cho hiệu ứng flash sáng */
         @keyframes flash-light {
-            0% { opacity: 0.7; }
-            50% { opacity: 0.9; }
-            100% { opacity: 0.7; }
+            0% {
+                opacity: 0.7;
+            }
+
+            50% {
+                opacity: 0.9;
+            }
+
+            100% {
+                opacity: 0.7;
+            }
         }
         
         .light-rays.active,
@@ -1072,7 +1195,7 @@
             -webkit-text-fill-color: transparent;
             background-clip: text;
             color: transparent;
-            text-shadow: 0px 1px 2px rgba(0,0,0,0.2);
+            text-shadow: 0px 1px 2px rgba(0, 0, 0, 0.2);
             padding: 0 2px;
         }
         
@@ -1102,9 +1225,9 @@
         }
 
         /* Hiệu ứng sóng nước - đã bỏ để tối ưu GPU */
-
     </style>
 </head>
+
 <body class="loading-intro">
     <div id="loading">
         <div class="loader"></div>
@@ -1144,21 +1267,27 @@
         <div class="container mx-auto flex justify-between items-center p-4">
           
             <div class="text-2xl font-bold gradient-text">
-                <a href="/" class="navbar-brand" style="display: flex; align-items: center; text-decoration: none;">
+                <a href="/" class="navbar-brand"
+                    style="display: flex; align-items: center; text-decoration: none;">
                     <img src="/image/ship.png" alt="Logo" width="50" height="52" />
-                    <span style="margin-left: 8px; font-size: 26px;     font-weight: bold; color: #008cff; font-family: Verdana, sans-serif;">
+                    <span
+                        style="margin-left: 8px; font-size: 26px;     font-weight: bold; color: #008cff; font-family: Verdana, sans-serif;">
                         Vangxa
                     </span>
                 </a>
             </div>
             <div class="flex items-center">
             <nav class="hidden md:flex space-x-6">
-                <a href="#intro" class="header-nav-link text-white hover:text-amber-300 transition-colors">Giới thiệu</a>
-                <a href="{{ route('lodging') }}"  {{ request()->is('lodging') ? 'active' : '' }}" class="header-nav-link text-white hover:text-amber-300 transition-colors">Lưu
+                    <a href="#intro" class="header-nav-link text-white hover:text-amber-300 transition-colors">Giới
+                        thiệu</a>
+                    <a href="{{ route('lodging') }}" {{ request()->is('lodging') ? 'active' : '' }}"
+                        class="header-nav-link text-white hover:text-amber-300 transition-colors">Lưu
                 Trú</a>
-                <a href="{{ route('dining') }}"  {{ request()->is('dining') ? 'active' : '' }}" class="header-nav-link text-white hover:text-amber-300 transition-colors">Ăn
+                    <a href="{{ route('dining') }}" {{ request()->is('dining') ? 'active' : '' }}"
+                        class="header-nav-link text-white hover:text-amber-300 transition-colors">Ăn
                 Uống</a>
-                <a href="{{ route('groupss.index') }}" {{ request()->routeIs('groupss.*') ? 'active' : '' }}" class="header-nav-link text-white hover:text-amber-300 transition-colors">Cộng đồng</a>
+                    <a href="{{ route('groupss.index') }}" {{ request()->routeIs('groupss.*') ? 'active' : '' }}"
+                        class="header-nav-link text-white hover:text-amber-300 transition-colors">Cộng đồng</a>
             </nav>
                 <div class="header-icons">
                     <div class="dropdown" id="settingsDropdown">
@@ -1181,9 +1310,12 @@
         </div>
         <div class="mobile-menu">
             <a href="#intro" class="header-nav-link text-white hover:text-amber-300 transition-colors">Giới thiệu</a>
-            <a href="{{ route('lodging') }}"  {{ request()->is('lodging') ? 'active' : '' }}" class="header-nav-link text-white hover:text-amber-300 transition-colors">Lưu Trú</a>
-            <a href="{{ route('dining') }}"  {{ request()->is('dining') ? 'active' : '' }}" class="header-nav-link text-white hover:text-amber-300 transition-colors">Ăn Uống</a>
-            <a href="{{ route('groupss.index') }}" {{ request()->routeIs('groupss.*') ? 'active' : '' }}" class="header-nav-link text-white hover:text-amber-300 transition-colors">Cộng Đồng</a>
+            <a href="{{ route('lodging') }}" {{ request()->is('lodging') ? 'active' : '' }}"
+                class="header-nav-link text-white hover:text-amber-300 transition-colors">Lưu Trú</a>
+            <a href="{{ route('dining') }}" {{ request()->is('dining') ? 'active' : '' }}"
+                class="header-nav-link text-white hover:text-amber-300 transition-colors">Ăn Uống</a>
+            <a href="{{ route('groupss.index') }}" {{ request()->routeIs('groupss.*') ? 'active' : '' }}"
+                class="header-nav-link text-white hover:text-amber-300 transition-colors">Cộng Đồng</a>
             <div class="flex justify-center mt-4 space-x-6">
                 <div class="dropdown" id="mobileSettingsDropdown">
                     <div class="dropdown-trigger">
@@ -1206,13 +1338,18 @@
         <section id="intro" class="flex flex-col justify-center items-center text-stars">
             <img src="/image/longden.png" alt="Đèn lồng" class="section-image-mobile" />
             <div class="content-container">
-                <h1 class="text-8xl font-bold mb-8 gradient-text fade-up" style="line-height: 1.2;">Đây không phải là một bài giới thiệu.</h1>
+                <h1 class="text-8xl font-bold mb-8 gradient-text fade-up" style="line-height: 1.2;">Đây không phải là
+                    một bài giới thiệu.</h1>
                 <p class="text-xl mb-4 fade-up">Cũng chẳng phải một kế hoạch bí mật.</p>
                 <p class="text-xl mb-4 fade-up">Đây là một câu chuyện.</p>
                 <p class="text-xl mb-4 fade-up">Một câu chuyện được kể qua ba phần — mở bài, thân bài, và kết luận.</p>
-                <p class="text-xl mb-4 fade-up">Một câu chuyện giản dị, nhưng là câu chuyện hay — câu chuyện về một chuyến phiêu lưu</p>
-                <p class="text-xl mb-4 fade-up">Và như mọi chuyến phiêu lưu vĩ đại, nhân vật chính là một người, một người rất đặc biệt.</p>
-                <p class="text-3xl font-bold mb-24 fade-up" style="background: linear-gradient(45deg, #ff8f00 0%, #ffb74d 50%, #ffcc80 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Người đó chính là bạn.</p>
+                <p class="text-xl mb-4 fade-up">Một câu chuyện giản dị, nhưng là câu chuyện hay — câu chuyện về một
+                    chuyến phiêu lưu</p>
+                <p class="text-xl mb-4 fade-up">Và như mọi chuyến phiêu lưu vĩ đại, nhân vật chính là một người, một
+                    người rất đặc biệt.</p>
+                <p class="text-3xl font-bold mb-24 fade-up"
+                    style="background: linear-gradient(45deg, #ff8f00 0%, #ffb74d 50%, #ffcc80 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">
+                    Người đó chính là bạn.</p>
             </div>
         </section>
         
@@ -1220,10 +1357,13 @@
             <img src="/image/longden2.png" alt="Đèn lồng 2" class="section-image-mobile" />
             <div class="content-container">
                 <h3 class="text-3xl font-bold mb-4 gradient-text fade-up">Phần I</h3>
-                <h2 class="text-8xl font-bold mb-4 gradient-text fade-up" style="line-height: 1.2;">Khi phép màu vụt tắt</h2>
+                <h2 class="text-8xl font-bold mb-4 gradient-text fade-up" style="line-height: 1.2;">Khi phép màu vụt
+                    tắt</h2>
                 <p class="text-xl mb-4 fade-up">Ngày xưa, mỗi con hẻm, mỗi góc chợ đều là một câu chuyện sống động.</p>
-                <p class="text-xl mb-4 fade-up">Bạn dễ dàng lạc vào một quán phở nhỏ ở Sài Gòn, nơi cụ bà với mái tóc bạc mỉm cười.</p>
-                <p class="text-xl mb-4 fade-up">Một homestay giữa núi rừng Đà Lạt, nơi chú chủ nhà kể chuyện về những chuyến đi xa.</p>
+                <p class="text-xl mb-4 fade-up">Bạn dễ dàng lạc vào một quán phở nhỏ ở Sài Gòn, nơi cụ bà với mái tóc
+                    bạc mỉm cười.</p>
+                <p class="text-xl mb-4 fade-up">Một homestay giữa núi rừng Đà Lạt, nơi chú chủ nhà kể chuyện về những
+                    chuyến đi xa.</p>
                 <p class="text-xl mb-4 fade-up">Không có bảng hiệu hoành tráng.</p>
                 <p class="text-xl mb-4 fade-up">Không chạy quảng cáo.</p>
                 <p class="text-xl mb-4 fade-up">Nhưng bạn vẫn tìm thấy nó –</p>
@@ -1231,22 +1371,29 @@
                 <p class="text-xl mb-4 fade-up">trên một góc phố vắng,</p>
                 <p class="text-xl mb-4 fade-up">hay trong lời rỉ tai của một người từng ghé qua và vẫn nhớ mãi.</p>
                 <p class="text-xl mb-4 fade-up">Một tô mì nóng với tiếng cười cô chủ.</p>
-                <p class="text-xl mb-4 fade-up">Một chén chè được bà Sáu hỏi "con ăn nóng hay ăn đá? chè này ăn nóng mới ngon đó con".</p>
+                <p class="text-xl mb-4 fade-up">Một chén chè được bà Sáu hỏi "con ăn nóng hay ăn đá? chè này ăn nóng
+                    mới ngon đó con".</p>
                 <p class="text-xl mb-4 fade-up">Một phòng nghỉ nhỏ, sạch sẽ và có cây xanh ngoài cửa sổ.</p>
                 <p class="text-xl mb-4 fade-up">Một cảm giác an toàn, gần gũi.</p>
                 <p class="text-xl mb-8 fade-up">Bạn không chỉ ăn, không chỉ nghỉ ngơi—bạn cảm nhận.</p>
                 <p class="text-xl mb-8 fade-up">Bạn cảm nhận được một mảnh ghép của linh hồn Việt.</p>
                 <p class="text-xl mb-8 fade-up">Đó không chỉ là sản phẩm hay dịch vụ.</p>
-                <p class="text-xl mb-8 fade-up">Đó là Việt Nam của phép màu—nơi mỗi món ăn, mỗi nơi dừng chân đều được dệt nên từ lòng tử tế, sự tận tâm và tình người.</p>
+                <p class="text-xl mb-8 fade-up">Đó là Việt Nam của phép màu—nơi mỗi món ăn, mỗi nơi dừng chân đều được
+                    dệt nên từ lòng tử tế, sự tận tâm và tình người.</p>
                 <p class="text-xl mb-8 fade-up">Chúng ta nhìn lại những khoảnh khắc ấy với sự hoài niệm.</p>
                 <p class="text-xl mb-8 fade-up">Nhưng phép màu ấy, đang dần phai nhạt.</p>
                 <p class="text-xl mb-8 fade-up">Chuyện gì đã diễn ra?</p>
-                <p class="text-xl mb-8 fade-up">Công nghệ – thứ từng được kỳ vọng gìn giữ kho báu ấy – nay trở thành con dao hai lưỡi.</p>
-                <p class="text-xl mb-8 fade-up">Các mạng xã hội trở thành mê cung, nơi sự giả dối ẩn nấp sau những bài review bóng bẩy.</p>
+                <p class="text-xl mb-8 fade-up">Công nghệ – thứ từng được kỳ vọng gìn giữ kho báu ấy – nay trở thành
+                    con dao hai lưỡi.</p>
+                <p class="text-xl mb-8 fade-up">Các mạng xã hội trở thành mê cung, nơi sự giả dối ẩn nấp sau những bài
+                    review bóng bẩy.</p>
                 <p class="text-xl mb-8 fade-up">Quảng cáo rầm rộ che khuất ánh sáng của những người tử tế.</p>
-                <p class="text-xl mb-8 fade-up">Còn các nghệ nhân – những người dành cả đời để chăm chút từng chiếc bánh, từng căn phòng - thì dần biến mất trong im lặng.</p>
-                <p class="text-xl mb-8 fade-up">Hành trình khám phá Việt Nam giờ đây giống như băng qua một đầm lầy nhơ nhớp.</p>
-                <p class="text-xl mb-8 fade-up">Bạn lạc lối giữa hàng trăm fanpage giả, những lời hứa hẹn suông và những kẻ lừa đảo chờ chực cướp đi niềm tin.</p>
+                <p class="text-xl mb-8 fade-up">Còn các nghệ nhân – những người dành cả đời để chăm chút từng chiếc
+                    bánh, từng căn phòng - thì dần biến mất trong im lặng.</p>
+                <p class="text-xl mb-8 fade-up">Hành trình khám phá Việt Nam giờ đây giống như băng qua một đầm lầy nhơ
+                    nhớp.</p>
+                <p class="text-xl mb-8 fade-up">Bạn lạc lối giữa hàng trăm fanpage giả, những lời hứa hẹn suông và
+                    những kẻ lừa đảo chờ chực cướp đi niềm tin.</p>
                 <p class="text-xl mb-16 fade-up">Nhưng trong cơn tuyệt vọng, một tia sáng lóe lên.</p>
             </div>
         </section>
@@ -1255,22 +1402,26 @@
             <img src="/image/longden2.png" alt="Đèn lồng 2" class="section-image-mobile" />
             <div class="content-container">
                 <h3 class="text-3xl font-bold mb-4 gradient-text fade-up">Phần II</h3>
-                <h2 class="text-8xl font-bold mb-4 gradient-text fade-up" style="line-height: 1.2;">Ngọn lửa được nhóm lên</h2>
+                <h2 class="text-8xl font-bold mb-4 gradient-text fade-up" style="line-height: 1.2;">Ngọn lửa được nhóm
+                    lên</h2>
                 <p class="text-xl mb-4 fade-up">Giữa màn sương hoài nghi và sự lặng im của những người tốt…</p>
                 <p class="text-xl mb-8 fade-up">…một đốm lửa nhỏ được thắp lên. Không phải bởi một anh hùng vĩ đại.</p>
                 <p class="text-xl mb-4 fade-up">Mà bởi kẻ "ngang bướng" không chịu để phép màu biến mất.</p>
                 <p class="text-xl mb-4 fade-up">Là người từng bị lừa bởi một bài review giả.</p>
-                <p class="text-xl mb-4 fade-up">Là người từng cảm thấy xúc động vì một người quá đỗi dễ thương và chân thành.</p>
+                <p class="text-xl mb-4 fade-up">Là người từng cảm thấy xúc động vì một người quá đỗi dễ thương và chân
+                    thành.</p>
                 <p class="text-xl mb-8 fade-up">Là người không biết làm truyền thông, nhưng biết thế nào là "thật".</p>
                 <p class="text-xl mb-8 fade-up">Họ không có phép thuật.</p>
                 <p class="text-xl mb-8 fade-up">Nhưng họ có lòng tin — vào những điều tưởng như cổ tích:</p>
                 <p class="text-xl mb-8 fade-up">Rằng món ăn nấu bằng cả trái tim sẽ ngon hơn.</p>
                 <p class="text-xl mb-8 fade-up">Rằng một người chủ quán có thể trở thành người bạn dễ thương.</p>
-                <p class="text-xl mb-8 fade-up">Rằng mỗi quán ăn, mỗi nơi ở, là một chương trong cuốn sách mang tên Việt Nam.</p>
+                <p class="text-xl mb-8 fade-up">Rằng mỗi quán ăn, mỗi nơi ở, là một chương trong cuốn sách mang tên
+                    Việt Nam.</p>
                 <p class="text-xl mb-8 fade-up">Họ không xây đế chế.</p>
                 <p class="text-xl mb-8 fade-up">Họ đóng một chiếc thuyền.</p>
                 <p class="text-xl mb-8 fade-up">Nhỏ thôi. Nhưng vững vàng.</p>
-                <p class="text-xl mb-8 fade-up">Và đặt tên cho nó là <span class="vangxa-highlight">Vangxa</span> — tiếng vang của sự tử tế, được lan tỏa bằng sự chân thật.</p>
+                <p class="text-xl mb-8 fade-up">Và đặt tên cho nó là <span class="vangxa-highlight">Vangxa</span> —
+                    tiếng vang của sự tử tế, được lan tỏa bằng sự chân thật.</p>
             </div>
         </section>
         
@@ -1278,30 +1429,42 @@
             <img src="/image/thuyen.png" alt="Thuyền" class="section-image-mobile" />
             <div class="content-container">
                 <h3 class="text-3xl font-bold mb-4 gradient-text fade-up">Phần III</h3>
-                <h2 class="text-8xl font-bold mb-4 gradient-text fade-up" style="line-height: 1.2;">Phép màu quay trở lại</h2>
-                <p class="text-xl mb-4 fade-up"><span class="vangxa-highlight">Vangxa</span> không bắt đầu bằng động lực.</p>
+                <h2 class="text-8xl font-bold mb-4 gradient-text fade-up" style="line-height: 1.2;">Phép màu quay trở
+                    lại</h2>
+                <p class="text-xl mb-4 fade-up"><span class="vangxa-highlight">Vangxa</span> không bắt đầu bằng động
+                    lực.</p>
                 <p class="text-xl mb-4 fade-up">Nó bắt đầu bằng một nỗi trăn trở không thể nào nguôi.</p>
                 <p class="text-xl mb-4 fade-up">Bằng sự quyết liệt muốn tìm lại phép màu đã bị mất.</p>
                 <p class="text-xl mb-4 fade-up">Không kèn, không trống.</p>
                 <p class="text-xl mb-8 fade-up">Chỉ có những bước chân lặng lẽ đi tìm điều thật.</p>
                 <p class="text-xl mb-8 fade-up">Chỉ có những câu chuyện được kể bằng trái tim.</p>
-                <p class="text-xl mb-8 fade-up">Những cái gật đầu của người chủ quán lâu năm, những nụ cười rụt rè nhưng ấm lòng.</p>
+                <p class="text-xl mb-8 fade-up">Những cái gật đầu của người chủ quán lâu năm, những nụ cười rụt rè
+                    nhưng ấm lòng.</p>
                 <p class="text-xl mb-8 fade-up">Và dần dần, điều kỳ diệu xảy ra.</p>
                 <p class="text-xl mb-8 fade-up">Một quán nhỏ bên bờ kênh bỗng đón thêm khách.</p>
                 <p class="text-xl mb-8 fade-up">Một homestay vắng vẻ bỗng có người quay lại.</p>
-                <p class="text-xl mb-8 fade-up">Một người trẻ, lần đầu được chạm vào sự tử tế — và nhận ra thế giới này chưa hề tuyệt vọng.</p>
+                <p class="text-xl mb-8 fade-up">Một người trẻ, lần đầu được chạm vào sự tử tế — và nhận ra thế giới này
+                    chưa hề tuyệt vọng.</p>
                 <p class="text-xl mb-8 fade-up">Phép màu, tưởng chừng đã biến mất, bắt đầu quay lại.</p>
                 <p class="text-xl mb-8 fade-up">Không ồn ào. Không hào nhoáng.</p>
                 <p class="text-xl mb-8 fade-up">Chỉ là những khoảnh khắc nhỏ xíu, góp nhặt thành một điều lớn lao.</p>
-                <p class="text-xl mb-8 fade-up"><span class="vangxa-highlight">Vangxa</span> không chỉ là nền tảng.</p>
-                <p class="text-xl mb-8 fade-up"><span class="vangxa-highlight">Vangxa</span> là bản đồ — chỉ đường bạn đến những con người, những địa điểm.</p>
+                <p class="text-xl mb-8 fade-up"><span class="vangxa-highlight">Vangxa</span> không chỉ là nền tảng.
+                </p>
+                <p class="text-xl mb-8 fade-up"><span class="vangxa-highlight">Vangxa</span> là bản đồ — chỉ đường bạn
+                    đến những con người, những địa điểm.</p>
                 <p class="text-xl mb-8 fade-up">Là ánh lửa — để bạn sưởi ấm sau những lần bị niềm tin tổn thương.</p>
                 <p class="text-xl mb-8 fade-up">Là lời mời — để bạn cùng kể tiếp câu chuyện đang dang dở.</p>
-                <p class="text-xl mb-8 fade-up">Bởi vì nếu ta không kể, thì ai sẽ kể về những người chân thành, làm việc bằng tất cả tâm huyết?</p>
-                <p class="text-xl mb-8 fade-up">Nếu ta không lan tỏa, thì những điều tử tế sẽ bị bỏ quên trong tiếng ồn.</p>
+                <p class="text-xl mb-8 fade-up">Bởi vì nếu ta không kể, thì ai sẽ kể về những người chân thành, làm
+                    việc bằng tất cả tâm huyết?</p>
+                <p class="text-xl mb-8 fade-up">Nếu ta không lan tỏa, thì những điều tử tế sẽ bị bỏ quên trong tiếng
+                    ồn.</p>
                 <p class="text-xl mb-8 fade-up">Nếu ta không hành động, thì phép màu sẽ không thể nào quay trở lại.</p>
                 <p class="text-xl mb-8 fade-up">Và bạn — người đang đọc những dòng này —</p>
-                <p class="text-5xl font-bold mb-24 fade-up" style="background: linear-gradient(45deg, #ff8f00 0%, #ffb74d 50%, #ffcc80 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Bạn có muốn lên thuyền không? Đây là <span style="font-weight: 900; text-shadow: 0 2px 4px rgba(0,0,0,0.2);">Vangxa</span>. Một chuyến phiêu lưu đi tìm sự tử tế. Chúng tôi cần bạn.</p>
+                <p class="text-5xl font-bold mb-24 fade-up"
+                    style="background: linear-gradient(45deg, #ff8f00 0%, #ffb74d 50%, #ffcc80 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">
+                    Bạn có muốn lên thuyền không? Đây là <span
+                        style="font-weight: 900; text-shadow: 0 2px 4px rgba(0,0,0,0.2);">Vangxa</span>. Một chuyến
+                    phiêu lưu đi tìm sự tử tế. Chúng tôi cần bạn.</p>
             </div>
         </section>
     </main>
@@ -1517,7 +1680,8 @@
                 ease: "power2.inOut",
                 onUpdate: function() {
                     // Cập nhật gradient trong khi animation
-                    const newGradient = `radial-gradient(ellipse at center, 
+                    const newGradient =
+                        `radial-gradient(ellipse at center, 
                         rgba(${Math.round(dummyEl.r1)}, ${Math.round(dummyEl.g1)}, ${Math.round(dummyEl.b1)}, ${dummyEl.a1}) 0%, 
                         rgba(${Math.round(dummyEl.r2)}, ${Math.round(dummyEl.g2)}, ${Math.round(dummyEl.b2)}, ${dummyEl.a2}) 70%, 
                         rgba(${Math.round(dummyEl.r3)}, ${Math.round(dummyEl.g3)}, ${Math.round(dummyEl.b3)}, ${dummyEl.a3}) 100%)`;
@@ -1617,9 +1781,13 @@
         
         function playIntroAnimation() {
     // Ẩn nhanh loading indicator
-    gsap.to("#loading", { opacity: 0, duration: 0.1, onComplete: () => {
+            gsap.to("#loading", {
+                opacity: 0,
+                duration: 0.1,
+                onComplete: () => {
         document.getElementById('loading').style.display = 'none';
-    }});
+                }
+            });
     
     // Tạo timeline cho intro animation
     const introTimeline = gsap.timeline({
@@ -1632,7 +1800,7 @@
         }
     });
     
-    // Thêm intro title animation với hiệu ứng fade out nhẹ nhàng
+            // Thêm intro title animation với hiệu ứng fade out nhẹ nhàng
     introTimeline
         .to("#intro-title", {
             opacity: 1,
@@ -1642,9 +1810,9 @@
         })
         .to("#intro-title", {
             opacity: 0,
-            duration: 1.0,
-            ease: "power2.out"
-        })
+                    duration: 1.0,
+                    ease: "power2.out"
+                })
         
         // Hiện các phần chính của trang ngay lập tức, không stagger
         .fromTo([
@@ -1652,9 +1820,11 @@
             "#boat-container", 
             "#intro .content-container", 
             ".light-rays",
-            ".border-effect"], 
-            { opacity: 0, y: (i) => i === 1 ? 10 : -30 },
-            { 
+                        ".border-effect"
+                    ], {
+                        opacity: 0,
+                        y: (i) => i === 1 ? 10 : -30
+                    }, {
                 opacity: 1, 
                 y: 0, 
                 stagger: 0.01, 
@@ -1685,19 +1855,19 @@
             "-=0.1"
         );
     
-    // Đã loại bỏ hiệu ứng tỏa sáng để tối ưu GPU
-}
-        
-        
+            // Đã loại bỏ hiệu ứng tỏa sáng để tối ưu GPU
+        }
+
+
         // Tạo hiệu ứng tỏa sáng - đã loại bỏ để tối ưu GPU
         // Khởi tạo GSAP animations
         function initGSAPAnimations() {
             // Đăng ký ScrollTrigger plugin
             gsap.registerPlugin(ScrollTrigger);
-            
+
             // Kiểm tra thiết bị có hiệu năng thấp
             const isLowPerformance = window.innerWidth < 768 || navigator.hardwareConcurrency <= 4;
-            
+
             // Cấu hình hiệu suất ScrollTrigger
             ScrollTrigger.config({
                 limitCallbacks: true, // Giới hạn callbacks để tăng hiệu suất
@@ -1705,7 +1875,7 @@
                 refreshPriority: -10, // Giảm độ ưu tiên refresh để tối ưu hiệu suất
                 autoRefreshEvents: "visibilitychange,DOMContentLoaded,load", // Giảm số lần refresh
             });
-            
+
             // Giảm số lượng animation và đơn giản hóa hiệu ứng cho thiết bị yếu
             if (isLowPerformance) {
                 // Đơn giản hóa: chỉ áp dụng cho các phần tử hiện tại trong viewport khi tải trang
@@ -1714,7 +1884,7 @@
                         const rect = el.getBoundingClientRect();
                         return rect.top < window.innerHeight && rect.bottom > 0;
                     });
-                
+
                 // Chỉ animate những phần tử đang hiển thị
                 gsap.to(visibleElements, {
                     opacity: 1,
@@ -1723,7 +1893,7 @@
                     stagger: 0.02,
                     ease: "power1.out"
                 });
-                
+
                 // Tối ưu: chỉ set opacity cho các phần tử còn lại, hiển thị khi scroll tới
                 const observer = new IntersectionObserver((entries) => {
                     entries.forEach(entry => {
@@ -1731,18 +1901,23 @@
                             gsap.to(entry.target, {
                                 opacity: 1,
                                 y: 0,
-                                duration: 0.2,
+            duration: 0.2,
                                 ease: "none"
                             });
                             observer.unobserve(entry.target);
                         }
                     });
-                }, { threshold: 0.1 });
-                
+                }, {
+                    threshold: 0.1
+                });
+
                 // Áp dụng cho tất cả fade-up còn lại
                 document.querySelectorAll('.fade-up').forEach(el => {
                     if (!visibleElements.includes(el)) {
-                        gsap.set(el, { opacity: 0, y: 15 });
+                        gsap.set(el, {
+                            opacity: 0,
+                            y: 15
+                        });
                         observer.observe(el);
                     }
                 });
@@ -1751,7 +1926,7 @@
                 // Chia sections thành nhóm để xử lý từng phần, giảm tải cho CPU
                 const sectionGroups = [];
                 let currentGroup = [];
-                
+
                 domElements.sections.forEach((section, index) => {
                     currentGroup.push(section);
                     if (index % 2 === 1 || index === domElements.sections.length - 1) {
@@ -1759,21 +1934,24 @@
                         currentGroup = [];
                     }
                 });
-                
+
                 // Xử lý từng nhóm section
                 sectionGroups.forEach(group => {
                     group.forEach(section => {
-                        const elements = section.querySelectorAll('.fade-up');
+                const elements = section.querySelectorAll('.fade-up');
                         if (elements.length === 0) return;
-                        
+
                         // Sử dụng GSAP batch với số lượng lớn hơn
-                        gsap.set(elements, { opacity: 0, y: 20 });
-                        
-                        ScrollTrigger.batch(elements, {
+                        gsap.set(elements, {
+                            opacity: 0,
+                            y: 20
+                        });
+                
+                ScrollTrigger.batch(elements, {
                             batchMax: 8, // Tăng số lượng phần tử animate cùng lúc để giảm số lượng batches
-                            onEnter: batch => gsap.to(batch, {
-                                opacity: 1, 
-                                y: 0, 
+                    onEnter: batch => gsap.to(batch, {
+                        opacity: 1, 
+                        y: 0, 
                                 stagger: 0.03, // Giảm stagger delay
                                 duration: 0.3, // Giảm thời gian animation
                                 ease: "power1.out",
@@ -1782,36 +1960,39 @@
                             start: "top 90%", // Bắt đầu sớm hơn khi phần tử gần đến viewport
                             once: true,
                         });
-                    });
                 });
-                
+            });
+            
                 // Xử lý đặc biệt cho các tiêu đề - giảm số lượng batch
                 const allTitles = document.querySelectorAll('h1.fade-up, h2.fade-up, h3.fade-up');
-                
+
                 if (allTitles.length > 0) {
-                    gsap.set(allTitles, { opacity: 0, y: 30 });
-                    
+                    gsap.set(allTitles, {
+                        opacity: 0,
+                        y: 30
+                    });
+
                     ScrollTrigger.batch(allTitles, {
                         batchMax: 3, // Giảm số lượng batches cho titles
-                        onEnter: batch => gsap.to(batch, {
-                            opacity: 1, 
-                            y: 0, 
+                onEnter: batch => gsap.to(batch, {
+                    opacity: 1, 
+                    y: 0, 
                             duration: 0.4,
-                            ease: "power1.out",
-                        }),
-                        start: "top 85%",
-                        once: true,
-                    });
+                    ease: "power1.out",
+                }),
+                start: "top 85%",
+                once: true,
+            });
                 }
             }
-            
+
             // Khóa tất cả ScrollTriggers khi người dùng cuộn nhanh
             const throttledScrollHandler = throttle(() => {
                 isScrolling = true;
-                
+
                 // Tạm dừng tất cả animations khi cuộn nhanh
                 if (!document.body.classList.contains('fast-scrolling')) {
-                    document.body.classList.add('fast-scrolling');
+                document.body.classList.add('fast-scrolling');
                     ScrollTrigger.getAll().forEach(st => {
                         st.disable(false); // Vô hiệu hóa tạm thời, không xóa
                     });
@@ -1821,19 +2002,21 @@
                 scrollTimeout = setTimeout(() => {
                     document.body.classList.remove('fast-scrolling');
                     isScrolling = false;
-                    
+
                     // Kích hoạt lại animations sau khi người dùng dừng cuộn
                     ScrollTrigger.getAll().forEach(st => {
                         st.enable(false); // Kích hoạt lại, không cần update
                     });
-                    
+
                     // Chỉ refresh ScrollTrigger khi cần thiết
                     ScrollTrigger.refresh();
                 }, 200);
             }, 100); // Tăng throttle delay để giảm số lần gọi
-            
-            window.addEventListener("scroll", throttledScrollHandler, { passive: true });
-            
+
+            window.addEventListener("scroll", throttledScrollHandler, {
+                passive: true
+            });
+
             // Giảm tải khi tab không hiển thị
             document.addEventListener('visibilitychange', () => {
                 if (document.hidden) {
@@ -1877,7 +2060,8 @@
                     dropdowns.forEach(otherDropdown => {
                         if (otherDropdown !== dropdown) {
                             otherDropdown.classList.remove('open');
-                            otherDropdown.querySelector('.dropdown-content').classList.remove('active');
+                            otherDropdown.querySelector('.dropdown-content').classList.remove(
+                                'active');
                         }
                     });
                     
@@ -1959,7 +2143,7 @@
         function createFireflies() {
     const container = document.getElementById('firefliesContainer');
     const isMobile = window.innerWidth <= 768;
-    const count = isMobile ? 10 : Math.min(5, Math.floor(window.innerWidth / 40));
+            const count = isMobile ? 10 : Math.min(5, Math.floor(window.innerWidth / 40));
     const fragment = document.createDocumentFragment();
 
     for (let i = 0; i < count; i++) {
@@ -1996,4 +2180,6 @@
         });
     </script>
 </body>
+
 </html>
+

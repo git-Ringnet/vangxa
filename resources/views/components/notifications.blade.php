@@ -3,13 +3,13 @@
     <!-- Chuông thông báo -->
     <button @click="toggleDropdown" class="relative focus:outline-none">
         <div class="d-flex">
-            <svg class="w-6 h-6 text-gray-600 hover:text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+            <svg class="w-6 h-6 text-menu hover:text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"
                 xmlns="http://www.w3.org/2000/svg">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                     d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9">
                 </path>
             </svg>
-            <span class="pl-3">Thông báo</span>
+            <span class="pl-3 text-menu">Thông báo</span>
         </div>
         <!-- Đếm số lượng thông báo chưa đọc -->
         <span x-show="unreadCount > 0"
@@ -149,7 +149,8 @@
                                 id: `like-${Date.now()}`,
                                 message: `${e.liker_name} đã thích bài viết của bạn`,
                                 type: 'like',
-                                link: e.link || `/posts/${e.post_id}`,
+                                post_type: e.post_type,
+                                link: e.link,
                                 created_at: 'Vừa xong',
                                 read_at: null
                             });
@@ -160,7 +161,8 @@
                                 id: `unlike-${Date.now()}`,
                                 message: `${e.unliker_name} đã bỏ thích bài viết của bạn`,
                                 type: 'unlike',
-                                link: e.link || `/posts/${e.post_id}`,
+                                post_type: e.post_type,
+                                link: e.link,
                                 created_at: 'Vừa xong',
                                 read_at: null
                             });
@@ -171,7 +173,8 @@
                                 id: `trustlist-${Date.now()}`,
                                 message: `${e.user_name} đã thêm bài viết của bạn vào danh sách tin cậy`,
                                 type: 'trustlist',
-                                link: e.link || `/posts/${e.post_id}`,
+                                post_type: e.post_type,
+                                link: e.link,
                                 created_at: 'Vừa xong',
                                 read_at: null
                             });
@@ -182,7 +185,8 @@
                                 id: `untrust-${Date.now()}`,
                                 message: `${e.user_name} đã xóa bài viết của bạn khỏi danh sách tin cậy`,
                                 type: 'untrust',
-                                link: e.link || `/posts/${e.post_id}`,
+                                post_type: e.post_type,
+                                link: e.link,
                                 created_at: 'Vừa xong',
                                 read_at: null
                             });
@@ -193,7 +197,8 @@
                                 id: `comment-${Date.now()}`,
                                 message: `${e.user_name} đã bình luận bài viết của bạn`,
                                 type: 'comment',
-                                link: e.link || `/posts/${e.post_id}#comment-${e.comment_id}`,
+                                post_type: e.post_type,
+                                link: e.link,
                                 created_at: 'Vừa xong',
                                 read_at: null
                             });
@@ -284,18 +289,43 @@
             },
 
             openNotification(notification) {
-                // Nếu notification có link thì chuyển hướng đến link đó
-                if (notification.link) {
-                    // Đánh dấu là đã đọc trước khi chuyển hướng
-                    if (!notification.read_at) {
-                        this.markAsRead(notification.id);
+                // Đánh dấu là đã đọc nếu chưa đọc
+                if (!notification.read_at) {
+                    this.markAsRead(notification.id);
+                }
+
+                // Xử lý thông báo theo dõi
+                if (notification.type === 'follow' || notification.type === 'unfollow') {
+                    // Đối với thông báo theo dõi, chuyển đến trang cá nhân người dùng
+                    const userId = notification.link?.split('/').pop();
+                    if (userId) {
+                        window.location.href = `/profile/${userId}`;
+                        return;
                     }
+                }
+
+                // Xử lý thông báo liên quan đến bài đăng
+                if (['like', 'unlike', 'comment', 'trustlist', 'untrust'].includes(notification.type)) {
+                    // Lấy post_id từ link nếu có
+                    const postIdMatch = notification.link?.match(/\/posts\/(\d+)/);
+                    const postId = postIdMatch ? postIdMatch[1] : null;
+                    
+                    if (postId) {
+                        // Sử dụng hàm getCorrectPostUrl để xác định URL chính xác
+                        const correctUrl = this.getCorrectPostUrl(postId, notification);
+                        if (correctUrl) {
+                            window.location.href = correctUrl;
+                            return;
+                        }
+                    }
+                }
+                
+                // Sử dụng link mặc định nếu có
+                if (notification.link) {
                     window.location.href = notification.link;
                 } else {
-                    // Nếu không có link thì chỉ đánh dấu là đã đọc
-                    if (!notification.read_at) {
-                        this.markAsRead(notification.id);
-                    }
+                    // Đóng dropdown nếu không có link
+                    this.isOpen = false;
                 }
             },
 
@@ -321,6 +351,120 @@
                     .catch(error => {
                         console.error('Error marking as read:', error);
                     });
+            },
+
+            // Thêm hàm xác định URL chính xác dựa vào loại bài đăng
+            getCorrectPostUrl(postId, notification) {
+                // Xác định loại bài đăng
+                let postType = null;
+                
+                // Kiểm tra từ các thuộc tính có thể có
+                if (notification) {
+                    // Nếu có trực tiếp post_type
+                    if (notification.post_type) {
+                        postType = notification.post_type;
+                    }
+                    // Hoặc thử phân tích từ nội dung thông báo
+                    else {
+                        const message = notification.message || '';
+                        
+                        // Đoán loại bài đăng từ nội dung
+                        if (message.toLowerCase().includes('ẩm thực') || 
+                            message.toLowerCase().includes('dining') ||
+                            message.toLowerCase().includes('nhà hàng') ||
+                            message.toLowerCase().includes('quán ăn')) {
+                            postType = 'dining';
+                        } 
+                        else if (message.toLowerCase().includes('lưu trú') || 
+                                message.toLowerCase().includes('lodging') ||
+                                message.toLowerCase().includes('khách sạn') ||
+                                message.toLowerCase().includes('homestay')) {
+                            postType = 'lodging';
+                        }
+                        else if (message.toLowerCase().includes('cộng đồng') || 
+                                message.toLowerCase().includes('community') ||
+                                message.toLowerCase().includes('nhóm')) {
+                            postType = 'community';
+                        }
+                        
+                        // Đoán từ loại thông báo
+                        if (!postType) {
+                            switch(notification.type) {
+                                case 'dining_review':
+                                case 'dining_like':
+                                case 'dining_comment':
+                                    postType = 'dining';
+                                    break;
+                                case 'lodging_review': 
+                                case 'lodging_like':
+                                case 'lodging_comment':
+                                    postType = 'lodging';
+                                    break;
+                                case 'community_post':
+                                case 'community_comment':
+                                    postType = 'community';
+                                    break;
+                            }
+                        }
+                    }
+                }
+                
+                // Trả về URL dựa trên loại bài đăng
+                if (postType === 'dining') {
+                    return `/dining/detail/${postId}`;
+                } 
+                else if (postType === 'lodging') {
+                    return `/lodging/detail/${postId}`;
+                }
+                else if (postType === 'community') {
+                    return `/communities/${postId}`;
+                }
+                
+                // Nếu không xác định được, thử kiểm tra qua AJAX
+                console.log(`Không thể xác định loại bài đăng ID: ${postId}, đang thử AJAX...`);
+                return this.checkPostTypeViaAjax(postId);
+            },
+
+            // Hàm kiểm tra loại bài đăng qua AJAX
+            checkPostTypeViaAjax(postId) {
+                // URL mặc định
+                const defaultUrl = `/posts/${postId}`;
+                
+                // Gọi API kiểm tra loại bài đăng
+                fetch(`/api/check-post-type/${postId}`)
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Lỗi khi kiểm tra loại bài đăng');
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        if (data.type) {
+                            // Chuyển hướng dựa vào loại bài đăng
+                            switch(data.type) {
+                                case 1: // Lodging
+                                    window.location.href = `/lodging/detail/${postId}`;
+                                    return;
+                                case 2: // Dining
+                                    window.location.href = `/dining/detail/${postId}`;
+                                    return;
+                                case 3: // Community
+                                    window.location.href = `/communities/${postId}`;
+                                    return;
+                                default:
+                                    window.location.href = defaultUrl;
+                                    return;
+                            }
+                        } else {
+                            window.location.href = defaultUrl;
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Lỗi:', error);
+                        window.location.href = defaultUrl;
+                    });
+                
+                return null;
             }
         }));
     });
