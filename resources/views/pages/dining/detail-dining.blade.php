@@ -1,250 +1,396 @@
 @extends('layouts.main')
 
 @section('content')
-    <div class="container-custom detail-dining-page">
-        <div class="container-custom">
-            <div class="detail-page__gallery">
-                <div class="detail-page__main-image" onclick="openPreview(0)">
-                    <img src="{{ $post->images->isNotEmpty() ? asset($post->images->first()->image_path) : asset('default-image.jpg') }}"
-                        alt="{{ $post->title }}">
-                </div>
-                @foreach ($post->images->skip(1)->take(4) as $index => $image)
-                    <div class="detail-page__gallery-item" onclick="openPreview({{ $index + 1 }})">
-                        <img src="{{ asset($image->image_path) }}" class="img-fluid rounded" alt="Post image">
-                        <div class="image-number">{{ $index + 1 }}/{{ $post->images->count() }}</div>
-                        <i class="fas fa-search-plus zoom-icon"></i>
-                    </div>
-                @endforeach
-                <button class="view-all-photos" data-bs-toggle="modal" data-bs-target="#imageGalleryModal">
-                    <i class="fas fa-th"></i>
-                    Xem tất cả {{ $post->images->count() }} ảnh
-                </button>
-            </div>
+    <style>
+        .swiper-button-next::after,
+        .swiper-button-prev::after {
+            display: none;
+        }
 
-            <!-- Image Preview Modal -->
-            <div class="modal fade" id="imagePreviewModal" tabindex="-1" aria-hidden="true">
-                <div class="modal-dialog modal-fullscreen">
-                    <div class="modal-content bg-black">
-                        <div class="modal-header border-0">
-                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
-                                aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body d-flex align-items-center justify-content-center position-relative">
-                            <img src="" alt="" id="previewImage" class="preview-image">
-                            <button class="nav-button prev" onclick="prevImage()">
-                                <i class="fas fa-chevron-left"></i>
-                            </button>
-                            <button class="nav-button next" onclick="nextImage()">
-                                <i class="fas fa-chevron-right"></i>
-                            </button>
-                        </div>
-                        <div class="modal-footer border-0 justify-content-center">
-                            <span class="text-white image-counter"></span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="detail-content">
-                <div class="content-main">
-                    <!-- Restaurant Title -->
-                    <div class="detail-header">
-                        <h1 class="detail-title">{{ $post->title }}</h1>
-                        <div class="detail-badges">
-                            <div class="action-buttons">
-                                @auth
-                                    <form action="{{ route('trustlist.toggle', ['id' => $post->id]) }}" method="POST"
-                                        class="trustlist-form" data-post-id="{{ $post->id }}">
-                                        @csrf
-                                        <button type="button" class="trustlist-btn" data-post-id="{{ $post->id }}"
-                                            data-saved="{{ Auth::check() && $post->isSaved ? 'true' : 'false' }}"
-                                            data-authenticated="{{ Auth::check() ? 'true' : 'false' }}">
-                                            <i
-                                                class="{{ Auth::check() && $post->isSaved ? 'fas' : 'far' }} fa-bookmark {{ Auth::check() && $post->isSaved ? 'text-primary' : '' }}"></i>
-                                            <span class="trustlist-count"
-                                                data-post-id="{{ $post->id }}">{{ $post->saves_count ?? 0 }}</span>
-                                        </button>
-                                    </form>
-                                @else
-                                    <a href="{{ route('login') }}" class="btn-trustlist" title="Thêm vào danh sách tin cậy"
-                                        onclick="showToast('Vui lòng đăng nhập để thêm vào danh sách tin cậy', 'warning'); return false;">
-                                        <i class="far fa-bookmark"></i>
-                                        <span class="trustlist-count">{{ $post->saves_count ?? 0 }}</span>
-                                    </a>
-                                @endauth
-                                <button class="btn-share" onclick="sharePost()" title="Chia sẻ">
-                                    <i class="fas fa-share-alt"></i>
-                                </button>
+        .swiper-button-next,
+        .swiper-button-prev {
+            position: absolute;
+            top: 60px;
+            margin-right: 5px;
+            margin-left: 5px;
+        }
+    </style>
+    <div class="conatiner-custom-new detail-dining-page">
+        <div class="d-flex align-items-center gap-2 justify-content-between navigate">
+            <a href="route('dining.index')">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M15.7273 4L7 11.6364L15.7273 19.2727" stroke="#7C4D28" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round" />
+                </svg>
+            </a>
+            <span class="post-title">{{ $post->title }}</span>
+            <svg width="24" height="24" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path fill-rule="evenodd" clip-rule="evenodd"
+                    d="M11.0001 12.834C9.98756 12.834 9.16675 12.0132 9.16675 11.0007C9.16675 9.98813 9.98756 9.16732 11.0001 9.16732C12.0126 9.16732 12.8334 9.98813 12.8334 11.0007C12.8334 12.0132 12.0126 12.834 11.0001 12.834Z"
+                    fill="#7C4D28" />
+                <path fill-rule="evenodd" clip-rule="evenodd"
+                    d="M4.58333 12.834C3.57081 12.834 2.75 12.0132 2.75 11.0007C2.75 9.98813 3.57081 9.16732 4.58333 9.16732C5.59586 9.16732 6.41667 9.98813 6.41667 11.0007C6.41667 12.0132 5.59586 12.834 4.58333 12.834Z"
+                    fill="#7C4D28" />
+                <path fill-rule="evenodd" clip-rule="evenodd"
+                    d="M17.4166 12.834C16.4041 12.834 15.5833 12.0132 15.5833 11.0007C15.5833 9.98813 16.4041 9.16732 17.4166 9.16732C18.4291 9.16732 19.2499 9.98813 19.2499 11.0007C19.2499 12.0132 18.4291 12.834 17.4166 12.834Z"
+                    fill="#7C4D28" />
+            </svg>
+        </div>
+        <div class="gradient-border">
+            <div class="position-relative post-detail-image">
+                <div class="swiper mySwiper">
+                    <div class="swiper-wrapper">
+                        @foreach ($post->images as $image)
+                            <div class="swiper-slide">
+                                <img src="{{ asset($image->image_path) }}" alt="{{ $post->title }}" class="w-100 rounded"
+                                    style="object-fit:cover;">
                             </div>
-                        </div>
-                    </div>
-
-                    <!-- Thông tin người bán/chủ sở hữu -->
-                    <div class="vendor-profile mb-4">
-                        <h2 class="mb-3">Thông tin chủ sở hữu</h2>
-                        <div class="vendor-card d-flex align-items-center p-3 border" style="border-radius: 10px;">
-                            @php
-                                // Lấy người bán/chủ sở hữu
-                                $vendor = $post->user;
-                                // Nếu bài đăng có owner_id riêng
-                                if ($post->owner_id) {
-                                    $vendor = \App\Models\User::find($post->owner_id);
-                                }
-                            @endphp
-
-                            <a href="{{ route('profile.show', ['id' => $vendor->id]) }}" class="vendor-avatar me-3">
-                                <img src="{{ $vendor->avatar ? asset('image/avatars/' . basename($vendor->avatar)) : asset('images/default-avatar.png') }}"
-                                    alt="{{ $vendor->name }}"
-                                    style="width: 70px; height: 70px; border-radius: 50%; object-fit: cover;">
-                            </a>
-                            <div class="vendor-info">
-                                <h5 class="mb-1">
-                                    <a href="{{ route('profile.show', ['id' => $vendor->id]) }}"
-                                        class="text-decoration-none">
-                                        {{ $vendor->name }}
-                                    </a>
-                                </h5>
-                                <p class="text-muted mb-2"><small>Thành viên từ
-                                        {{ $vendor->created_at->format('d/m/Y') }}</small></p>
-                                <div>
-                                    <a href="{{ route('profile.show', ['id' => $vendor->id]) }}"
-                                        class="btn btn-sm btn-outline-primary">
-                                        <i class="fas fa-user me-1"></i> Xem hồ sơ
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="detail-description">
-                        <h2>Giới thiệu</h2>
-                        <p>{!! $post->description !!}</p>
+                        @endforeach
                     </div>
                 </div>
-                <!-- Rating & Reviews -->
-                @auth
-                    <div class="rating-section" id="ratingSection">
-                        <h2>Đánh giá và nhận xét</h2>
-
-                        <!-- Review Form -->
-                        <div class="write-review">
-                            <h3>Viết đánh giá của bạn</h3>
-                            <form action="{{ route('reviews.store') }}" method="POST" id="reviewForm">
-                                @csrf
-                                <div class="form-group my-3">
-                                    <input type="hidden" name="post_id" value="{{ $post->id }}">
-                                    <input type="hidden" name="type" value="{{ $post->type }}">
-                                    <label>Đánh giá chất lượng</label>
-                                    <div class="rating">
-                                        <input type="radio" name="food_rating" value="5" id="food-5"
-                                            {{ old('food_rating') == 5 ? 'checked' : '' }}><label for="food-5"><i
-                                                class="fas fa-star"></i></label>
-                                        <input type="radio" name="food_rating" value="4" id="food-4"
-                                            {{ old('food_rating') == 4 ? 'checked' : '' }}><label for="food-4"><i
-                                                class="fas fa-star"></i></label>
-                                        <input type="radio" name="food_rating" value="3" id="food-3"
-                                            {{ old('food_rating') == 3 ? 'checked' : '' }}><label for="food-3"><i
-                                                class="fas fa-star"></i></label>
-                                        <input type="radio" name="food_rating" value="2" id="food-2"
-                                            {{ old('food_rating') == 2 ? 'checked' : '' }}><label for="food-2"><i
-                                                class="fas fa-star"></i></label>
-                                        <input type="radio" name="food_rating" value="1" id="food-1"
-                                            {{ old('food_rating') == 1 ? 'checked' : '' }}><label for="food-1"><i
-                                                class="fas fa-star"></i></label>
-                                    </div>
-                                    <div class="error-message" id="foodRatingError"></div>
-                                </div>
-
-                                <div class="form-group my-3">
-                                    <label>Mức độ hài lòng</label>
-                                    <div class="satisfaction-icons">
-                                        <input type="radio" name="satisfaction_level" value="5" id="satisfaction-5"
-                                            {{ old('satisfaction_level') == 5 ? 'checked' : '' }}>
-                                        <label for="satisfaction-5"><i class="fas fa-laugh-beam"></i></label>
-
-                                        <input type="radio" name="satisfaction_level" value="4" id="satisfaction-4"
-                                            {{ old('satisfaction_level') == 4 ? 'checked' : '' }}>
-                                        <label for="satisfaction-4"><i class="fas fa-laugh"></i></label>
-
-                                        <input type="radio" name="satisfaction_level" value="3" id="satisfaction-3"
-                                            {{ old('satisfaction_level') == 3 ? 'checked' : '' }}>
-                                        <label for="satisfaction-3"><i class="fas fa-meh"></i></label>
-
-                                        <input type="radio" name="satisfaction_level" value="2" id="satisfaction-2"
-                                            {{ old('satisfaction_level') == 2 ? 'checked' : '' }}>
-                                        <label for="satisfaction-2"><i class="fas fa-frown"></i></label>
-
-                                        <input type="radio" name="satisfaction_level" value="1" id="satisfaction-1"
-                                            {{ old('satisfaction_level') == 1 ? 'checked' : '' }}>
-                                        <label for="satisfaction-1"><i class="fas fa-sad-tear"></i></label>
-                                    </div>
-                                    <div class="error-message" id="satisfactionLevelError"></div>
-                                </div>
-
-                                <div class="form-group my-3">
-                                    <label for="comment">Nhận xét của bạn</label>
-                                    <textarea name="comment" id="comment" rows="4" class="form-control"
-                                        placeholder="Chia sẻ trải nghiệm của bạn...">{{ old('comment') }}</textarea>
-                                    <div class="error-message" id="commentError"></div>
-                                </div>
-
-                                <button type="submit" class="submit-review-green">Gửi đánh giá</button>
-                            </form>
-                        </div>
-
-                        <!-- Reviews List -->
-                        <div class="reviews-list mt-3">
-                            @foreach ($post->reviews()->with('user')->latest()->get() as $review)
-                                <div class="review-item">
-                                    <div class="review-header">
-                                        <img src="{{ $review->user->avatar ? asset('image/avatars/' . basename($review->user->avatar)) : 'https://ui-avatars.com/api/?name=' . urlencode($review->user->name) }}"
-                                            alt="{{ $review->user->name }}" class="reviewer-avatar">
-                                        <div class="reviewer-info">
-                                            <h4>{{ $review->user->name }}</h4>
-                                            <div class="review-meta">
-                                                <div class="review-stars">
-                                                    @for ($i = 1; $i <= 5; $i++)
-                                                        <i
-                                                            class="fas fa-star {{ $i <= $review->food_rating ? 'text-warning' : 'text-muted' }}"></i>
-                                                    @endfor
-                                                </div>
-                                                <span class="review-date">{{ $review->created_at->format('d/m/Y') }}</span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="review-content">
-                                        <div class="satisfaction-icon">
-                                            @switch($review->satisfaction_level)
-                                                @case(5)
-                                                    <i class="fas fa-laugh-beam text-success"></i>
-                                                @break
-
-                                                @case(4)
-                                                    <i class="fas fa-laugh text-info"></i>
-                                                @break
-
-                                                @case(3)
-                                                    <i class="fas fa-meh text-warning"></i>
-                                                @break
-
-                                                @case(2)
-                                                    <i class="fas fa-frown text-danger"></i>
-                                                @break
-
-                                                @case(1)
-                                                    <i class="fas fa-sad-tear text-danger"></i>
-                                                @break
-                                            @endswitch
-                                        </div>
-                                        <p>{{ $review->comment }}</p>
-                                    </div>
-                                </div>
-                            @endforeach
-                        </div>
-                    </div>
-                @endauth
+                <div class="swiper-button-prev">
+                    <svg width="39" height="40" viewBox="0 0 39 40" fill="none"
+                        xmlns="http://www.w3.org/2000/svg">
+                        <rect y="0.5" width="39" height="39" rx="19.5" fill="black" fill-opacity="0.2" />
+                        <rect x="0.5" y="1" width="38" height="38" rx="19"
+                            stroke="url(#paint0_linear_3104_10280)" stroke-opacity="0.2" />
+                        <path d="M23.2273 12L14.5 19.6364L23.2273 27.2727" stroke="#F5E5CC" stroke-width="2"
+                            stroke-linecap="round" stroke-linejoin="round" />
+                        <defs>
+                            <linearGradient id="paint0_linear_3104_10280" x1="7.5" y1="4" x2="30.5"
+                                y2="37" gradientUnits="userSpaceOnUse">
+                                <stop stop-color="white" stop-opacity="0.71" />
+                                <stop offset="0.473958" stop-color="#323232" stop-opacity="0" />
+                                <stop offset="0.973958" stop-color="white" stop-opacity="0.25" />
+                            </linearGradient>
+                        </defs>
+                    </svg>
+                </div>
+                <div class="swiper-button-next">
+                    <svg width="39" height="40" viewBox="0 0 39 40" fill="none"
+                        xmlns="http://www.w3.org/2000/svg">
+                        <rect x="39" y="39.5" width="39" height="39" rx="19.5" transform="rotate(-180 39 39.5)"
+                            fill="black" fill-opacity="0.2" />
+                        <rect x="38.5" y="39" width="38" height="38" rx="19" transform="rotate(-180 38.5 39)"
+                            stroke="url(#paint0_linear_3104_10282)" stroke-opacity="0.2" />
+                        <path d="M15.7727 28L24.5 20.3636L15.7727 12.7273" stroke="#F5E5CC" stroke-width="2"
+                            stroke-linecap="round" stroke-linejoin="round" />
+                        <defs>
+                            <linearGradient id="paint0_linear_3104_10282" x1="46.5" y1="43" x2="69.5"
+                                y2="76" gradientUnits="userSpaceOnUse">
+                                <stop stop-color="white" stop-opacity="0.71" />
+                                <stop offset="0.473958" stop-color="#323232" stop-opacity="0" />
+                                <stop offset="0.973958" stop-color="white" stop-opacity="0.25" />
+                            </linearGradient>
+                        </defs>
+                    </svg>
+                </div>
             </div>
         </div>
+        <div class="d-flex align-items-center justify-content-between mt-1 icon-bar-custom">
+            <div class="d-flex align-items-center gap-3">
+                <div class="action-buttons">
+                    @auth
+                        <form action="{{ route('trustlist.toggle', ['id' => $post->id]) }}" method="POST"
+                            class="trustlist-form" data-post-id="{{ $post->id }}">
+                            @csrf
+                            <button type="button" class="trustlist-btn p-0" data-post-id="{{ $post->id }}"
+                                data-saved="{{ Auth::check() && $post->isSaved ? 'true' : 'false' }}"
+                                data-authenticated="{{ Auth::check() ? 'true' : 'false' }}">
+                                @if (Auth::check() && $isFavorited)
+                                    {{-- SVG đã lưu --}}
+                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="#7C4D28"
+                                        xmlns="http://www.w3.org/2000/svg">
+                                        <g clip-path="url(#clip0_3501_1992)">
+                                            <path
+                                                d="M6.5 21C5.67157 21 4.99997 20.2996 5 18.8989V4.50005C5 3.49996 6 3.00013 7 3.00005H17C18 3.00009 19 3.5001 19 4.50005L19 18.8989C18.9999 20.2996 18.3283 21.0001 17.5 21C15.9999 21 14 18 12 18C10 18 7.99997 21 6.5 21Z"
+                                                stroke="#7C4D28" stroke-width="2" />
+                                        </g>
+                                        <defs>
+                                            <clipPath id="clip0_3501_1992">
+                                                <rect width="24" height="24" fill="#7C4D28" />
+                                            </clipPath>
+                                        </defs>
+                                    </svg>
+                                @else
+                                    {{-- SVG chưa lưu --}}
+                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
+                                        xmlns="http://www.w3.org/2000/svg">
+                                        <g clip-path="url(#clip0_3501_1992)">
+                                            <path
+                                                d="M6.5 21C5.67157 21 4.99997 20.2996 5 18.8989V4.50005C5 3.49996 6 3.00013 7 3.00005H17C18 3.00009 19 3.5001 19 4.50005L19 18.8989C18.9999 20.2996 18.3283 21.0001 17.5 21C15.9999 21 14 18 12 18C10 18 7.99997 21 6.5 21Z"
+                                                stroke="#7C4D28" stroke-width="2" />
+                                        </g>
+                                        <defs>
+                                            <clipPath id="clip0_3501_1992">
+                                                <rect width="24" height="24" fill="white" />
+                                            </clipPath>
+                                        </defs>
+                                    </svg>
+                                @endif
+                                <span class="trustlist-count"
+                                    data-post-id="{{ $post->id }}">{{ $post->saves_count ?? 0 }}</span>
+                            </button>
+                        </form>
+                    @else
+                        <a href="{{ route('login') }}" class="btn-trustlist" title="Thêm vào danh sách tin cậy"
+                            onclick="showToast('Vui lòng đăng nhập để thêm vào danh sách tin cậy', 'warning'); return false;">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
+                                xmlns="http://www.w3.org/2000/svg">
+                                <g clip-path="url(#clip0_3501_1992)">
+                                    <path
+                                        d="M6.5 21C5.67157 21 4.99997 20.2996 5 18.8989V4.50005C5 3.49996 6 3.00013 7 3.00005H17C18 3.00009 19 3.5001 19 4.50005L19 18.8989C18.9999 20.2996 18.3283 21.0001 17.5 21C15.9999 21 14 18 12 18C10 18 7.99997 21 6.5 21Z"
+                                        stroke="#7C4D28" stroke-width="2" />
+                                </g>
+                                <defs>
+                                    <clipPath id="clip0_3501_1992">
+                                        <rect width="24" height="24" fill="white" />
+                                    </clipPath>
+                                </defs>
+                            </svg>
+                            <span class="trustlist-count">{{ $post->saves_count ?? 0 }}</span>
+                        </a>
+                    @endauth
+                </div>
+                <span class="d-flex align-items-center gap-1">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
+                        xmlns="http://www.w3.org/2000/svg">
+                        <g clip-path="url(#clip0_3501_1999)">
+                            <path
+                                d="M12 21C16.9706 21 21 16.9706 21 12C21 7.02944 16.9706 3 12 3C7.02944 3 3 7.02944 3 12C3 13.4876 3.36093 14.891 4 16.1272L3 21L7.8728 20C9.10904 20.6391 10.5124 21 12 21Z"
+                                stroke="#7C4D28" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                            <rect x="7.5" y="12" width="0.01" height="0.01" stroke="#7C4D28" stroke-width="3"
+                                stroke-linejoin="round" />
+                            <rect x="12" y="12" width="0.01" height="0.01" stroke="#7C4D28" stroke-width="3"
+                                stroke-linejoin="round" />
+                            <rect x="16.5" y="12" width="0.01" height="0.01" stroke="#7C4D28" stroke-width="3"
+                                stroke-linejoin="round" />
+                        </g>
+                        <defs>
+                            <clipPath id="clip0_3501_1999">
+                                <rect width="24" height="24" fill="white" />
+                            </clipPath>
+                        </defs>
+                    </svg>
+                    <span style="color: #7C4D28;">4,2K</span>
+                </span>
+                <span class="d-flex align-items-center gap-1">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
+                        xmlns="http://www.w3.org/2000/svg">
+                        <path
+                            d="M14.2617 18.542C14.0612 19.9701 13.1575 20.9716 11.8027 21.2861L11.5254 21.3398C11.4918 21.3452 11.416 21.3543 11.3281 21.3848C11.3248 20.9473 11.3326 20.5147 11.3535 20.0859C11.4181 20.0966 11.4944 20.1002 11.5771 20.0811C11.7027 20.0519 11.795 19.9851 11.8564 19.9199C11.9001 19.8736 11.9274 19.8256 11.9404 19.8027C12.4711 19.0751 13.1521 18.6409 14.0176 18.4961L14.1943 18.4717C14.2213 18.4685 14.2466 18.4661 14.2695 18.4639L14.2617 18.542ZM11.623 0.541016C11.6707 0.57707 11.7369 0.631765 11.8242 0.71875V0.719727C11.9989 0.89448 12.1418 1.10586 12.2842 1.37793L12.6641 2.10352L13.1357 1.43457C13.3691 1.10406 13.5804 0.86315 13.8457 0.708008C13.9246 0.811555 13.9883 0.912374 14.0342 1.0127L14.0742 1.11426C14.0911 1.16332 14.12 1.2374 14.1699 1.30957C14.2233 1.38677 14.3218 1.49071 14.4814 1.53711C14.6368 1.5822 14.77 1.54927 14.8467 1.52051C14.8837 1.50658 14.9175 1.48972 14.9463 1.47363L15.0166 1.42969H15.0176C15.1297 1.35399 15.2615 1.29768 15.4268 1.23926C15.5474 1.53678 15.593 1.86045 15.5869 2.22266L15.5801 2.58789L15.9268 2.70508C16.1423 2.77778 16.3261 2.73026 16.4453 2.67676C16.4938 2.655 16.5382 2.62882 16.5518 2.62109C16.5549 2.6193 16.5575 2.61736 16.5596 2.61621C16.815 2.51826 17.0541 2.46571 17.292 2.46289C17.3217 2.6979 17.2905 2.95097 17.2139 3.27539L17.0527 3.95801L17.75 3.8877C18.0039 3.86238 18.2027 3.85636 18.3887 3.88672V3.88574C18.4187 3.89073 18.4448 3.89668 18.4678 3.90137L18.459 3.97168V3.97266C18.411 4.26796 18.2855 4.55234 18.084 4.87988L17.666 5.55957L18.46 5.63965C18.8061 5.67445 19.0772 5.72282 19.3105 5.82715L19.4082 5.875L19.4092 5.87598C19.4192 5.8814 19.4286 5.88665 19.4375 5.8916L19.4258 5.9209V5.92188C19.371 6.03941 19.3131 6.14144 19.249 6.22852L19.1826 6.31055C19.1461 6.3517 19.0932 6.41747 19.0547 6.50391C19.0121 6.59963 18.9782 6.74349 19.0273 6.9043C19.0735 7.05494 19.1699 7.14765 19.2314 7.19531C19.262 7.21901 19.2938 7.23779 19.3223 7.25391L19.3975 7.29297C19.5604 7.36798 19.7065 7.46462 19.8369 7.58301C19.6885 7.78074 19.4748 7.97189 19.0059 8.24707L18.3662 8.62305L18.9541 9.0752C19.1592 9.23306 19.3216 9.35683 19.4531 9.49023L19.5752 9.62891C19.6355 9.70641 19.6752 9.76614 19.7031 9.81055C19.6963 9.81527 19.6904 9.822 19.6826 9.82715L19.5234 9.92383H19.5225C19.39 9.99779 19.2744 10.044 19.083 10.1357L18.5723 10.3799L18.8779 10.8564C19.0171 11.0739 19.1216 11.262 19.1914 11.4561C18.8826 11.5836 18.5544 11.6305 18.1719 11.6064L17.3545 11.5547L17.6826 12.3057C17.8603 12.7126 17.9711 13.0169 17.9688 13.3311C17.8117 13.3523 17.6862 13.3553 17.5762 13.333H17.5771C17.5237 13.322 17.4452 13.3079 17.3613 13.3076C17.2794 13.3073 17.1364 13.3197 16.998 13.4141C16.8455 13.5181 16.7754 13.6674 16.749 13.792C16.7372 13.848 16.7333 13.9032 16.7334 13.9541L16.7432 14.0928V14.0938C16.7568 14.1984 16.7404 14.318 16.7002 14.4873C16.3832 14.4481 16.0748 14.3175 15.7158 14.1084L15.0146 13.6992L14.9648 14.5098C14.9395 14.9238 14.869 15.2454 14.7119 15.5205C14.5882 15.466 14.4793 15.4072 14.3857 15.3389L14.2881 15.2598L14.2021 15.1904C14.1675 15.1659 14.1271 15.1413 14.0811 15.1211C13.9798 15.0765 13.8298 15.044 13.665 15.0996C13.5127 15.1511 13.4221 15.2532 13.377 15.3154C13.3541 15.3469 13.3357 15.3791 13.3203 15.4082L13.2842 15.4834L13.2832 15.4844C13.2306 15.607 13.1463 15.7253 13.0283 15.8633C12.8443 15.7177 12.6818 15.5421 12.5186 15.3008L12.2246 14.8662L12.2266 14.8604L12.2217 14.8623L11.9111 14.4033L11.6895 15.2041L11.1758 15.5332C11.0291 15.6272 10.9112 15.7024 10.7979 15.7744C10.6584 15.5771 10.553 15.3438 10.4531 15.0537L10.2305 14.4072L9.68164 14.8154C9.43741 14.9974 9.22325 15.1223 9.00195 15.1963C8.87618 14.8976 8.83047 14.5701 8.85059 14.1826L8.89355 13.3555L8.1416 13.7021C7.74887 13.8833 7.44783 13.9873 7.14062 13.9844C7.13591 13.9107 7.13324 13.8428 7.13281 13.7793L7.14258 13.582V13.5801C7.14859 13.528 7.15488 13.4519 7.14746 13.3711C7.13996 13.2898 7.11472 13.1583 7.01758 13.0361C6.85915 12.8373 6.63964 12.8072 6.5 12.8096L6.39258 12.8174H6.3916C6.25809 12.8339 6.1108 12.8189 5.93457 12.7812C5.9748 12.4612 6.10721 12.1552 6.31152 11.8008L6.70117 11.125L5.9248 11.0527C5.49257 11.0124 5.16574 10.9492 4.88867 10.7871C4.97755 10.5805 5.12029 10.3902 5.3291 10.1465L5.7373 9.66992L5.18164 9.37891C4.99414 9.28055 4.85715 9.21301 4.74121 9.1377L4.63184 9.05762C4.60185 9.0333 4.57712 9.01122 4.55566 8.99219C4.57134 8.97284 4.58982 8.95124 4.61133 8.92676L4.61035 8.92578C4.66011 8.86939 4.71386 8.81523 4.76953 8.7627L4.94434 8.61133H4.94531C5.06423 8.51707 5.17272 8.45962 5.38965 8.31738L6.0127 7.9082L5.39844 7.4873C5.10054 7.28267 4.87527 7.09218 4.71777 6.86035H4.71875C4.69229 6.82134 4.67062 6.78832 4.65332 6.75977L4.74414 6.69727C4.90488 6.59232 5.0927 6.51505 5.33789 6.43652L5.92676 6.24805L5.61914 5.71191C5.4271 5.3772 5.31089 5.22897 5.25488 5.01758C5.36549 4.96975 5.47318 4.93297 5.5791 4.91016L5.69238 4.8916C5.88516 4.86699 6.06649 4.85767 6.31641 4.83691L7.02734 4.77832L6.72949 4.12988C6.56115 3.76344 6.46429 3.46038 6.46777 3.15527C6.64568 3.12683 6.83386 3.13842 7.04199 3.18262V3.18164C7.09006 3.19197 7.1642 3.20678 7.24512 3.20605C7.3257 3.20531 7.47986 3.18945 7.61914 3.07227C7.76372 2.95051 7.80547 2.79397 7.81738 2.70117C7.82304 2.657 7.82373 2.61423 7.82227 2.57617L7.81348 2.47754C7.79032 2.30077 7.80168 2.11735 7.84277 1.9248C8.16099 1.9734 8.46762 2.10316 8.80957 2.31055L9.43652 2.69043L9.56152 1.96777C9.60994 1.68671 9.62478 1.50815 9.66309 1.3457L9.71191 1.18457C9.75641 1.06457 9.79411 0.985472 9.82324 0.933594C9.84094 0.941519 9.86184 0.949755 9.88477 0.961914L10.0566 1.06543C10.1954 1.15571 10.3112 1.24602 10.4795 1.36719L10.9307 1.69336L11.2061 1.20898L11.46 0.764648H11.4609C11.5297 0.657877 11.5831 0.587504 11.623 0.541016Z"
+                            fill="#7C4D28" stroke="#7C4D28" />
+                        <path
+                            d="M12.3921 4.0166C14.6532 4.05605 16.4659 5.86003 16.5347 8.11523L16.5356 8.33496C16.4924 10.5086 14.6939 12.4931 12.1479 12.4326L11.9419 12.4219C9.89972 12.2636 8.18818 10.4902 8.10986 8.41016L8.10693 8.20117C8.14144 5.9235 9.9502 4.09456 12.1753 4.01855L12.3921 4.0166Z"
+                            fill="#F5E5CC" stroke="#7C4D28" />
+                        <path
+                            d="M8.8814 14.3239C8.84024 13.966 8.96003 13.6941 9.25618 13.4737C9.44357 13.3341 9.58981 13.1386 9.74633 12.96C9.81468 12.8814 9.86759 12.841 9.97488 12.8975C10.0741 12.9505 10.066 13.0173 10.0403 13.1011C9.9058 13.5332 9.86097 13.9763 9.88228 14.4268C9.88743 14.5297 9.85436 14.6002 9.77793 14.6605C9.65668 14.756 9.54718 14.8721 9.41491 14.9493C8.99457 15.1962 9.01882 15.2572 8.90638 14.7061C8.88066 14.5826 8.88874 14.4518 8.8814 14.3239Z"
+                            fill="#F5E5CC" />
+                        <path
+                            d="M11.9571 2.95474C11.8535 2.9687 11.8351 2.9033 11.8145 2.8254C11.7006 2.39036 11.5243 1.98104 11.2707 1.60993C11.1429 1.42328 11.27 1.27777 11.3251 1.12566C11.3927 0.941206 11.4633 0.667836 11.6382 0.653873C11.8123 0.639911 11.9328 0.89344 12.0482 1.05731C12.0952 1.12419 12.1364 1.19547 12.1783 1.26602C12.3502 1.55776 12.4458 1.84509 12.2731 2.1868C12.1768 2.37713 12.1555 2.60641 12.1099 2.82026C12.0894 2.91359 12.0607 2.97458 11.9571 2.95474Z"
+                            fill="#F5E5CC" />
+                        <path
+                            d="M6.01315 4.89289C6.43276 4.88848 6.7392 4.93772 6.9626 5.26474C7.1037 5.4705 7.32563 5.62115 7.51449 5.79384C7.57107 5.84601 7.62251 5.88864 7.57842 5.97609C7.52845 6.07456 7.46158 6.02679 7.39323 6.00768C6.92512 5.87614 6.4482 5.80119 5.96171 5.8372C5.75963 5.85189 5.70157 5.69096 5.60971 5.57852C5.48479 5.42567 5.28564 5.23314 5.35325 5.06706C5.42453 4.89142 5.70672 4.94139 5.89852 4.90098C5.95878 4.88775 6.02418 4.89216 6.01315 4.89289Z"
+                            fill="#F5E5CC" />
+                        <path
+                            d="M7.85176 2.40066C7.85176 2.27353 7.85544 2.20886 7.85103 2.14493C7.84074 1.99208 7.89733 1.96415 8.0443 2.0031C8.42496 2.10378 8.74683 2.30366 9.0496 2.54617C9.115 2.59834 9.12749 2.66669 9.14072 2.73797C9.20098 3.06204 9.27814 3.38171 9.39572 3.69109C9.42144 3.75943 9.44936 3.8219 9.35897 3.87481C9.2774 3.92331 9.23037 3.89832 9.17232 3.83806C8.83942 3.49268 8.45141 3.22371 8.03254 2.98856C7.78489 2.84967 7.90614 2.55793 7.85176 2.40066Z"
+                            fill="#F5E5CC" />
+                        <path
+                            d="M5.77884 8.23047C5.86482 8.25839 5.9508 8.28485 6.03677 8.31351C6.33072 8.41272 6.62981 8.49061 6.93845 8.52662C7.01047 8.53544 7.08984 8.53617 7.0891 8.64346C7.08837 8.71548 7.04428 8.72944 6.98549 8.74194C6.45418 8.8529 5.96402 9.06381 5.50841 9.35922C5.36658 9.45108 5.24826 9.33571 5.12848 9.28941C4.94403 9.21886 4.66772 9.14244 4.65523 8.97783C4.64273 8.81175 4.89773 8.68388 5.06381 8.57071C5.2828 8.423 5.51796 8.30543 5.77884 8.23047Z"
+                            fill="#F5E5CC" />
+                        <path
+                            d="M18.4103 4.02821C18.35 4.29717 18.242 4.54629 18.0943 4.77924C17.9451 5.01366 17.7989 5.22898 17.4704 5.23853C17.294 5.24368 17.1162 5.31716 16.945 5.37742C16.8193 5.42151 16.7568 5.38845 16.6804 5.28189C16.5893 5.15476 16.6753 5.10332 16.7414 5.03351C16.9486 4.81378 17.1618 4.58671 17.2801 4.31334C17.416 3.99808 17.6504 3.91798 17.9451 3.90622C18.0634 3.90181 18.1818 3.90549 18.3001 3.9121C18.3677 3.91504 18.4301 3.93562 18.4103 4.02821Z"
+                            fill="#F5E5CC" />
+                        <path
+                            d="M19.771 7.60799C19.735 7.64988 19.7019 7.69397 19.6637 7.73218C19.3955 8.00482 19.0714 8.1856 18.7157 8.31934C18.6276 8.35241 18.5622 8.33404 18.4821 8.30832C18.2388 8.23116 17.9926 8.16208 17.7465 8.093C17.6715 8.07169 17.5789 8.09227 17.576 7.96514C17.5738 7.85564 17.6546 7.85564 17.7185 7.83507C18.1389 7.69985 18.5291 7.50732 18.8965 7.26114C19.1427 7.09579 19.3176 7.32874 19.5175 7.40443C19.6167 7.44118 19.7159 7.49923 19.771 7.60799Z"
+                            fill="#F5E5CC" />
+                        <path
+                            d="M7.83563 11.166C7.44322 11.6319 7.10518 12.1015 6.86635 12.6424C6.79433 12.8062 6.61355 12.7651 6.47613 12.7666C5.9022 12.7746 5.91102 12.8474 6.11605 12.2595C6.15206 12.1573 6.21158 12.0626 6.26523 11.967C6.42984 11.6716 6.62311 11.4409 7.00524 11.4004C7.28669 11.371 7.55859 11.2476 7.83563 11.166Z"
+                            fill="#F5E5CC" />
+                        <path
+                            d="M16.706 14.0481C16.7089 14.4611 16.6825 14.4816 16.3283 14.3604C16.0314 14.2583 15.7698 14.0936 15.5258 13.8996C15.4596 13.8467 15.4067 13.7887 15.3957 13.6998C15.3553 13.3904 15.2583 13.095 15.1606 12.8003C15.1422 12.7459 15.079 12.6864 15.1657 12.6349C15.2333 12.5952 15.2634 12.657 15.298 12.6908C15.6661 13.0523 16.0835 13.3411 16.5487 13.566C16.7677 13.6711 16.6634 13.9026 16.706 14.0481Z"
+                            fill="#F5E5CC" />
+                        <path
+                            d="M18.315 11.5781C17.9483 11.6089 17.6631 11.4892 17.4442 11.179C17.3354 11.0255 17.1708 10.9116 17.0312 10.78C16.9922 10.7433 16.9444 10.7124 16.9812 10.6441C17.0143 10.5823 17.0576 10.5816 17.1171 10.5978C17.608 10.7278 18.107 10.7396 18.6126 10.7242C18.8367 10.7176 18.8948 10.9586 18.9932 11.11C19.1946 11.4201 19.1711 11.4642 18.8059 11.531C18.6442 11.5612 18.4788 11.5634 18.315 11.5781Z"
+                            fill="#F5E5CC" />
+                        <path
+                            d="M13.0083 15.7947C12.9671 15.7594 12.9245 15.7271 12.8863 15.6903C12.6129 15.4243 12.4277 15.1032 12.3006 14.746C12.2822 14.6946 12.2646 14.6498 12.2874 14.5902C12.4086 14.2654 12.502 13.9318 12.5571 13.5886C12.5644 13.5416 12.563 13.4681 12.6431 13.474C12.7033 13.4784 12.6974 13.5379 12.7085 13.5783C12.8474 14.0832 13.0649 14.5498 13.3493 14.9915C13.4852 15.2031 13.2758 15.3751 13.1986 15.5566C13.1589 15.6462 13.1075 15.7344 13.0083 15.7947Z"
+                            fill="#F5E5CC" />
+                        <path
+                            d="M14.6191 3.46566C14.6603 3.21801 14.6992 2.96962 14.7441 2.72197C14.7874 2.48535 14.8227 2.2377 14.7668 2.01209C14.6853 1.67993 14.8683 1.54692 15.1012 1.41612C15.4069 1.24489 15.4282 1.25591 15.4988 1.59763C15.5642 1.91729 15.5583 2.23476 15.4973 2.55295C15.4878 2.60513 15.4775 2.67127 15.4429 2.7014C15.1637 2.94537 14.8969 3.20331 14.6191 3.46566Z"
+                            fill="#F5E5CC" />
+                        <path
+                            d="M8.28201 8.29375C8.29083 6.05681 10.1067 4.24537 12.3436 4.24317C14.5783 4.24096 16.3964 6.08327 16.3839 8.33784C16.3714 10.5843 14.5431 12.3847 12.2826 12.3745C10.0832 12.3642 8.2732 10.5174 8.28201 8.29375Z"
+                            fill="#7C4D28" />
+                        <path
+                            d="M15.8433 8.30716C15.8374 10.2913 14.2692 11.8286 12.2535 11.8272C10.3869 11.8264 8.80107 10.195 8.81503 8.29026C8.82973 6.33184 10.42 4.77393 12.3968 4.78128C14.2751 4.78862 15.8492 6.39872 15.8433 8.30716Z"
+                            fill="#F5E5CC" />
+                        <path
+                            d="M12.7772 7.91797C12.9352 7.95251 13.041 8.03628 13.0293 8.21338C13.0182 8.37799 12.9073 8.4603 12.7588 8.45736C12.5884 8.45369 12.4958 8.33758 12.5053 8.16929C12.5141 8.01056 12.6229 7.93487 12.7772 7.91797Z"
+                            fill="#7C4D28" />
+                        <path
+                            d="M14.4269 7.08561C14.4085 7.24434 14.3269 7.3531 14.1689 7.3509C14.0073 7.34869 13.8948 7.25757 13.8978 7.07826C13.9007 6.91806 13.9904 6.81812 14.1483 6.81738C14.3166 6.81738 14.4107 6.92026 14.4269 7.08561Z"
+                            fill="#7C4D28" />
+                        <path
+                            d="M10.1885 8.55957C10.3354 8.56912 10.4332 8.65657 10.4361 8.81677C10.439 8.9755 10.3494 9.07765 10.1848 9.08279C10.0069 9.08867 9.90333 8.98138 9.9048 8.81457C9.90701 8.65951 10.0106 8.56692 10.1885 8.55957Z"
+                            fill="#7C4D28" />
+                        <path
+                            d="M12.7687 9.78182C12.6151 9.76198 12.5092 9.68188 12.5048 9.52388C12.4997 9.35633 12.593 9.24316 12.7657 9.24316C12.9171 9.24316 13.0215 9.32841 13.0295 9.49302C13.0391 9.67379 12.9244 9.74728 12.7687 9.78182Z"
+                            fill="#7C4D28" />
+                        <path
+                            d="M10.1887 7.41113C10.3394 7.42877 10.4364 7.51622 10.4371 7.67421C10.4378 7.84764 10.3269 7.94538 10.1615 7.94244C10.0065 7.94024 9.90359 7.83589 9.9058 7.68083C9.90653 7.51475 10.0065 7.41554 10.1887 7.41113Z"
+                            fill="#7C4D28" />
+                        <path
+                            d="M12.3131 5.73057C12.3028 5.89444 12.2183 5.99586 12.0588 6.0032C11.8832 6.01202 11.7759 5.90547 11.7781 5.73571C11.7803 5.5836 11.8736 5.48071 12.0427 5.48145C12.208 5.48292 12.291 5.57478 12.3131 5.73057Z"
+                            fill="#7C4D28" />
+                        <path
+                            d="M11.2337 7.63086C11.4233 7.63086 11.5181 7.73741 11.5225 7.89835C11.5262 8.05194 11.4255 8.15408 11.2668 8.15702C11.097 8.15996 10.9912 8.06663 10.9919 7.89247C10.9927 7.73448 11.0875 7.64703 11.2337 7.63086Z"
+                            fill="#7C4D28" />
+                        <path
+                            d="M15.1729 8.20238C15.1516 8.35964 15.0619 8.45811 14.9061 8.45884C14.7349 8.45884 14.632 8.34714 14.6371 8.18033C14.6416 8.02748 14.7422 7.92166 14.901 7.92386C15.0692 7.92607 15.1611 8.03115 15.1729 8.20238Z"
+                            fill="#7C4D28" />
+                        <path
+                            d="M13.8874 8.47363C14.0417 8.50229 14.1475 8.57872 14.1402 8.74259C14.1336 8.91014 14.0388 9.02037 13.8654 9.01009C13.6971 8.9998 13.6052 8.89177 13.617 8.71761C13.6287 8.55153 13.7426 8.49127 13.8874 8.47363Z"
+                            fill="#7C4D28" />
+                        <path
+                            d="M12.1987 8.92184C12.1789 9.06881 12.1076 9.17684 11.9459 9.18639C11.771 9.19668 11.6652 9.09527 11.6601 8.92919C11.6549 8.75943 11.7666 8.65435 11.9335 8.65729C12.0863 8.66023 12.1782 8.75943 12.1987 8.92184Z"
+                            fill="#7C4D28" />
+                        <path
+                            d="M11.0361 9.90982C11.0089 10.0649 10.9324 10.1788 10.7553 10.1766C10.5907 10.1744 10.504 10.07 10.4981 9.91717C10.4908 9.74006 10.6062 9.64453 10.77 9.64453C10.9244 9.64453 11.014 9.74741 11.0361 9.90982Z"
+                            fill="#7C4D28" />
+                        <path
+                            d="M11.8499 11.1233C11.6566 11.1182 11.564 11.0138 11.5611 10.8632C11.5582 10.7125 11.6449 10.5994 11.8154 10.5986C11.9903 10.5979 12.0946 10.6883 12.0917 10.8676C12.0887 11.0344 11.98 11.1072 11.8499 11.1233Z"
+                            fill="#7C4D28" />
+                        <path
+                            d="M12.3144 6.81055C12.4782 6.82965 12.584 6.90167 12.5943 7.06408C12.6046 7.23897 12.5062 7.34479 12.3401 7.35141C12.1887 7.35729 12.0829 7.2669 12.0726 7.10523C12.0616 6.92886 12.1652 6.84435 12.3144 6.81055Z"
+                            fill="#7C4D28" />
+                        <path
+                            d="M11.2105 6.59271C11.1723 6.75732 11.0783 6.85212 10.9034 6.82786C10.7454 6.80582 10.6572 6.7 10.6748 6.54568C10.6932 6.37813 10.8086 6.29068 10.9791 6.30905C11.1415 6.32742 11.2054 6.43912 11.2105 6.59271Z"
+                            fill="#7C4D28" />
+                        <path
+                            d="M13.2069 10.842C13.0511 10.8177 12.9592 10.7318 12.9651 10.5672C12.971 10.4018 13.0724 10.3092 13.2282 10.3136C13.3972 10.318 13.503 10.4224 13.4883 10.5988C13.4758 10.7597 13.3671 10.8354 13.2069 10.842Z"
+                            fill="#7C4D28" />
+                        <path
+                            d="M13.4897 6.4972C13.3192 6.48912 13.2244 6.39726 13.2222 6.23926C13.22 6.08347 13.3067 5.97839 13.4728 5.97471C13.6484 5.97104 13.7476 6.06584 13.7447 6.24294C13.7425 6.40902 13.6411 6.48618 13.4897 6.4972Z"
+                            fill="#7C4D28" />
+                        <path
+                            d="M14.6332 9.82407C14.6185 9.98427 14.5259 10.0732 14.3671 10.0717C14.1893 10.0702 14.1019 9.96222 14.1121 9.78879C14.1224 9.62345 14.2312 9.54261 14.3862 9.55143C14.5442 9.56025 14.6302 9.65872 14.6332 9.82407Z"
+                            fill="#7C4D28" />
+                    </svg>
+                    <span style="color: #7C4D28;">742</span>
+                </span>
+                <span class="d-flex align-items-center gap-1">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
+                        xmlns="http://www.w3.org/2000/svg">
+                        <path
+                            d="M13.1635 8.17519L13.1635 4L17.5127 8.54081L20.9998 12.1816L17.4508 15.2695L13.1635 19L13.1635 14.9145C5.63681 14.3222 2.99976 17.2692 2.99976 17.2692C3.56619 14.3846 3.13203 11.9957 5.26549 9.76923C7.74544 7.17903 11.4283 8.09608 13.1635 8.17519Z"
+                            stroke="#7C4D28" stroke-width="2" stroke-linejoin="round" />
+                    </svg>
+                    <span style="color: #7C4D28;">4,2K</span>
+                </span>
+            </div>
+            <a href="https://www.google.com/maps/search/?api=1&query={{ urlencode($post->address) }}"
+                class="btn-map d-flex align-items-center justify-content-center" target="_blank">
+                <svg class="mx-1" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                    xmlns="http://www.w3.org/2000/svg">
+                    <path d="M15 6V21M15 6L21 3V18L15 21M15 6L9 3M15 21L9 18M9 18L3 21V6L9 3M9 18V3" stroke="#7C4D28"
+                        stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                </svg>
+                <span class="mx-1">Bản đồ</span>
+            </a>
+        </div>
+        @auth
+            <div class="rating-section mt-4" id="ratingSection">
+                <!-- Review Form -->
+                <div class="write-review">
+                    <h3>Góp ý xây dựng tích cực</h3>
+                    <form action="{{ route('reviews.store') }}" method="POST" id="reviewForm">
+                        @csrf
+                        <div class="form-group my-3">
+                            <input type="hidden" name="post_id" value="{{ $post->id }}">
+                            <input type="hidden" name="type" value="{{ $post->type }}">
+                            <label>Đánh giá chất lượng</label>
+                            <div class="rating">
+                                <input type="radio" name="food_rating" value="5" id="food-5"
+                                    {{ old('food_rating') == 5 ? 'checked' : '' }}><label for="food-5"><i
+                                        class="fas fa-star"></i></label>
+                                <input type="radio" name="food_rating" value="4" id="food-4"
+                                    {{ old('food_rating') == 4 ? 'checked' : '' }}><label for="food-4"><i
+                                        class="fas fa-star"></i></label>
+                                <input type="radio" name="food_rating" value="3" id="food-3"
+                                    {{ old('food_rating') == 3 ? 'checked' : '' }}><label for="food-3"><i
+                                        class="fas fa-star"></i></label>
+                                <input type="radio" name="food_rating" value="2" id="food-2"
+                                    {{ old('food_rating') == 2 ? 'checked' : '' }}><label for="food-2"><i
+                                        class="fas fa-star"></i></label>
+                                <input type="radio" name="food_rating" value="1" id="food-1"
+                                    {{ old('food_rating') == 1 ? 'checked' : '' }}><label for="food-1"><i
+                                        class="fas fa-star"></i></label>
+                            </div>
+                            <div class="error-message" id="foodRatingError"></div>
+                        </div>
+
+                        <div class="form-group my-3">
+                            <label for="comment">Nhận xét của bạn</label>
+                            <textarea name="comment" id="comment" rows="1" class="form-control" placeholder="Góp ý xây dựng">{{ old('comment') }}</textarea>
+                            <div class="error-message" id="commentError"></div>
+                        </div>
+
+                        <button type="submit" class="submit-review-green">Gửi đánh giá</button>
+                    </form>
+                </div>
+
+                <!-- Reviews List -->
+                <div class="reviews-list mt-3">
+                    @foreach ($post->reviews()->with('user')->latest()->get() as $review)
+                        <div class="review-item">
+                            <div class="review-header">
+                                <img src="{{ $review->user->avatar ? asset('image/avatars/' . basename($review->user->avatar)) : 'https://ui-avatars.com/api/?name=' . urlencode($review->user->name) }}"
+                                    alt="{{ $review->user->name }}" class="reviewer-avatar">
+                                <div class="reviewer-info">
+                                    <h4>{{ $review->user->name }}</h4>
+                                    <div class="review-meta">
+                                        <div class="review-stars">
+                                            @for ($i = 1; $i <= 5; $i++)
+                                                <i
+                                                    class="fas fa-star {{ $i <= $review->food_rating ? 'text-warning' : 'text-muted' }}"></i>
+                                            @endfor
+                                        </div>
+                                        <span class="review-date">{{ $review->created_at->format('d/m/Y') }}</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="review-content">
+                                <div class="satisfaction-icon">
+                                    @switch($review->satisfaction_level)
+                                        @case(5)
+                                            <i class="fas fa-laugh-beam text-success"></i>
+                                        @break
+
+                                        @case(4)
+                                            <i class="fas fa-laugh text-info"></i>
+                                        @break
+
+                                        @case(3)
+                                            <i class="fas fa-meh text-warning"></i>
+                                        @break
+
+                                        @case(2)
+                                            <i class="fas fa-frown text-danger"></i>
+                                        @break
+
+                                        @case(1)
+                                            <i class="fas fa-sad-tear text-danger"></i>
+                                        @break
+                                    @endswitch
+                                </div>
+                                <p>{{ $review->comment }}</p>
+                            </div>
+                        </div>
+                    @endforeach
+                </div>
+            </div>
+        @endauth
     </div>
 
     <!-- Image Gallery Modal -->
@@ -339,17 +485,6 @@
 @push('scripts')
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-
-            const video = document.getElementById("vidauto");
-            if (video) {
-                // Phát có âm thanh sau tương tác (nhấn card)
-                video.play().then(() => {
-                    console.log("Video đã phát có tiếng.");
-                }).catch((err) => {
-                    console.warn("Không phát được video:", err);
-                });
-            }
-
             // Add mobile-view class to body if mobile detail content exists
             if (document.querySelector('.mobile-detail-content')) {
                 document.body.classList.add('mobile-view');
@@ -457,6 +592,18 @@
             const title = encodeURIComponent(document.title);
             window.open(`https://www.facebook.com/sharer/sharer.php?u=${url}`, '_blank');
         }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            new Swiper('.mySwiper', {
+                navigation: {
+                    nextEl: '.swiper-button-next',
+                    prevEl: '.swiper-button-prev',
+                },
+                loop: true,
+                slidesPerView: 1,
+                spaceBetween: 10,
+            });
+        });
 
         // function shareToTwitter() {
         //     const url = encodeURIComponent(window.location.href);

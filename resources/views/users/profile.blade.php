@@ -373,8 +373,8 @@
                                                             data-lng="{{ $post->longitude ?? '' }}">-- km</span>
                                                     </div>
                                                     <div class="small mb-2 text-post" style="font-weight: 500;">
-                                                        {{ number_format($post->min_price, 0, ',', '.') }}k -
-                                                        {{ number_format($post->max_price, 0, ',', '.') }}k/ng
+                                                        {{ number_format($post->min_price, 0, ',', '.') }} -
+                                                        {{ number_format($post->max_price, 0, ',', '.') }}/ng
                                                     </div>
                                                     <div style="color: #8d6e63; font-size: 13px;">
                                                         <span>Thứ 2 - thứ 7: 8g - 19g</span>

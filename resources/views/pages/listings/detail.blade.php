@@ -124,7 +124,7 @@
                 <!-- Rating & Reviews -->
                 @auth
                     <div class="rating-section" id="ratingSection">
-                        <h2>Đánh giá và nhận xét</h2>
+                        <h2>Góp ý</h2>
 
                         <!-- Review Form -->
                         <div class="write-review">

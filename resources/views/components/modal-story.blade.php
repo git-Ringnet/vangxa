@@ -1,3 +1,6 @@
+<!-- Swiper CSS -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.css"/>
+
 <div class="story-modal" id="storyModal-{{ $post->id }}">
     <div class="story-modal-content">
         <!-- Header với thông tin vendor và nút đóng -->
@@ -17,30 +20,34 @@
         <!-- Nội dung câu chuyện -->
         <div class="story-modal-body">
             @if($post->user->stories->count() > 0)
-                @foreach($post->user->stories as $story)
-                    <div class="story-item mb-4">
-                        @if($story->image_path)
-                            <div class="story-image mb-3">
-                                <img src="{{ asset('storage/' . $story->image_path) }}" alt="Story Image" class="img-fluid rounded">
+                <div class="swiper story-swiper" id="storySwiper-{{ $post->id }}">
+                    <div class="swiper-wrapper">
+                        @foreach($post->user->stories as $index => $story)
+                            <div class="swiper-slide">
+                                <div class="story-item">
+                                    @if($story->image_path)
+                                        <div class="story-image mb-3">
+                                            <img src="{{ asset('storage/' . $story->image_path) }}" alt="Story Image" class="img-fluid rounded">
+                                        </div>
+                                    @endif
+                                    <div class="story-content">
+                                        @if($story->title)
+                                            <h3 class="story-title mb-2">{{ $story->title }}</h3>
+                                        @endif
+                                        <div class="story-text">
+                                            {!! nl2br(e($story->content)) !!}
+                                        </div>
+                                        <div class="story-date text-muted mt-2">
+                                            <small><i class="far fa-calendar-alt me-1"></i>{{ $story->created_at->format('d/m/Y') }}</small>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
-                        @endif
-                        
-                        <div class="story-content">
-                            @if($story->title)
-                                <h3 class="story-title mb-2">{{ $story->title }}</h3>
-                            @endif
-                            <div class="story-text">
-                                {!! nl2br(e($story->content)) !!}
-                            </div>
-                            <div class="story-date text-muted mt-2">
-                                <small><i class="far fa-calendar-alt me-1"></i>{{ $story->created_at->format('d/m/Y') }}</small>
-                            </div>
-                        </div>
+                        @endforeach
                     </div>
-                    @if(!$loop->last)
-                        <hr class="story-divider my-4">
-                    @endif
-                @endforeach
+                    <!-- Pagination dots (move outside swiper-wrapper) -->
+                    <div class="swiper-pagination"></div>
+                </div>
             @else
                 <div class="text-center py-5">
                     <i class="fas fa-book fa-3x mb-3 text-muted"></i>
@@ -91,6 +98,7 @@
     padding: 25px;
     overflow-y: auto;
     flex-grow: 1;
+    position: relative;
 }
 
 .story-image img {
@@ -114,26 +122,63 @@
     word-wrap: break-word;
 }
 
-.story-divider {
-    border-color: #eee;
+.story-date {
+    text-align: right;
 }
 
-/* Custom scrollbar for the modal */
-.story-modal-body::-webkit-scrollbar {
-    width: 8px;
+/* Swiper custom style */
+.story-swiper {
+    width: 100%;
+    min-height: 200px;
+}
+.swiper-pagination {
+    position: relative;
+    margin-top: 18px;
+    text-align: center;
+}
+.swiper-pagination-bullet {
+    width: 14px;
+    height: 14px;
+    background: rgba(0,0,0,0.18) !important;
+    opacity: 1 !important;
+    margin: 0 5px !important;
+    border-radius: 50%;
+    transition: background 0.3s;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+}
+.swiper-pagination-bullet-active {
+    background: rgba(0,0,0,0.7) !important;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.18);
 }
 
-.story-modal-body::-webkit-scrollbar-track {
-    background: #f1f1f1;
-    border-radius: 4px;
+.swiper-slide,
+.story-item {
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    box-sizing: border-box;
+    display: block;
 }
-
-.story-modal-body::-webkit-scrollbar-thumb {
-    background: #888;
-    border-radius: 4px;
-}
-
-.story-modal-body::-webkit-scrollbar-thumb:hover {
-    background: #555;
+.swiper-wrapper {
+    align-items: stretch;
 }
 </style>
+
+<!-- Swiper JS -->
+<script src="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    document.querySelectorAll('.story-swiper').forEach(function(swiperEl) {
+        new Swiper(swiperEl, {
+            loop: true,
+            pagination: {
+                el: swiperEl.querySelector('.swiper-pagination'),
+                clickable: true,
+            },
+            grabCursor: true,
+        });
+    });
+});
+
+// Nếu bạn có logic mở modal, hãy đảm bảo Swiper được khởi tạo lại nếu modal được render động
+</script>
