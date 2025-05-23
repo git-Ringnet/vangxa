@@ -49,6 +49,14 @@ class UntrustEvent implements ShouldBroadcast
      */
     public function broadcastWith(): array
     {
+        // Determine the correct URL based on post type
+        $link = match ($this->post->type) {
+            1 => "/lodging/detail/{$this->post->id}",
+            2 => "/dining/detail/{$this->post->id}",
+            3 => "/communities/{$this->post->id}",
+            default => "/posts/{$this->post->id}",
+        };
+
         return [
             'post_id' => $this->post->id,
             'post_title' => $this->post->title ?? 'Bài viết',
@@ -56,8 +64,9 @@ class UntrustEvent implements ShouldBroadcast
             'user_name' => $this->user->name,
             'created_at' => now(),
             'message' => "{$this->user->name} đã xóa bài viết của bạn khỏi danh sách tin cậy",
-            'link' => "/posts/{$this->post->id}", // Link đến bài viết
-            'type' => 'untrust'
+            'link' => $link, // Updated link based on post type
+            'type' => 'untrust',
+            'post_type' => $this->post->type // Include post type in the event data
         ];
     }
 

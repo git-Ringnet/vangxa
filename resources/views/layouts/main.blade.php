@@ -506,6 +506,193 @@
     <footer>
         <script src="{{ asset('js/filter.js') }}"></script>
     </footer>
+
+    <div class="mobile-nav">
+        <a href="{{ route('dining') }}" class="mobile-nav-item {{ request()->is('dining') ? 'active' : '' }}">
+            <i class="fas fa-search"></i>
+            <span>Khám phá</span>
+        </a>
+        <a href="{{ route('groupss.index') }}" class="mobile-nav-item {{ request()->routeIs('groupss.*') ? 'active' : '' }}">
+            <i class="fas fa-users"></i>
+            <span>Cộng đồng</span>
+        </a>
+        @if(request()->is('notifications*'))
+            <a href="{{ route('notifications.index') }}" class="mobile-nav-item active">
+                <i class="fas fa-bell"></i>
+                <span>Thông báo</span>
+            </a>
+        @else
+            <a href="{{ route('notifications.index') }}" class="mobile-nav-item">
+                <i class="fas fa-bell"></i>
+                <span>Thông báo</span>
+            </a>
+        @endif
+        <a href="{{ route('profile') }}" class="mobile-nav-item">
+            <i class="fas fa-user"></i>
+            <span>Tôi</span>
+        </a>
+    </div>
+
+    
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Mobile Notifications Panel
+            const mobileNotificationBtn = document.getElementById('mobileNotificationBtn');
+            const mobileNotificationsPanel = document.getElementById('mobileNotificationsPanel');
+            const closeNotificationsBtn = document.getElementById('closeNotificationsBtn');
+            const notificationTabs = document.querySelectorAll('.notification-tab');
+            const notificationItems = document.querySelectorAll('.notification-item');
+            
+            if (mobileNotificationBtn && mobileNotificationsPanel && closeNotificationsBtn) {
+                // Open notifications panel
+                mobileNotificationBtn.addEventListener('click', function() {
+                    mobileNotificationsPanel.style.display = 'block';
+                });
+                
+                // Close notifications panel
+                closeNotificationsBtn.addEventListener('click', function() {
+                    mobileNotificationsPanel.style.display = 'none';
+                });
+                
+                // Notification tabs filtering
+                notificationTabs.forEach(tab => {
+                    tab.addEventListener('click', function() {
+                        // Remove active class from all tabs
+                        notificationTabs.forEach(t => t.classList.remove('active'));
+                        // Add active class to clicked tab
+                        this.classList.add('active');
+                        
+                        // Get the filter value
+                        const filterValue = this.dataset.filter;
+                        
+                        // Show/hide notification items based on filter
+                        notificationItems.forEach(item => {
+                            if (filterValue === 'all' || item.dataset.type === filterValue) {
+                                item.style.display = 'flex';
+                            } else {
+                                item.style.display = 'none';
+                            }
+                        });
+                    });
+                });
+            }
+            //lọc
+            // Add page class to body for conditional styling
+            if (window.location.pathname.includes('/dining')) {
+                document.body.classList.add('dining-page');
+            } else if (window.location.pathname.includes('/lodging')) {
+                document.body.classList.add('lodging-page');
+            }
+            
+            // Mobile Filter Pills functionality
+            const mobileFilterPills = document.querySelectorAll('.mobile-filter-pill');
+            
+            if (mobileFilterPills.length > 0) {
+                mobileFilterPills.forEach(pill => {
+                    pill.addEventListener('click', function() {
+                        // Remove active class from all pills
+                        mobileFilterPills.forEach(p => p.classList.remove('active'));
+                        
+                        // Add active class to clicked pill
+                        this.classList.add('active');
+                        
+                        // Set the filter value
+                        const filterValue = this.getAttribute('data-filter');
+                        
+                        // Also update the sidebar filter pills if they exist
+                        const sidebarPill = document.querySelector(`.filter-pill-item[data-filter="${filterValue}"]`);
+                        if (sidebarPill) {
+                            // Update the sidebar pills to match
+                            document.querySelectorAll('.filter-pill-item').forEach(p => p.classList.remove('active'));
+                            sidebarPill.classList.add('active');
+                        }
+                        
+                        // Call the applyFilter function from filter.js if available
+                        if (typeof applyFilters === 'function') {
+                            // Set the quickFilter value in activeFilters
+                            if (typeof activeFilters !== 'undefined') {
+                                activeFilters.quickFilter = filterValue;
+                            }
+                            applyFilters();
+                        } else {
+                            // If applyFilters is not defined in global scope, reload with filter in URL
+                            const url = new URL(window.location.href);
+                            
+                            // Remove existing quickFilter params
+                            url.searchParams.delete('quickFilter');
+                            
+                            // Add new filter
+                            if (filterValue !== 'all') {
+                                url.searchParams.append('quickFilter', filterValue);
+                            }
+                            
+                            // Navigate to the filtered URL
+                            window.location.href = url.toString();
+                        }
+                    });
+                });
+            }
+            
+            // Đảm bảo tab Khám phá active khi ở trang dining hoặc lodging
+            if (window.location.pathname.includes('/dining') || window.location.pathname.includes('/lodging')) {
+                const discoverTab = document.querySelector('.mobile-nav-item:first-child');
+                if (discoverTab) {
+                    document.querySelectorAll('.mobile-nav-item').forEach(item => {
+                        item.classList.remove('active');
+                    });
+                    discoverTab.classList.add('active');
+                }
+            }
+            
+            // Check URL for quickFilter param on page load to set active pill
+            const url = new URL(window.location.href);
+            if (url.searchParams.has('quickFilter')) {
+                const quickFilter = url.searchParams.get('quickFilter');
+                const mobilePill = document.querySelector(`.mobile-filter-pill[data-filter="${quickFilter}"]`);
+                if (mobilePill) {
+                    mobileFilterPills.forEach(p => p.classList.remove('active'));
+                    mobilePill.classList.add('active');
+                }
+            }
+        });
+    </script>
+    
+    <!-- Mobile Discover Header -->
+    <div class="mobile-discover-header" id="mobileDiscoverHeader">
+        <div class="search-container">
+            <input type="text" class="search-input" placeholder="Tìm địa điểm">
+            <button class="search-btn"><i class="fas fa-search"></i></button>
+        </div>
+        
+        <div class="mobile-tabs">
+            <a href="{{ route('dining') }}" class="mobile-tab {{ request()->is('dining') ? 'active' : '' }}">Ăn</a>
+            <a href="{{ route('dining') }}" class="mobile-tab">Uống</a>
+            <a href="{{ route('lodging') }}" class="mobile-tab {{ request()->is('lodging') ? 'active' : '' }}">Ở</a>
+            <a href="/" class="mobile-tab">Vangxa</a>
+        </div>
+        
+        <div class="mobile-filters">
+            <button class="filter-button-mobile" onclick="openFilter()">
+                <i class="fas fa-sliders"></i>
+                <!-- <span>Bộ lọc</span> -->
+            </button>
+            <button class="filter-pill mobile-filter-pill active" data-filter="all">Tất cả</button>
+            <button class="filter-pill mobile-filter-pill" data-filter="nearby">Gần đây</button>
+            @if(request()->routeIs('dining'))
+                <button class="filter-pill mobile-filter-pill" data-filter="cheap">< 50k</button>
+                <button class="filter-pill mobile-filter-pill" data-filter="snack">Ăn vặt</button>
+                <button class="filter-pill mobile-filter-pill" data-filter="stylish">Có gu</button>
+                <button class="filter-pill mobile-filter-pill" data-filter="cool">Mát mẻ</button>
+            @endif
+            @if(request()->routeIs('lodging'))
+                <button class="filter-pill mobile-filter-pill" data-filter="homestay">Homestay</button>
+                <button class="filter-pill mobile-filter-pill" data-filter="hotel">Khách sạn</button>
+                <button class="filter-pill mobile-filter-pill" data-filter="view">View đẹp</button>
+            @endif
+        </div>
+    </div>
 </body>
 
 </html>
+

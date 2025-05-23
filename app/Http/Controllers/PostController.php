@@ -675,4 +675,21 @@ class PostController extends Controller
         $section->delete();
         return response()->json(['success' => true]);
     }
+
+    /**
+     * Check the type of a post and return it as JSON
+     * Used by notification system to determine correct redirect URL
+     *
+     * @param int $id
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function checkPostType($id)
+    {
+        try {
+            $post = Post::findOrFail($id);
+            return response()->json(['type' => $post->type]);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Post not found'], 404);
+        }
+    }
 }

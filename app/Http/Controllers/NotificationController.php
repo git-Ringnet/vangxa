@@ -9,6 +9,17 @@ use Illuminate\Notifications\DatabaseNotification;
 
 class NotificationController extends Controller
 {
+    public function index()
+    {
+        $notifications = Auth::user()->notifications;
+        $unreadCount = Auth::user()->unreadNotifications->count();
+        
+        return view('notifications.index', [
+            'notifications' => $notifications,
+            'unreadCount' => $unreadCount
+        ]);
+    }
+
     public function fetch()
     {
         $notifications = Auth::user()->notifications->map(function ($notification) {

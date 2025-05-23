@@ -104,6 +104,7 @@ Route::prefix('admin')->group(function () {
 
 // API routes
 Route::get('/api/users/search', [UserController::class, 'search'])->name('api.users.search');
+Route::get('/api/check-post-type/{id}', [PostController::class, 'checkPostType'])->name('api.check-post-type');
 Route::post('/post/{id}/update-owner', [PostController::class, 'updateOwner'])->name('post.update-owner')->middleware('auth');
 Route::post('/post/{id}/add-owner', [PostController::class, 'addOwner'])->name('post.add-owner')->middleware('auth');
 Route::delete('/post/{postId}/remove-owner/{userId}', [PostController::class, 'removeOwner'])->name('post.remove-owner')->middleware('auth');
@@ -143,6 +144,8 @@ Route::middleware(['auth'])->group(function () {
         $count = Auth::user()->unreadNotifications->count();
         return response()->json(['count' => $count]);
     });
+    // Route trang thông báo đầy đủ
+    Route::get('/notifications', [NotificationController::class, 'index'])->name('notifications.index');
 });
 
 // Community routes
